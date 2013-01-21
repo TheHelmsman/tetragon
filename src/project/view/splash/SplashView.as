@@ -28,17 +28,17 @@
  */
 package view.splash
 {
-	import lib.display.TetragonLogo;
-
-	import tetragon.data.Settings;
-	import tetragon.view.View;
-
 	import com.hexagonstar.util.color.colorHexToColorTransform;
-
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.filters.DropShadowFilter;
 	import flash.geom.Matrix;
+	import lib.display.TetragonLogo;
+	import tetragon.data.Settings;
+	import tetragon.view.obsolete.View;
+
+
+
 	
 	
 	/**

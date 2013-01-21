@@ -28,10 +28,10 @@
  */
 package tetragon.util.display
 {
-	import tetragon.Main;
-	import tetragon.view.ScreenManager;
-
 	import flash.display.DisplayObject;
+	import tetragon.Main;
+	import tetragon.view.obsolete.ScreenManager;
+
 	
 	
 	/**

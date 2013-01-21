@@ -28,19 +28,19 @@
  */
 package view.splash
 {
-	import tetragon.data.Settings;
-	import tetragon.util.display.centerChild;
-	import tetragon.view.Screen;
-	import tetragon.view.loadprogress.LoadProgressDisplay;
-
 	import com.hexagonstar.display.shape.RectangleGradientShape;
-
 	import flash.events.Event;
 	import flash.events.TimerEvent;
 	import flash.media.Sound;
 	import flash.media.SoundChannel;
 	import flash.ui.Mouse;
 	import flash.utils.Timer;
+	import tetragon.data.Settings;
+	import tetragon.util.display.centerChild;
+	import tetragon.view.loadprogress.LoadProgressDisplay;
+	import tetragon.view.obsolete.Screen;
+
+
 	
 	
 	/**

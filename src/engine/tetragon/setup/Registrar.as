@@ -28,6 +28,7 @@
  */
 package tetragon.setup
 {
+	import flash.text.Font;
 	import tetragon.ClassRegistry;
 	import tetragon.Main;
 	import tetragon.debug.Console;
@@ -35,10 +36,9 @@ package tetragon.setup
 	import tetragon.debug.cli.CLI;
 	import tetragon.entity.EntitySystemManager;
 	import tetragon.state.StateManager;
-	import tetragon.view.ScreenManager;
+	import tetragon.view.obsolete.ScreenManager;
 	import tetragon.view.theme.UIThemeManager;
 
-	import flash.text.Font;
 	
 	
 	/**
