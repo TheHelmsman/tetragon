@@ -26,47 +26,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package
+package tetragon.view.render2d.tile
 {
-	import tetragon.Main;
-	
-	import tetragon.env.preload.IPreloadable;
-	import tetragon.env.preload.Preloader;
-	
-	
-	[SWF(width="1024", height="640", backgroundColor="#000000", frameRate="60")]
-	
-	/**
-	 * Entry acts as the entry point and base display object container (or: context view) for
-	 * the application. This is the class that the compiler is being told to compile and from
-	 * which all other application logic is being initiated, in particular Main which acts as
-	 * the main hub for the application.
-	 * 
-	 * <p>IMPORTANT: Auto-generated class. Do not edit!</p>
-	 */
-	[Frame(factoryClass="tetragon.env.preload.Preloader")]
-	public final class Entry implements IPreloadable
+	public final class TileScrollDirection
 	{
 		//-----------------------------------------------------------------------------------------
-		// Properties
+		// Constants
 		//-----------------------------------------------------------------------------------------
 		
-		private var _main:Main;
-		
-		
-		//-----------------------------------------------------------------------------------------
-		// Public Methods
-		//-----------------------------------------------------------------------------------------
-		
-		/**
-		 * Invoked by the preloader after the application has been fully preloaded.
-		 * 
-		 * @param preloader a reference to the preloader.
-		 */
-		public function onApplicationPreloaded(preloader:Preloader):void
-		{
-			_main = Main.instance;
-			_main.init(preloader, new AppInfo(), new Setups().list, AppResourceBundle);
-		}
+		public static const LEFT:String		= "l";
+		public static const RIGHT:String	= "r";
+		public static const UP:String		= "u";
+		public static const DOWN:String		= "d";
 	}
 }

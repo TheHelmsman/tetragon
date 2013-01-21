@@ -26,32 +26,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package
+package tetragon.view.render2d.tile
 {
-	import tetragon.Main;
+	import tetragon.data.sprite.SpriteSet;
 	
-	import tetragon.env.preload.IPreloadable;
-	import tetragon.env.preload.Preloader;
-	
-	
-	[SWF(width="1024", height="640", backgroundColor="#000000", frameRate="60")]
 	
 	/**
-	 * Entry acts as the entry point and base display object container (or: context view) for
-	 * the application. This is the class that the compiler is being told to compile and from
-	 * which all other application logic is being initiated, in particular Main which acts as
-	 * the main hub for the application.
-	 * 
-	 * <p>IMPORTANT: Auto-generated class. Do not edit!</p>
+	 * TileMapGenerator class
+	 *
+	 * @author Hexagon
 	 */
-	[Frame(factoryClass="tetragon.env.preload.Preloader")]
-	public final class Entry implements IPreloadable
+	public class TileMapGenerator
 	{
 		//-----------------------------------------------------------------------------------------
 		// Properties
 		//-----------------------------------------------------------------------------------------
 		
-		private var _main:Main;
+		/** @private */
+		private var _spriteSet:SpriteSet;
+		/** @private */
+		private var _tileMap:TileMap;
+		/** @private */
+		private var _tileIDCount:int;
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -59,14 +55,52 @@ package
 		//-----------------------------------------------------------------------------------------
 		
 		/**
-		 * Invoked by the preloader after the application has been fully preloaded.
+		 * Generates a tilemap.
 		 * 
-		 * @param preloader a reference to the preloader.
+		 * @param spriteSet
+		 * @param mapWidth
+		 * @param mapHeight
+		 * @return A TileMap object.
 		 */
-		public function onApplicationPreloaded(preloader:Preloader):void
+		public function generate(spriteSet:SpriteSet, mapWidth:int, mapHeight:int):TileMap
 		{
-			_main = Main.instance;
-			_main.init(preloader, new AppInfo(), new Setups().list, AppResourceBundle);
+			_spriteSet = spriteSet;
+			_tileIDCount = 0;
+			
+			_tileMap = generateRandomMap(mapWidth, mapHeight);
+			_tileMap.measure();
+			var tileMap:TileMap = _tileMap;
+			_tileMap = null;
+			_spriteSet = null;
+			return tileMap;
+		}
+		
+		
+		/**
+		 * Returns a String Representation of the class.
+		 * 
+		 * @return A String Representation of the class.
+		 */
+		public function toString():String
+		{
+			return "TileMapGenerator";
+		}
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Private Methods
+		//-----------------------------------------------------------------------------------------
+		
+		/**
+		 * @private
+		 */
+		private function generateRandomMap(mapWidth:int, mapHeight:int):TileMap
+		{
+			var tileMap:TileMap = new TileMap();
+			tileMap.margin = 20;
+			tileMap.edgeMode = TileMapEdgeMode.HALT;
+			
+			return tileMap;
 		}
 	}
 }

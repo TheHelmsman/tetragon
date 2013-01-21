@@ -26,32 +26,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package
+package tetragon.modules.app
 {
-	import tetragon.Main;
+	import tetragon.modules.AsyncModule;
+	import tetragon.modules.IAsyncModule;
+	import tetragon.view.render2d.core.Render2D;
+	import tetragon.view.render2d.core.events.Event2D;
 	
-	import tetragon.env.preload.IPreloadable;
-	import tetragon.env.preload.Preloader;
-	
-	
-	[SWF(width="1024", height="640", backgroundColor="#000000", frameRate="60")]
 	
 	/**
-	 * Entry acts as the entry point and base display object container (or: context view) for
-	 * the application. This is the class that the compiler is being told to compile and from
-	 * which all other application logic is being initiated, in particular Main which acts as
-	 * the main hub for the application.
-	 * 
-	 * <p>IMPORTANT: Auto-generated class. Do not edit!</p>
+	 * Module that takes care that Render2D is available before the Game2D Extra
+	 * is being used.
 	 */
-	[Frame(factoryClass="tetragon.env.preload.Preloader")]
-	public final class Entry implements IPreloadable
+	public final class Game2DModule extends AsyncModule implements IAsyncModule
 	{
 		//-----------------------------------------------------------------------------------------
 		// Properties
 		//-----------------------------------------------------------------------------------------
 		
-		private var _main:Main;
+		private var _render2D:Render2D;
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -59,14 +52,34 @@ package
 		//-----------------------------------------------------------------------------------------
 		
 		/**
-		 * Invoked by the preloader after the application has been fully preloaded.
-		 * 
-		 * @param preloader a reference to the preloader.
+		 * @inheritDoc
 		 */
-		public function onApplicationPreloaded(preloader:Preloader):void
+		override public function start():void
 		{
-			_main = Main.instance;
-			_main.init(preloader, new AppInfo(), new Setups().list, AppResourceBundle);
+			_asyncComplete = false;
+			_render2D = new Render2D(main.stage);
+			_render2D.addEventListener(Event2D.CONTEXT3D_CREATE, onContext3DCreated);
+		}
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Accessors
+		//-----------------------------------------------------------------------------------------
+		
+		public static function get defaultID():String
+		{
+			return "game2DModule";
+		}
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Callback Handlers
+		//-----------------------------------------------------------------------------------------
+		
+		private function onContext3DCreated(e:Event2D):void
+		{
+			_asyncComplete = true;
+			if (_asyncCompleteSignal) _asyncCompleteSignal.dispatch();
 		}
 	}
 }

@@ -14,10 +14,10 @@
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -26,47 +26,40 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package
+package tetragon.view.render2d.core.events
 {
-	import tetragon.Main;
-	
-	import tetragon.env.preload.IPreloadable;
-	import tetragon.env.preload.Preloader;
-	
-	
-	[SWF(width="1024", height="640", backgroundColor="#000000", frameRate="60")]
-	
-	/**
-	 * Entry acts as the entry point and base display object container (or: context view) for
-	 * the application. This is the class that the compiler is being told to compile and from
-	 * which all other application logic is being initiated, in particular Main which acts as
-	 * the main hub for the application.
-	 * 
-	 * <p>IMPORTANT: Auto-generated class. Do not edit!</p>
-	 */
-	[Frame(factoryClass="tetragon.env.preload.Preloader")]
-	public final class Entry implements IPreloadable
+    /** A ResizeEvent is dispatched by the stage when the size of the Flash container changes.
+     *  Use it to update the Starling viewport and the stage size.
+     *  
+     *  <p>The event contains properties containing the updated width and height of the Flash 
+     *  player. If you want to scale the contents of your stage to fill the screen, update the 
+     *  <code>Starling.current.viewPort</code> rectangle accordingly. If you want to make use of
+     *  the additional screen estate, update the values of <code>stage.stageWidth</code> and 
+     *  <code>stage.stageHeight</code> as well.</p>
+     *  
+     *  @see starling.display.Stage
+     *  @see starling.core.Starling
+     */
+	public class ResizeEvent2D extends Event2D
 	{
-		//-----------------------------------------------------------------------------------------
-		// Properties
-		//-----------------------------------------------------------------------------------------
+		/** Event type for a resized Flash player. */
+        public static const RESIZE:String = "resize";
 		
-		private var _main:Main;
+		private var mWidth:int;
+		private var mHeight:int;
 		
-		
-		//-----------------------------------------------------------------------------------------
-		// Public Methods
-		//-----------------------------------------------------------------------------------------
-		
-		/**
-		 * Invoked by the preloader after the application has been fully preloaded.
-		 * 
-		 * @param preloader a reference to the preloader.
-		 */
-		public function onApplicationPreloaded(preloader:Preloader):void
+        /** Creates a new ResizeEvent. */
+		public function ResizeEvent2D(type:String, width:int, height:int, bubbles:Boolean=false)
 		{
-			_main = Main.instance;
-			_main.init(preloader, new AppInfo(), new Setups().list, AppResourceBundle);
+			super(type, bubbles);
+			mWidth = width;
+			mHeight = height;
 		}
+		
+        /** The updated width of the player. */
+		public function get width():int { return mWidth; }
+        
+        /** The updated height of the player. */
+		public function get height():int { return mHeight; }
 	}
 }

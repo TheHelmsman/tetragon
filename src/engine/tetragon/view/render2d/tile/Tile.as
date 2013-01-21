@@ -26,47 +26,72 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package
+package tetragon.view.render2d.tile
 {
-	import tetragon.Main;
+	import flash.display.Bitmap;
+	import flash.display.BitmapData;
 	
-	import tetragon.env.preload.IPreloadable;
-	import tetragon.env.preload.Preloader;
-	
-	
-	[SWF(width="1024", height="640", backgroundColor="#000000", frameRate="60")]
 	
 	/**
-	 * Entry acts as the entry point and base display object container (or: context view) for
-	 * the application. This is the class that the compiler is being told to compile and from
-	 * which all other application logic is being initiated, in particular Main which acts as
-	 * the main hub for the application.
-	 * 
-	 * <p>IMPORTANT: Auto-generated class. Do not edit!</p>
+	 * The Tile class represents a concrete tile object that is put inside a tilegroup
+	 * and by that is being placed on a scrollable tilemap. Tiles are created by using
+	 * TileDefinition and TileModel objects. The TileDefinition provides all definition
+	 * data for the tile and the TileModel provides the coordinates that describe where
+	 * the tile is being positioned inside it's parent tilegroup.
 	 */
-	[Frame(factoryClass="tetragon.env.preload.Preloader")]
-	public final class Entry implements IPreloadable
+	public class Tile
 	{
 		//-----------------------------------------------------------------------------------------
 		// Properties
 		//-----------------------------------------------------------------------------------------
 		
-		private var _main:Main;
-		
-		
-		//-----------------------------------------------------------------------------------------
-		// Public Methods
-		//-----------------------------------------------------------------------------------------
+		/**
+		 * The unique ID of the tile.
+		 */
+		public var id:String;
 		
 		/**
-		 * Invoked by the preloader after the application has been fully preloaded.
-		 * 
-		 * @param preloader a reference to the preloader.
+		 * The width of the tile.
 		 */
-		public function onApplicationPreloaded(preloader:Preloader):void
-		{
-			_main = Main.instance;
-			_main.init(preloader, new AppInfo(), new Setups().list, AppResourceBundle);
-		}
+		public var width:int;
+		
+		/**
+		 * The height of the tile.
+		 */
+		public var height:int;
+		
+		/**
+		 * The x coordinate of the tile inside it's parent tilegroup.
+		 */
+		public var x:int;
+		
+		/**
+		 * The y coordinate of the tile inside it's parent tilegroup.
+		 */
+		public var y:int;
+		
+		/**
+		 * If this tile is a virtual copy of another tile then this contains the ID of the
+		 * tile which this tile is a copy of.
+		 */
+		public var copyOf:String;
+		
+		/**
+		 * The tile's tile properties, contains TileProperty objects.
+		 * @private
+		 */
+		public var properties:Object;
+		
+		/**
+		 * A reference to the bitmapdata of the TileDefinition of this Tile.
+		 * @private
+		 */
+		public var bitmapData:BitmapData;
+		
+		/**
+		 * The tile's bitmap.
+		 * @private
+		 */
+		public var bitmap:Bitmap;
 	}
 }

@@ -26,47 +26,70 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package
+package tetragon.entity.systems
 {
-	import tetragon.Main;
-	
-	import tetragon.env.preload.IPreloadable;
-	import tetragon.env.preload.Preloader;
-	
-	
-	[SWF(width="1024", height="640", backgroundColor="#000000", frameRate="60")]
-	
 	/**
-	 * Entry acts as the entry point and base display object container (or: context view) for
-	 * the application. This is the class that the compiler is being told to compile and from
-	 * which all other application logic is being initiated, in particular Main which acts as
-	 * the main hub for the application.
-	 * 
-	 * <p>IMPORTANT: Auto-generated class. Do not edit!</p>
+	 * EndlessScroller class
 	 */
-	[Frame(factoryClass="tetragon.env.preload.Preloader")]
-	public final class Entry implements IPreloadable
+	public class EndlessScroller extends RenderSystem
 	{
 		//-----------------------------------------------------------------------------------------
 		// Properties
 		//-----------------------------------------------------------------------------------------
 		
-		private var _main:Main;
+		private var _layers:Vector.<EndlessScrollLayer>;
+		private var _layerCount:uint;
+		//private var _screenCount:uint;
+		private var _scrollSpeed:int;
+		//private var _scrollSpeedMin:int;
+		//private var _scrollSpeedMax:int;
+		private var _scrollSpeedTmp:int;
 		
 		
 		//-----------------------------------------------------------------------------------------
 		// Public Methods
 		//-----------------------------------------------------------------------------------------
 		
-		/**
-		 * Invoked by the preloader after the application has been fully preloaded.
-		 * 
-		 * @param preloader a reference to the preloader.
-		 */
-		public function onApplicationPreloaded(preloader:Preloader):void
+		
+		//-----------------------------------------------------------------------------------------
+		// Accessors
+		//-----------------------------------------------------------------------------------------
+		
+		public function get scrollSpeed():int
 		{
-			_main = Main.instance;
-			_main.init(preloader, new AppInfo(), new Setups().list, AppResourceBundle);
+			return _scrollSpeed;
+		}
+		public function set scrollSpeed(v:int):void
+		{
+			_scrollSpeed = v;
+		}
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Callback Handlers
+		//-----------------------------------------------------------------------------------------
+		
+		override protected function onRender():void
+		{
+			if (_paused) return;
+			
+			_scrollSpeed = _scrollSpeedTmp;
+			
+			var i:uint = 0;
+			while (i < _layerCount)
+			{
+				_layers[i++].tick();
+			}
+		}
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Private Methods
+		//-----------------------------------------------------------------------------------------
+		
+		override protected function setup():void
+		{
+			_layers = new Vector.<EndlessScrollLayer>();
 		}
 	}
 }

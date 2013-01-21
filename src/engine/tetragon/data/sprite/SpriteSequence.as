@@ -26,47 +26,59 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package
+package tetragon.data.sprite
 {
-	import tetragon.Main;
-	
-	import tetragon.env.preload.IPreloadable;
-	import tetragon.env.preload.Preloader;
-	
-	
-	[SWF(width="1024", height="640", backgroundColor="#000000", frameRate="60")]
-	
 	/**
-	 * Entry acts as the entry point and base display object container (or: context view) for
-	 * the application. This is the class that the compiler is being told to compile and from
-	 * which all other application logic is being initiated, in particular Main which acts as
-	 * the main hub for the application.
-	 * 
-	 * <p>IMPORTANT: Auto-generated class. Do not edit!</p>
+	 * A SpriteSequence defines an animation for a sprite. A SpriteObject contains
+	 * a number of sprite sequences which in turn represent a range of one or more
+	 * sprite frames.
 	 */
-	[Frame(factoryClass="tetragon.env.preload.Preloader")]
-	public final class Entry implements IPreloadable
+	public final class SpriteSequence
 	{
+		//-----------------------------------------------------------------------------------------
+		// Constants
+		//-----------------------------------------------------------------------------------------
+		
+		public static const DEFAULT_ID:String = "default";
+		
+		
 		//-----------------------------------------------------------------------------------------
 		// Properties
 		//-----------------------------------------------------------------------------------------
 		
-		private var _main:Main;
+		public var id:String;
+		public var loops:int;
+		public var playMode:String;
+		public var followSequence:String;
+		public var followDelay:int;
+		public var frameIDs:Vector.<String>;
+		public var frames:Vector.<SpriteFrame>;
 		
 		
 		//-----------------------------------------------------------------------------------------
-		// Public Methods
+		// Constructor
 		//-----------------------------------------------------------------------------------------
 		
 		/**
-		 * Invoked by the preloader after the application has been fully preloaded.
-		 * 
-		 * @param preloader a reference to the preloader.
+		 * Creates a new instance of the class.
 		 */
-		public function onApplicationPreloaded(preloader:Preloader):void
+		public function SpriteSequence(id:String)
 		{
-			_main = Main.instance;
-			_main.init(preloader, new AppInfo(), new Setups().list, AppResourceBundle);
+			this.id = id;
+		}
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Accessors
+		//-----------------------------------------------------------------------------------------
+		
+		/**
+		 * The number of frames in the sprite sequence.
+		 */
+		public function get length():uint
+		{
+			if (!frameIDs) return 0;
+			return frameIDs.length;
 		}
 	}
 }

@@ -26,47 +26,32 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package
+package tetragon.view.render2d.core.events
 {
-	import tetragon.Main;
-	
-	import tetragon.env.preload.IPreloadable;
-	import tetragon.env.preload.Preloader;
+	import tetragon.view.render2d.core.DisplayObject2D;
 	
 	
-	[SWF(width="1024", height="640", backgroundColor="#000000", frameRate="60")]
-	
-	/**
-	 * Entry acts as the entry point and base display object container (or: context view) for
-	 * the application. This is the class that the compiler is being told to compile and from
-	 * which all other application logic is being initiated, in particular Main which acts as
-	 * the main hub for the application.
-	 * 
-	 * <p>IMPORTANT: Auto-generated class. Do not edit!</p>
-	 */
-	[Frame(factoryClass="tetragon.env.preload.Preloader")]
-	public final class Entry implements IPreloadable
+	public final class Touch2DVO
 	{
 		//-----------------------------------------------------------------------------------------
 		// Properties
 		//-----------------------------------------------------------------------------------------
 		
-		private var _main:Main;
+		public var touch:Touch2D;
+		public var target:DisplayObject2D;
 		
 		
 		//-----------------------------------------------------------------------------------------
-		// Public Methods
+		// Constructor
 		//-----------------------------------------------------------------------------------------
 		
 		/**
-		 * Invoked by the preloader after the application has been fully preloaded.
-		 * 
-		 * @param preloader a reference to the preloader.
+		 * Creates a new instance of the class.
 		 */
-		public function onApplicationPreloaded(preloader:Preloader):void
+		public function Touch2DVO(a1:Touch2D, a2:DisplayObject2D)
 		{
-			_main = Main.instance;
-			_main.init(preloader, new AppInfo(), new Setups().list, AppResourceBundle);
+			touch = a1;
+			target = a2;
 		}
 	}
 }

@@ -26,47 +26,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package
+package tetragon.view.render2d.core
 {
-	import tetragon.Main;
-	
-	import tetragon.env.preload.IPreloadable;
-	import tetragon.env.preload.Preloader;
-	
-	
-	[SWF(width="1024", height="640", backgroundColor="#000000", frameRate="60")]
-	
 	/**
-	 * Entry acts as the entry point and base display object container (or: context view) for
-	 * the application. This is the class that the compiler is being told to compile and from
-	 * which all other application logic is being initiated, in particular Main which acts as
-	 * the main hub for the application.
+	 * The IAnimatable2D interface describes objects that are animated depending on the
+	 * passed time. Any object that implements this interface can be added to a juggler.
 	 * 
-	 * <p>IMPORTANT: Auto-generated class. Do not edit!</p>
+	 * <p>
+	 * When an object should no longer be animated, it has to be removed from the juggler.
+	 * To do this, you can manually remove it via the method
+	 * <code>juggler.remove(object)</code>, or the object can request to be removed by
+	 * dispatching a Starling event with the type <code>Event.REMOVE_FROM_JUGGLER</code>.
+	 * The "Tween" class is an example of a class that dispatches such an event; you don't
+	 * have to remove tweens manually from the juggler.
+	 * </p>
+	 * 
+	 * @see Juggler2D
+	 * @see Tween2D
 	 */
-	[Frame(factoryClass="tetragon.env.preload.Preloader")]
-	public final class Entry implements IPreloadable
-	{
-		//-----------------------------------------------------------------------------------------
-		// Properties
-		//-----------------------------------------------------------------------------------------
-		
-		private var _main:Main;
-		
-		
-		//-----------------------------------------------------------------------------------------
-		// Public Methods
-		//-----------------------------------------------------------------------------------------
-		
+    public interface IAnimatable2D 
+    {
 		/**
-		 * Invoked by the preloader after the application has been fully preloaded.
+		 * Advance the time by a number of seconds.
 		 * 
-		 * @param preloader a reference to the preloader.
+		 * @param time in seconds.
 		 */
-		public function onApplicationPreloaded(preloader:Preloader):void
-		{
-			_main = Main.instance;
-			_main.init(preloader, new AppInfo(), new Setups().list, AppResourceBundle);
-		}
-	}
+        function advanceTime(time:Number):void;
+    }
 }

@@ -26,32 +26,47 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package
+package tetragon.view.render
 {
-	import tetragon.Main;
+	import flash.display.BitmapData;
+	import flash.geom.Rectangle;
 	
-	import tetragon.env.preload.IPreloadable;
-	import tetragon.env.preload.Preloader;
-	
-	
-	[SWF(width="1024", height="640", backgroundColor="#000000", frameRate="60")]
 	
 	/**
-	 * Entry acts as the entry point and base display object container (or: context view) for
-	 * the application. This is the class that the compiler is being told to compile and from
-	 * which all other application logic is being initiated, in particular Main which acts as
-	 * the main hub for the application.
-	 * 
-	 * <p>IMPORTANT: Auto-generated class. Do not edit!</p>
+	 * A RenderBuffer is a rectangular bitmap area which is used to render any other
+	 * display objects to a common buffer.
 	 */
-	[Frame(factoryClass="tetragon.env.preload.Preloader")]
-	public final class Entry implements IPreloadable
+	public class RenderBuffer extends BitmapData
 	{
 		//-----------------------------------------------------------------------------------------
 		// Properties
 		//-----------------------------------------------------------------------------------------
 		
-		private var _main:Main;
+		/** @private */
+		private var _fillColor:uint;
+		/** @private */
+		private var _rect:Rectangle;
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Constructor
+		//-----------------------------------------------------------------------------------------
+		
+		/**
+		 * Creates a new instance of the class.
+		 * 
+		 * @param width
+		 * @param height
+		 * @param transparent
+		 * @param fillColor
+		 */
+		public function RenderBuffer(width:int, height:int, transparent:Boolean = true,
+			fillColor:uint = 0x00000000):void
+		{
+			super(width, height, transparent, fillColor);
+			_fillColor = fillColor;
+			_rect = rect;
+		}
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -59,14 +74,25 @@ package
 		//-----------------------------------------------------------------------------------------
 		
 		/**
-		 * Invoked by the preloader after the application has been fully preloaded.
-		 * 
-		 * @param preloader a reference to the preloader.
+		 * Clears the render buffer.
 		 */
-		public function onApplicationPreloaded(preloader:Preloader):void
+		public function clear():void
 		{
-			_main = Main.instance;
-			_main.init(preloader, new AppInfo(), new Setups().list, AppResourceBundle);
+			fillRect(_rect, _fillColor);
+		}
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Accessors
+		//-----------------------------------------------------------------------------------------
+		
+		public function get fillColor():uint
+		{
+			return _fillColor;
+		}
+		public function set fillColor(v:uint):void
+		{
+			_fillColor = v;
 		}
 	}
 }

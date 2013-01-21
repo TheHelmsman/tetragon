@@ -26,32 +26,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package
+package tetragon.data.sprite
 {
-	import tetragon.Main;
+	import com.hexagonstar.util.string.TabularText;
 	
-	import tetragon.env.preload.IPreloadable;
-	import tetragon.env.preload.Preloader;
-	
-	
-	[SWF(width="1024", height="640", backgroundColor="#000000", frameRate="60")]
 	
 	/**
-	 * Entry acts as the entry point and base display object container (or: context view) for
-	 * the application. This is the class that the compiler is being told to compile and from
-	 * which all other application logic is being initiated, in particular Main which acts as
-	 * the main hub for the application.
-	 * 
-	 * <p>IMPORTANT: Auto-generated class. Do not edit!</p>
+	 * A SpritePropertyMappings contains arrays mapped by a specific sprite property value.
 	 */
-	[Frame(factoryClass="tetragon.env.preload.Preloader")]
-	public final class Entry implements IPreloadable
+	public final class SpritePropertyMappings
 	{
 		//-----------------------------------------------------------------------------------------
 		// Properties
 		//-----------------------------------------------------------------------------------------
 		
-		private var _main:Main;
+		/**
+		 * A hashmap of Vector.<SpriteObject> objects mapped by a specific sprite property value.
+		 */
+		private var _map:Object;
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Constructor
+		//-----------------------------------------------------------------------------------------
+		
+		/**
+		 * Creates a new instance of the class.
+		 */
+		public function SpritePropertyMappings(map:Object)
+		{
+			_map = map;
+		}
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -59,14 +64,37 @@ package
 		//-----------------------------------------------------------------------------------------
 		
 		/**
-		 * Invoked by the preloader after the application has been fully preloaded.
-		 * 
-		 * @param preloader a reference to the preloader.
+		 * @param mappingID
 		 */
-		public function onApplicationPreloaded(preloader:Preloader):void
+		public function getSpriteArray(mappingID:String):Vector.<SpriteObject>
 		{
-			_main = Main.instance;
-			_main.init(preloader, new AppInfo(), new Setups().list, AppResourceBundle);
+			return _map[mappingID];
+		}
+		
+		
+		/**
+		 * Returns a String Representation of the class.
+		 * 
+		 * @return A String Representation of the class.
+		 */
+		public function toString():String
+		{
+			return "SpritePropertyMappings";
+		}
+		
+		
+		public function dump():String
+		{
+			var t:TabularText = new TabularText(2, true, "  ", null, "  ", 0, ["MAPPING_ID", "SPRITE_ID"]);
+			for (var id:String in _map)
+			{
+				var a:Vector.<SpriteObject> = _map[id];
+				for (var i:uint = 0; i < a.length; i++)
+				{
+					t.add([id, a[i].id]);
+				}
+			}
+			return toString() + "\n" + t;
 		}
 	}
 }
