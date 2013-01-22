@@ -29,7 +29,7 @@
 package tetragon.view.render2d.display
 {
 	import tetragon.view.render2d.core.RenderSupport2D;
-	import tetragon.view.render2d.core.starling_internal;
+	import tetragon.view.render2d.core.render2d_internal;
 	import tetragon.view.render2d.events.Event2D;
 	import tetragon.view.render2d.filters.FragmentFilter2D;
 	import tetragon.view.render2d.util.MatrixUtil2D;
@@ -42,7 +42,7 @@ package tetragon.view.render2d.display
 	import flash.system.Capabilities;
 	import flash.utils.getQualifiedClassName;
     
-    use namespace starling_internal;
+    use namespace render2d_internal;
     
     /**
      *  A DisplayObjectContainer represents a collection of display objects.

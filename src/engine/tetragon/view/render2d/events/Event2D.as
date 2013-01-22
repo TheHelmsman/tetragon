@@ -28,13 +28,13 @@
  */
 package tetragon.view.render2d.events
 {
-	import tetragon.view.render2d.core.starling_internal;
+	import tetragon.view.render2d.core.render2d_internal;
 
 	import com.hexagonstar.util.string.formatString;
 
 	import flash.utils.getQualifiedClassName;
 
-	use namespace starling_internal;
+	use namespace render2d_internal;
 	
 	
 	/** Event objects are passed as parameters to event listeners when an event occurs.  
@@ -206,7 +206,7 @@ package tetragon.view.render2d.events
 
 		// event pooling
 		/** @private */
-		starling_internal static function fromPool(type:String, bubbles:Boolean = false, data:Object = null):Event2D
+		render2d_internal static function fromPool(type:String, bubbles:Boolean = false, data:Object = null):Event2D
 		{
 			if (sEventPool.length) return (sEventPool.pop() as Event2D).reset(type, bubbles, data);
 			else return new Event2D(type, bubbles, data);
@@ -214,7 +214,7 @@ package tetragon.view.render2d.events
 
 
 		/** @private */
-		starling_internal static function toPool(event:Event2D):void
+		render2d_internal static function toPool(event:Event2D):void
 		{
 			event.mData = event.mTarget = event.mCurrentTarget = null;
 			sEventPool.push(event);
@@ -222,7 +222,7 @@ package tetragon.view.render2d.events
 
 
 		/** @private */
-		starling_internal function reset(type:String, bubbles:Boolean = false, data:Object = null):Event2D
+		render2d_internal function reset(type:String, bubbles:Boolean = false, data:Object = null):Event2D
 		{
 			mType = type;
 			mBubbles = bubbles;

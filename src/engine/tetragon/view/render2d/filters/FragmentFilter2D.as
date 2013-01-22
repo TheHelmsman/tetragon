@@ -30,7 +30,7 @@ package tetragon.view.render2d.filters
 {
 	import tetragon.view.render2d.core.RenderSupport2D;
 	import tetragon.view.render2d.core.Render2D;
-	import tetragon.view.render2d.core.starling_internal;
+	import tetragon.view.render2d.core.render2d_internal;
 	import tetragon.view.render2d.display.BlendMode2D;
 	import tetragon.view.render2d.display.DisplayObject2D;
 	import tetragon.view.render2d.display.Image2D;
@@ -509,7 +509,7 @@ package tetragon.view.render2d.filters
         // flattening
         
         /** @private */
-        starling_internal function compile(object:DisplayObject2D):QuadBatch2D
+        render2d_internal function compile(object:DisplayObject2D):QuadBatch2D
         {
             if (mCache) return mCache;
             else

@@ -28,7 +28,7 @@
  */
 package tetragon.view.render2d.animation
 {
-	import tetragon.view.render2d.core.starling_internal;
+	import tetragon.view.render2d.core.render2d_internal;
 	import tetragon.view.render2d.events.Event2D;
 	import tetragon.view.render2d.events.EventDispatcher2D;
 
@@ -166,7 +166,7 @@ package tetragon.view.render2d.animation
          */
         public function tween(target:Object, time:Number, properties:Object):void
         {
-            var tween:Tween2D = Tween2D.starling_internal::fromPool(target, time);
+            var tween:Tween2D = Tween2D.render2d_internal::fromPool(target, time);
             
             for (var property:String in properties)
             {
@@ -186,7 +186,7 @@ package tetragon.view.render2d.animation
         
         private function onPooledTweenComplete(event:Event2D):void
         {
-            Tween2D.starling_internal::toPool(event.target as Tween2D);
+            Tween2D.render2d_internal::toPool(event.target as Tween2D);
         }
         
         /** Advances all objects by a certain time (in seconds). */

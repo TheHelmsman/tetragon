@@ -28,13 +28,13 @@
  */
 package tetragon.view.render2d.events
 {
-	import tetragon.view.render2d.core.starling_internal;
+	import tetragon.view.render2d.core.render2d_internal;
 	import tetragon.view.render2d.display.DisplayObject2D;
 
 	import flash.utils.Dictionary;
 	
 	
-	use namespace starling_internal;
+	use namespace render2d_internal;
 	
 	
 	/** The EventDispatcher class is the base class for all classes that dispatch events. 

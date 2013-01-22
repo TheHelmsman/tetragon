@@ -28,7 +28,7 @@
  */
 package tetragon.view.render2d.animation
 {
-	import tetragon.view.render2d.core.starling_internal;
+	import tetragon.view.render2d.core.render2d_internal;
 	import tetragon.view.render2d.events.Event2D;
 	import tetragon.view.render2d.events.EventDispatcher2D;
 
@@ -329,7 +329,7 @@ package tetragon.view.render2d.animation
         private static var sTweenPool:Vector.<Tween2D> = new <Tween2D>[];
         
         /** @private */
-        starling_internal static function fromPool(target:Object, time:Number, 
+        render2d_internal static function fromPool(target:Object, time:Number, 
                                                    transition:Object="linear"):Tween2D
         {
             if (sTweenPool.length) return (sTweenPool.pop() as Tween2D).reset(target, time, transition);
@@ -337,7 +337,7 @@ package tetragon.view.render2d.animation
         }
         
         /** @private */
-        starling_internal static function toPool(tween:Tween2D):void
+        render2d_internal static function toPool(tween:Tween2D):void
         {
             // reset any object-references, to make sure we don't prevent any garbage collection
             tween.mOnStart = tween.mOnUpdate = tween.mOnRepeat = tween.mOnComplete = null;

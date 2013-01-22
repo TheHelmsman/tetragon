@@ -28,7 +28,7 @@
  */
 package tetragon.view.render2d.events
 {
-	import tetragon.view.render2d.core.starling_internal;
+	import tetragon.view.render2d.core.render2d_internal;
 	import tetragon.view.render2d.display.DisplayObject2D;
 	import tetragon.view.render2d.util.MatrixUtil2D;
 
@@ -38,7 +38,7 @@ package tetragon.view.render2d.events
 	import flash.geom.Point;
 	
 	
-    use namespace starling_internal;
+    use namespace render2d_internal;
 
     /** A Touch object contains information about the presence or movement of a finger 
      *  or the mouse on the screen.
@@ -220,26 +220,26 @@ package tetragon.view.render2d.events
         /** @private 
          *  Dispatches a touch event along the current bubble chain (which is updated each time
          *  a target is set). */
-        starling_internal function dispatchEvent(event:TouchEvent2D):void
+        render2d_internal function dispatchEvent(event:TouchEvent2D):void
         {
             if (mTarget) event.dispatch(mBubbleChain);
         }
         
         /** @private */
-        starling_internal function get bubbleChain():Vector.<EventDispatcher2D>
+        render2d_internal function get bubbleChain():Vector.<EventDispatcher2D>
         {
             return mBubbleChain.concat();
         }
         
         /** @private */
-        starling_internal function setTarget(value:DisplayObject2D):void 
+        render2d_internal function setTarget(value:DisplayObject2D):void 
         { 
             mTarget = value;
             updateBubbleChain();
         }
         
         /** @private */
-        starling_internal function setPosition(globalX:Number, globalY:Number):void
+        render2d_internal function setPosition(globalX:Number, globalY:Number):void
         {
             mPreviousGlobalX = mGlobalX;
             mPreviousGlobalY = mGlobalY;
@@ -248,22 +248,22 @@ package tetragon.view.render2d.events
         }
         
         /** @private */
-        starling_internal function setSize(width:Number, height:Number):void 
+        render2d_internal function setSize(width:Number, height:Number):void 
         { 
             mWidth = width;
             mHeight = height;
         }
         
         /** @private */
-        starling_internal function setPhase(value:String):void { mPhase = value; }
+        render2d_internal function setPhase(value:String):void { mPhase = value; }
         
         /** @private */
-        starling_internal function setTapCount(value:int):void { mTapCount = value; }
+        render2d_internal function setTapCount(value:int):void { mTapCount = value; }
         
         /** @private */
-        starling_internal function setTimestamp(value:Number):void { mTimestamp = value; }
+        render2d_internal function setTimestamp(value:Number):void { mTimestamp = value; }
         
         /** @private */
-        starling_internal function setPressure(value:Number):void { mPressure = value; }
+        render2d_internal function setPressure(value:Number):void { mPressure = value; }
     }
 }

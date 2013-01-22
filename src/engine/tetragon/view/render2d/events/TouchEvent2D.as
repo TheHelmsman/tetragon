@@ -28,11 +28,11 @@
  */
 package tetragon.view.render2d.events
 {
-	import tetragon.view.render2d.core.starling_internal;
+	import tetragon.view.render2d.core.render2d_internal;
 	import tetragon.view.render2d.display.DisplayObject2D;
     
 	
-    use namespace starling_internal;
+    use namespace render2d_internal;
     
     /** A TouchEvent is triggered either by touch or mouse input.  
      *  
@@ -159,7 +159,7 @@ package tetragon.view.render2d.events
         /** @private
          *  Dispatches the event along a custom bubble chain. During the lifetime of the event,
          *  each object is visited only once. */
-        starling_internal function dispatch(chain:Vector.<EventDispatcher2D>):void
+        render2d_internal function dispatch(chain:Vector.<EventDispatcher2D>):void
         {
             if (chain && chain.length)
             {
