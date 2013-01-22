@@ -35,8 +35,6 @@ package tetragon.view.render2d.events
 	import flash.utils.getQualifiedClassName;
 
 	use namespace render2d_internal;
-	
-	
 	/** Event objects are passed as parameters to event listeners when an event occurs.  
 	 *  This is Render2D's version of the Flash Event class. 
 	 *

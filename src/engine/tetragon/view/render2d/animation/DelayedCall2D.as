@@ -30,8 +30,7 @@ package tetragon.view.render2d.animation
 {
 	import tetragon.view.render2d.events.Event2D;
 	import tetragon.view.render2d.events.EventDispatcher2D;
-	
-	
+
 	/** A DelayedCall allows you to execute a method after a certain time has passed. Since it 
 	 *  implements the IAnimatable interface, it can be added to a juggler. In most cases, you 
 	 *  do not have to use this class directly; the juggler class contains a method to delay
