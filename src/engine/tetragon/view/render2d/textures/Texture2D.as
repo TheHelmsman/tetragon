@@ -31,9 +31,9 @@ package tetragon.view.render2d.textures
 	import tetragon.view.render2d.core.Render2D;
 	import tetragon.view.render2d.events.Event2D;
 	import tetragon.view.render2d.util.VertexData2D;
-	import tetragon.view.render2d.util.getNextPowerOfTwo2D;
 
 	import com.hexagonstar.exception.MissingContext3DException;
+	import com.hexagonstar.util.math.nextPowerOfTwo;
 
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
@@ -137,8 +137,8 @@ package tetragon.view.render2d.textures
 		{
 			var origWidth:int = data.width;
 			var origHeight:int = data.height;
-			var legalWidth:int = getNextPowerOfTwo2D(origWidth);
-			var legalHeight:int = getNextPowerOfTwo2D(origHeight);
+			var legalWidth:int = nextPowerOfTwo(origWidth);
+			var legalHeight:int = nextPowerOfTwo(origHeight);
 			var context:Context3D = Render2D.context;
 			var potData:BitmapData;
 
@@ -248,8 +248,8 @@ package tetragon.view.render2d.textures
 
 			var origWidth:int = width * scale;
 			var origHeight:int = height * scale;
-			var legalWidth:int = getNextPowerOfTwo2D(origWidth);
-			var legalHeight:int = getNextPowerOfTwo2D(origHeight);
+			var legalWidth:int = nextPowerOfTwo(origWidth);
+			var legalHeight:int = nextPowerOfTwo(origHeight);
 			var format:String = Context3DTextureFormat.BGRA;
 			var context:Context3D = Render2D.context;
 

@@ -41,10 +41,10 @@ package tetragon.view.render2d.filters
 	import tetragon.view.render2d.util.MatrixUtil2D;
 	import tetragon.view.render2d.util.RectangleUtil2D;
 	import tetragon.view.render2d.util.VertexData2D;
-	import tetragon.view.render2d.util.getNextPowerOfTwo2D;
 
 	import com.hexagonstar.exception.AbstractClassException;
 	import com.hexagonstar.exception.MissingContext3DException;
+	import com.hexagonstar.util.math.nextPowerOfTwo;
 
 	import flash.display3D.Context3D;
 	import flash.display3D.Context3DProgramType;
@@ -405,8 +405,8 @@ package tetragon.view.render2d.filters
 				resultRect.y -= mMarginY + deltaMargin;
 				resultRect.width += 2 * (mMarginX + deltaMargin);
 				resultRect.height += 2 * (mMarginY + deltaMargin);
-				resultRect.width = getNextPowerOfTwo2D(resultRect.width * mResolution) / mResolution;
-				resultRect.height = getNextPowerOfTwo2D(resultRect.height * mResolution) / mResolution;
+				resultRect.width = nextPowerOfTwo(resultRect.width * mResolution) / mResolution;
+				resultRect.height = nextPowerOfTwo(resultRect.height * mResolution) / mResolution;
 			}
 		}
 

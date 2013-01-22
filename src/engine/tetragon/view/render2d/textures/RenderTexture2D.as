@@ -32,9 +32,9 @@ package tetragon.view.render2d.textures
 	import tetragon.view.render2d.core.RenderSupport2D;
 	import tetragon.view.render2d.display.DisplayObject2D;
 	import tetragon.view.render2d.display.Image2D;
-	import tetragon.view.render2d.util.getNextPowerOfTwo2D;
 
 	import com.hexagonstar.exception.MissingContext3DException;
+	import com.hexagonstar.util.math.nextPowerOfTwo;
 
 	import flash.display3D.Context3D;
 	import flash.display3D.textures.TextureBase;
@@ -95,8 +95,8 @@ package tetragon.view.render2d.textures
 		{
 			if (scale <= 0) scale = Render2D.contentScaleFactor;
 
-			var nativeWidth:int = getNextPowerOfTwo2D(width * scale);
-			var nativeHeight:int = getNextPowerOfTwo2D(height * scale);
+			var nativeWidth:int = nextPowerOfTwo(width * scale);
+			var nativeHeight:int = nextPowerOfTwo(height * scale);
 			mActiveTexture = Texture2D.empty(width, height, PMA, true, scale);
 
 			super(mActiveTexture, new Rectangle(0, 0, width, height), true);
