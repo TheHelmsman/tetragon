@@ -26,27 +26,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package view.render2d
+package tetragon.view
 {
-	import tetragon.view.render2d.text.TextField2D;
-	import tetragon.view.render2d.display.Quad2D;
-	import tetragon.view.render2d.display.Sprite2D;
-	import tetragon.view.render2d.events.Event2D;
+	import tetragon.Main;
+
+	import flash.display.Stage3D;
+	import flash.events.EventDispatcher;
 	
 	
 	/**
-	 * Render2DGameView class
+	 * A screen is a conceptual container for an arbitrary number of 2D, 3D and native
+	 * displaylist views.
 	 *
 	 * @author hexagon
 	 */
-	public class Render2DGameView extends Sprite2D
+	public class Screen extends EventDispatcher
 	{
 		//-----------------------------------------------------------------------------------------
 		// Properties
 		//-----------------------------------------------------------------------------------------
 		
-		private var _quad:Quad2D;
-		private var _tf:TextField2D;
+		protected var _main:Main;
+		protected var _stage3D:Stage3D;
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -56,9 +57,10 @@ package view.render2d
 		/**
 		 * Creates a new instance of the class.
 		 */
-		public function Render2DGameView()
+		public function Screen()
 		{
-			addEventListener(Event2D.ADDED_TO_STAGE, onAddedToStage);
+			_main = Main.instance;
+			setup();
 		}
 		
 		
@@ -76,28 +78,17 @@ package view.render2d
 		// Callback Handlers
 		//-----------------------------------------------------------------------------------------
 		
-		private function onAddedToStage(e:Event2D):void
-		{
-			removeEventListener(Event2D.ADDED_TO_STAGE, onAddedToStage);
-			
-			stage.color = Math.random() * 0xFFFFFF;
-			
-			_quad = new Quad2D(200, 200);
-			_quad.setVertexColor(0, Math.random() * 0xFFFFFF);
-			_quad.setVertexColor(1, Math.random() * 0xFFFFFF);
-			_quad.setVertexColor(2, Math.random() * 0xFFFFFF);
-			_quad.setVertexColor(3, Math.random() * 0xFFFFFF);
-			addChild(_quad);
-			
-			_tf = new TextField2D(200, 200, "Some Text!", "Verdana", 28, 0xFFFFFF);
-			_tf.border = true;
-			addChild(_tf);
-		}
-		
 		
 		//-----------------------------------------------------------------------------------------
 		// Private Methods
 		//-----------------------------------------------------------------------------------------
 		
+		/**
+		 * @private
+		 */
+		protected function setup():void
+		{
+			_stage3D = _main.stage.stage3Ds[0];
+		}
 	}
 }
