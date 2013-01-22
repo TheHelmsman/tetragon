@@ -39,11 +39,11 @@ package tetragon.view.render2d.filters
 	import tetragon.view.render2d.display.Stage2D;
 	import tetragon.view.render2d.events.Event2D;
 	import tetragon.view.render2d.textures.Texture2D;
-	import tetragon.view.render2d.util.MatrixUtil2D;
-	import tetragon.view.render2d.util.RectangleUtil2D;
 
 	import com.hexagonstar.exception.AbstractClassException;
 	import com.hexagonstar.exception.MissingContext3DException;
+	import com.hexagonstar.util.geom.MatrixUtil;
+	import com.hexagonstar.util.geom.RectangleUtil;
 	import com.hexagonstar.util.math.nextPowerOfTwo;
 
 	import flash.display3D.Context3D;
@@ -320,7 +320,7 @@ package tetragon.view.render2d.filters
 				var image:Image2D = new Image2D(cacheTexture);
 
 				stage.getTransformationMatrix(object, sTransformationMatrix);
-				MatrixUtil2D.prependTranslation(sTransformationMatrix, sBounds.x + mOffsetX, sBounds.y + mOffsetY);
+				MatrixUtil.prependTranslation(sTransformationMatrix, sBounds.x + mOffsetX, sBounds.y + mOffsetY);
 				quadBatch.addImage(image, 1.0, sTransformationMatrix);
 
 				return quadBatch;
@@ -393,7 +393,7 @@ package tetragon.view.render2d.filters
 			if (intersectWithStage)
 			{
 				sStageBounds.setTo(0, 0, stage.stageWidth, stage.stageHeight);
-				RectangleUtil2D.intersect(resultRect, sStageBounds, resultRect);
+				RectangleUtil.intersect(resultRect, sStageBounds, resultRect);
 			}
 
 			if (!resultRect.isEmpty())

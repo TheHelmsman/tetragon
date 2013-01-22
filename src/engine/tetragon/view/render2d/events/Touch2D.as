@@ -30,8 +30,8 @@ package tetragon.view.render2d.events
 {
 	import tetragon.view.render2d.core.render2d_internal;
 	import tetragon.view.render2d.display.DisplayObject2D;
-	import tetragon.view.render2d.util.MatrixUtil2D;
 
+	import com.hexagonstar.util.geom.MatrixUtil;
 	import com.hexagonstar.util.string.formatString;
 
 	import flash.geom.Matrix;
@@ -97,7 +97,7 @@ package tetragon.view.render2d.events
 		{
 			if (resultPoint == null) resultPoint = new Point();
 			space.base.getTransformationMatrix(space, sHelperMatrix);
-			return MatrixUtil2D.transformCoords(sHelperMatrix, mGlobalX, mGlobalY, resultPoint);
+			return MatrixUtil.transformCoords(sHelperMatrix, mGlobalX, mGlobalY, resultPoint);
 		}
 
 
@@ -108,7 +108,7 @@ package tetragon.view.render2d.events
 		{
 			if (resultPoint == null) resultPoint = new Point();
 			space.base.getTransformationMatrix(space, sHelperMatrix);
-			return MatrixUtil2D.transformCoords(sHelperMatrix, mPreviousGlobalX, mPreviousGlobalY, resultPoint);
+			return MatrixUtil.transformCoords(sHelperMatrix, mPreviousGlobalX, mPreviousGlobalY, resultPoint);
 		}
 
 

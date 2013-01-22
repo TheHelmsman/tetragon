@@ -37,10 +37,10 @@ package tetragon.view.render2d.display
 	import tetragon.view.render2d.filters.FragmentFilterMode2D;
 	import tetragon.view.render2d.textures.Texture2D;
 	import tetragon.view.render2d.textures.TextureSmoothing2D;
-	import tetragon.view.render2d.util.MatrixUtil2D;
 
 	import com.hexagonstar.exception.MissingContext3DException;
 	import com.hexagonstar.util.agal.AGAL;
+	import com.hexagonstar.util.geom.MatrixUtil;
 
 	import flash.display3D.Context3D;
 	import flash.display3D.Context3DProgramType;
@@ -232,7 +232,7 @@ package tetragon.view.render2d.display
 			sRenderAlpha[0] = sRenderAlpha[1] = sRenderAlpha[2] = pma ? parentAlpha : 1.0;
 			sRenderAlpha[3] = parentAlpha;
 
-			MatrixUtil2D.convertTo3D(mvpMatrix, sRenderMatrix);
+			MatrixUtil.convertTo3D(mvpMatrix, sRenderMatrix);
 			RenderSupport2D.setBlendFactors(pma, blendMode ? blendMode : this.blendMode);
 
 			context.setProgram(Render2D.current.getProgram(programName));

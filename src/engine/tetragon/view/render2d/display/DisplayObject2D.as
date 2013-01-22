@@ -32,10 +32,10 @@ package tetragon.view.render2d.display
 	import tetragon.view.render2d.events.EventDispatcher2D;
 	import tetragon.view.render2d.events.TouchEvent2D;
 	import tetragon.view.render2d.filters.FragmentFilter2D;
-	import tetragon.view.render2d.util.MatrixUtil2D;
 
 	import com.hexagonstar.exception.AbstractClassException;
 	import com.hexagonstar.exception.AbstractMethodException;
+	import com.hexagonstar.util.geom.MatrixUtil;
 
 	import flash.geom.Matrix;
 	import flash.geom.Point;
@@ -309,7 +309,7 @@ package tetragon.view.render2d.display
 		public function localToGlobal(localPoint:Point, resultPoint:Point = null):Point
 		{
 			getTransformationMatrix(base, sHelperMatrix);
-			return MatrixUtil2D.transformCoords(sHelperMatrix, localPoint.x, localPoint.y, resultPoint);
+			return MatrixUtil.transformCoords(sHelperMatrix, localPoint.x, localPoint.y, resultPoint);
 		}
 
 
@@ -320,7 +320,7 @@ package tetragon.view.render2d.display
 		{
 			getTransformationMatrix(base, sHelperMatrix);
 			sHelperMatrix.invert();
-			return MatrixUtil2D.transformCoords(sHelperMatrix, globalPoint.x, globalPoint.y, resultPoint);
+			return MatrixUtil.transformCoords(sHelperMatrix, globalPoint.x, globalPoint.y, resultPoint);
 		}
 
 
@@ -392,7 +392,7 @@ package tetragon.view.render2d.display
 				mTransformationMatrix.identity();
 
 				if (mScaleX != 1.0 || mScaleY != 1.0) mTransformationMatrix.scale(mScaleX, mScaleY);
-				if (mSkewX != 0.0 || mSkewY != 0.0) MatrixUtil2D.skew(mTransformationMatrix, mSkewX, mSkewY);
+				if (mSkewX != 0.0 || mSkewY != 0.0) MatrixUtil.skew(mTransformationMatrix, mSkewX, mSkewY);
 				if (mRotation != 0.0) mTransformationMatrix.rotate(mRotation);
 				if (mX != 0.0 || mY != 0.0) mTransformationMatrix.translate(mX, mY);
 

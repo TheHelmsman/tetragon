@@ -32,9 +32,9 @@ package tetragon.view.render2d.display
 	import tetragon.view.render2d.core.render2d_internal;
 	import tetragon.view.render2d.events.Event2D;
 	import tetragon.view.render2d.filters.FragmentFilter2D;
-	import tetragon.view.render2d.util.MatrixUtil2D;
 
 	import com.hexagonstar.exception.AbstractClassException;
+	import com.hexagonstar.util.geom.MatrixUtil;
 
 	import flash.geom.Matrix;
 	import flash.geom.Point;
@@ -295,7 +295,7 @@ package tetragon.view.render2d.display
 			if (numChildren == 0)
 			{
 				getTransformationMatrix(targetSpace, sHelperMatrix);
-				MatrixUtil2D.transformCoords(sHelperMatrix, 0.0, 0.0, sHelperPoint);
+				MatrixUtil.transformCoords(sHelperMatrix, 0.0, 0.0, sHelperPoint);
 				resultRect.setTo(sHelperPoint.x, sHelperPoint.y, 0, 0);
 				return resultRect;
 			}
@@ -338,7 +338,7 @@ package tetragon.view.render2d.display
 				var child:DisplayObject2D = mChildren[i];
 				getTransformationMatrix(child, sHelperMatrix);
 
-				MatrixUtil2D.transformCoords(sHelperMatrix, localX, localY, sHelperPoint);
+				MatrixUtil.transformCoords(sHelperMatrix, localX, localY, sHelperPoint);
 				var target:DisplayObject2D = child.hitTest(sHelperPoint, forTouch);
 
 				if (target) return target;

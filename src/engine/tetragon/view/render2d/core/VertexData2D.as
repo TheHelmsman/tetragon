@@ -28,7 +28,7 @@
  */
 package tetragon.view.render2d.core
 {
-	import tetragon.view.render2d.util.MatrixUtil2D;
+	import com.hexagonstar.util.geom.MatrixUtil;
 
 	import flash.geom.Matrix;
 	import flash.geom.Point;
@@ -342,7 +342,7 @@ package tetragon.view.render2d.core
 					y = mRawData[int(offset + 1)];
 					offset += ELEMENTS_PER_VERTEX;
 
-					MatrixUtil2D.transformCoords(transformationMatrix, x, y, sHelperPoint);
+					MatrixUtil.transformCoords(transformationMatrix, x, y, sHelperPoint);
 					minX = minX < sHelperPoint.x ? minX : sHelperPoint.x;
 					maxX = maxX > sHelperPoint.x ? maxX : sHelperPoint.x;
 					minY = minY < sHelperPoint.y ? minY : sHelperPoint.y;

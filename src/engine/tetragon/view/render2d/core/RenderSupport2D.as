@@ -33,11 +33,11 @@ package tetragon.view.render2d.core
 	import tetragon.view.render2d.display.Quad2D;
 	import tetragon.view.render2d.display.QuadBatch2D;
 	import tetragon.view.render2d.textures.Texture2D;
-	import tetragon.view.render2d.util.MatrixUtil2D;
 
 	import com.hexagonstar.exception.MissingContext3DException;
 	import com.hexagonstar.util.agal.AGAL;
 	import com.hexagonstar.util.color.ColorUtil;
+	import com.hexagonstar.util.geom.MatrixUtil;
 
 	import flash.display3D.Context3D;
 	import flash.display3D.Context3DProgramType;
@@ -125,35 +125,35 @@ package tetragon.view.render2d.core
 		/** Prepends a translation to the modelview matrix. */
 		public function translateMatrix(dx:Number, dy:Number):void
 		{
-			MatrixUtil2D.prependTranslation(mModelViewMatrix, dx, dy);
+			MatrixUtil.prependTranslation(mModelViewMatrix, dx, dy);
 		}
 
 
 		/** Prepends a rotation (angle in radians) to the modelview matrix. */
 		public function rotateMatrix(angle:Number):void
 		{
-			MatrixUtil2D.prependRotation(mModelViewMatrix, angle);
+			MatrixUtil.prependRotation(mModelViewMatrix, angle);
 		}
 
 
 		/** Prepends an incremental scale change to the modelview matrix. */
 		public function scaleMatrix(sx:Number, sy:Number):void
 		{
-			MatrixUtil2D.prependScale(mModelViewMatrix, sx, sy);
+			MatrixUtil.prependScale(mModelViewMatrix, sx, sy);
 		}
 
 
 		/** Prepends a matrix to the modelview matrix by multiplying it another matrix. */
 		public function prependMatrix(matrix:Matrix):void
 		{
-			MatrixUtil2D.prependMatrix(mModelViewMatrix, matrix);
+			MatrixUtil.prependMatrix(mModelViewMatrix, matrix);
 		}
 
 
 		/** Prepends translation, scale and rotation of an object to the modelview matrix. */
 		public function transformMatrix(object:DisplayObject2D):void
 		{
-			MatrixUtil2D.prependMatrix(mModelViewMatrix, object.transformationMatrix);
+			MatrixUtil.prependMatrix(mModelViewMatrix, object.transformationMatrix);
 		}
 
 
@@ -185,7 +185,7 @@ package tetragon.view.render2d.core
 		/** Prepends translation, scale and rotation of an object to a custom matrix. */
 		public static function transformMatrixForObject(matrix:Matrix, object:DisplayObject2D):void
 		{
-			MatrixUtil2D.prependMatrix(matrix, object.transformationMatrix);
+			MatrixUtil.prependMatrix(matrix, object.transformationMatrix);
 		}
 
 
@@ -203,7 +203,7 @@ package tetragon.view.render2d.core
 		 *  CAUTION: Don't save a reference to this object! Each call returns the same instance. */
 		public function get mvpMatrix3D():Matrix3D
 		{
-			return MatrixUtil2D.convertTo3D(mvpMatrix, mMvpMatrix3D);
+			return MatrixUtil.convertTo3D(mvpMatrix, mMvpMatrix3D);
 		}
 
 
@@ -328,11 +328,11 @@ package tetragon.view.render2d.core
 				var width:int = mRenderTarget ? mRenderTarget.root.nativeWidth : mBackBufferWidth;
 				var height:int = mRenderTarget ? mRenderTarget.root.nativeHeight : mBackBufferHeight;
 
-				MatrixUtil2D.transformCoords(mProjectionMatrix, value.x, value.y, sPoint);
+				MatrixUtil.transformCoords(mProjectionMatrix, value.x, value.y, sPoint);
 				sRectangle.x = Math.max(0, ( sPoint.x + 1) / 2) * width;
 				sRectangle.y = Math.max(0, (-sPoint.y + 1) / 2) * height;
 
-				MatrixUtil2D.transformCoords(mProjectionMatrix, value.right, value.bottom, sPoint);
+				MatrixUtil.transformCoords(mProjectionMatrix, value.right, value.bottom, sPoint);
 				sRectangle.right = Math.min(1, ( sPoint.x + 1) / 2) * width;
 				sRectangle.bottom = Math.min(1, (-sPoint.y + 1) / 2) * height;
 
