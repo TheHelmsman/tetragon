@@ -34,6 +34,7 @@ package tetragon.view.render2d.core
 	import tetragon.view.render2d.events.TouchEvent2D;
 	import tetragon.view.render2d.events.TouchPhase2D;
 
+	import flash.events.EventDispatcher;
 	import flash.geom.Point;
 	import flash.utils.getDefinitionByName;
 
@@ -55,7 +56,7 @@ package tetragon.view.render2d.core
 		private var mCtrlDown:Boolean = false;
 		/** Helper objects. */
 		private static var sProcessedTouchIDs:Vector.<int> = new <int>[];
-		private static var sHoveringTouchData:Vector.<Object> = new <Object>[];
+		private static var sHoveringTouchData:Vector.<TouchData2D> = new <TouchData2D>[];
 
 
 		public function TouchProcessor2D(stage:Stage2D)
@@ -115,7 +116,9 @@ package tetragon.view.render2d.core
 
 					// hovering touches need special handling (see below)
 					if (touch && touch.phase == TouchPhase2D.HOVER && touch.target)
-						sHoveringTouchData.push({touch:touch, target:touch.target, bubbleChain:touch.bubbleChain});
+					{
+						sHoveringTouchData.push(new TouchData2D(touch, touch.target, touch.bubbleChain));
+					}
 
 					processTouch.apply(this, touchArgs);
 					sProcessedTouchIDs.push(touchID);
@@ -127,7 +130,7 @@ package tetragon.view.render2d.core
 
 				// if the target of a hovering touch changed, we dispatch the event to the previous
 				// target to notify it that it's no longer being hovered over.
-				for each (var touchData:Object in sHoveringTouchData)
+				for each (var touchData:TouchData2D in sHoveringTouchData)
 					if (touchData.touch.target != touchData.target)
 						touchEvent.dispatch(touchData.bubbleChain);
 
@@ -329,7 +332,7 @@ package tetragon.view.render2d.core
 			try
 			{
 				var nativeAppClass:Object = getDefinitionByName("flash.desktop::NativeApplication");
-				var nativeApp:Object = nativeAppClass["nativeApplication"];
+				var nativeApp:EventDispatcher = nativeAppClass["nativeApplication"];
 
 				if (enable)
 					nativeApp.addEventListener("deactivate", onInterruption, false, 0, true);
