@@ -39,7 +39,7 @@ package tetragon.view.render2d.display
 	import tetragon.view.render2d.textures.TextureSmoothing2D;
 
 	import com.hexagonstar.exception.MissingContext3DException;
-	import com.hexagonstar.util.agal.AGAL;
+	import com.hexagonstar.util.agal.AGALMiniAssembler;
 	import com.hexagonstar.util.geom.MatrixUtil;
 
 	import flash.display3D.Context3D;
@@ -544,7 +544,7 @@ package tetragon.view.render2d.display
 			if (target.hasProgram(QUAD_PROGRAM_NAME)) return;
 			// already registered
 
-			var assembler:AGAL = new AGAL();
+			var assembler:AGALMiniAssembler = new AGALMiniAssembler();
 			var vertexProgramCode:String;
 			var fragmentProgramCode:String;
 

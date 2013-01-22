@@ -35,7 +35,7 @@ package tetragon.view.render2d.core
 	import tetragon.view.render2d.textures.Texture2D;
 
 	import com.hexagonstar.exception.MissingContext3DException;
-	import com.hexagonstar.util.agal.AGAL;
+	import com.hexagonstar.util.agal.AGALMiniAssembler;
 	import com.hexagonstar.util.color.ColorUtil;
 	import com.hexagonstar.util.geom.MatrixUtil;
 
@@ -74,7 +74,7 @@ package tetragon.view.render2d.core
 		/** helper objects */
 		private static var sPoint:Point = new Point();
 		private static var sRectangle:Rectangle = new Rectangle();
-		private static var sAssembler:AGAL = new AGAL();
+		private static var sAssembler:AGALMiniAssembler = new AGALMiniAssembler();
 
 
 		// construction
