@@ -38,10 +38,10 @@ package tetragon.view.render2d.animation
      *  "IAnimatable" and advancing their time if it is told to do so (by calling its own 
      *  "advanceTime"-method). When an animation is completed, it throws it away.</p>
      *  
-     *  <p>There is a default juggler available at the Starling class:</p>
+     *  <p>There is a default juggler available at the Render2D class:</p>
      *  
      *  <pre>
-     *  var juggler:Juggler = Starling.juggler;
+     *  var juggler:Juggler = Render2D.juggler;
      *  </pre>
      *  
      *  <p>You can create juggler objects yourself, just as well. That way, you can group 

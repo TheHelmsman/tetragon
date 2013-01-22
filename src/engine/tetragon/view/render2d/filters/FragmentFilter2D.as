@@ -58,7 +58,7 @@ package tetragon.view.render2d.filters
 	import flash.system.Capabilities;
 	import flash.utils.getQualifiedClassName;
 
-    /** The FragmentFilter class is the base class for all filter effects in Starling.
+    /** The FragmentFilter class is the base class for all filter effects in Render2D.
      *  All other filters of this package extend this class. You can attach them to any display
      *  object through the 'filter' property.
      * 
@@ -132,7 +132,7 @@ package tetragon.view.render2d.filters
         public function FragmentFilter2D(numPasses:int=1, resolution:Number=1.0)
         {
             if (Capabilities.isDebugger && 
-                getQualifiedClassName(this) == "starling.filters::FragmentFilter")
+                getQualifiedClassName(this) == "Render2D.filters::FragmentFilter")
             {
                 throw new AbstractClassException(this);
             }
@@ -182,7 +182,7 @@ package tetragon.view.render2d.filters
         }
         
         /** Applies the filter on a certain display object, rendering the output into the current 
-         *  render target. This method is called automatically by Starling's rendering system 
+         *  render target. This method is called automatically by Render2D's rendering system 
          *  for the object the filter is attached to. */
         public function render(object:DisplayObject2D, support:RenderSupport2D, parentAlpha:Number):void
         {
@@ -461,7 +461,7 @@ package tetragon.view.render2d.filters
          *  
          *  @param pass: the current render pass, starting with '0'. Multipass filters can
          *               provide different logic for each pass.
-         *  @param context: the current context3D (the same as in Starling.context, passed
+         *  @param context: the current context3D (the same as in Render2D.context, passed
          *               just for convenience)
          *  @param texture: the input texture, which is already bound to sampler 0. */
         protected function activate(pass:int, context:Context3D, texture:Texture2D):void

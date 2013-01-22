@@ -48,17 +48,17 @@ package tetragon.view.render2d.textures
 	
 	
     /** <p>A texture stores the information that represents an image. It cannot be added to the
-     *  display list directly; instead it has to be mapped onto a display object. In Starling, 
+     *  display list directly; instead it has to be mapped onto a display object. In Render2D, 
      *  that display object is the class "Image".</p>
      * 
      *  <strong>Texture Formats</strong>
      *  
-     *  <p>Since textures can be created from a "BitmapData" object, Starling supports any bitmap
+     *  <p>Since textures can be created from a "BitmapData" object, Render2D supports any bitmap
      *  format that is supported by Flash. And since you can render any Flash display object into
-     *  a BitmapData object, you can use this to display non-Starling content in Starling - e.g.
+     *  a BitmapData object, you can use this to display non-Render2D content in Render2D - e.g.
      *  Shape objects.</p>
      *  
-     *  <p>Starling also supports ATF textures (Adobe Texture Format), which is a container for
+     *  <p>Render2D also supports ATF textures (Adobe Texture Format), which is a container for
      *  compressed texture formats that can be rendered very efficiently by the GPU. Refer to 
      *  the Flash documentation for more information about this format.</p>
      *  
@@ -97,7 +97,7 @@ package tetragon.view.render2d.textures
      *  the texture coordinates of the image object. The method 'image.setTexCoords' allows you 
      *  to do that.</p>
      *  
-     *  @see starling.display.Image
+     *  @see Render2D.display.Image
      *  @see TextureAtlas
      */ 
     public class Texture2D
@@ -124,7 +124,7 @@ package tetragon.view.render2d.textures
         }
         
         /** Creates a texture object from a bitmap.
-         *  Beware: you must not dispose 'data' if Starling should handle a lost device context. */
+         *  Beware: you must not dispose 'data' if Render2D should handle a lost device context. */
         public static function fromBitmap(data:Bitmap, generateMipMaps:Boolean=true,
                                           optimizeForRenderToTexture:Boolean=false,
                                           scale:Number=1):Texture2D
@@ -133,7 +133,7 @@ package tetragon.view.render2d.textures
         }
         
         /** Creates a texture from bitmap data. 
-         *  Beware: you must not dispose 'data' if Starling should handle a lost device context. */
+         *  Beware: you must not dispose 'data' if Render2D should handle a lost device context. */
         public static function fromBitmapData(data:BitmapData, generateMipMaps:Boolean=true,
                                               optimizeForRenderToTexture:Boolean=false,
                                               scale:Number=1):Texture2D
@@ -178,7 +178,7 @@ package tetragon.view.render2d.textures
         
         /** Creates a texture from the compressed ATF format. If you don't want to use any embedded
          *  mipmaps, you can disable them by setting "useMipMaps" to <code>false</code>.
-         *  Beware: you must not dispose 'data' if Starling should handle a lost device context.
+         *  Beware: you must not dispose 'data' if Render2D should handle a lost device context.
          *  
          *  <p>If you pass a function for the 'loadAsync' parameter, the method will return
          *  immediately, while the texture will be created asynchronously. It can be used as soon
@@ -225,7 +225,7 @@ package tetragon.view.render2d.textures
          *  @param height: in points; number of pixels depends on scale parameter
          *  @param color:  expected in ARGB format (inlude alpha!)
          *  @param optimizeForRenderToTexture: indicates if this texture will be used as render target
-         *  @param scale:  if you omit this parameter, 'Starling.contentScaleFactor' will be used.
+         *  @param scale:  if you omit this parameter, 'Render2D.contentScaleFactor' will be used.
          */
         public static function fromColor(width:int, height:int, color:uint=0xffffffff,
                                          optimizeForRenderToTexture:Boolean=false, 
@@ -250,7 +250,7 @@ package tetragon.view.render2d.textures
          *  @param height: in points; number of pixels depends on scale parameter
          *  @param premultipliedAlpha: the PMA format you will use the texture with
          *  @param optimizeForRenderToTexture: indicates if this texture will be used as render target
-         *  @param scale:  if you omit this parameter, 'Starling.contentScaleFactor' will be used.
+         *  @param scale:  if you omit this parameter, 'Render2D.contentScaleFactor' will be used.
          */
         public static function empty(width:int=64, height:int=64, premultipliedAlpha:Boolean=false,
                                      optimizeForRenderToTexture:Boolean=true,

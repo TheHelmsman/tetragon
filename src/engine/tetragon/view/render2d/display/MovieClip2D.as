@@ -58,7 +58,7 @@ package tetragon.view.render2d.display
      *  <code>advanceTime</code> method called regularly) to run. The movie will dispatch 
      *  an event of type "Event.COMPLETE" whenever it has displayed its last frame.</p>
      *  
-     *  @see starling.textures.TextureAtlas
+     *  @see Render2D.textures.TextureAtlas
      */    
     public class MovieClip2D extends Image2D implements IAnimatable2D
     {

@@ -38,7 +38,7 @@ package tetragon.view.render2d.events
 	
 	
 	/** Event objects are passed as parameters to event listeners when an event occurs.  
-	 *  This is Starling's version of the Flash Event class. 
+	 *  This is Render2D's version of the Flash Event class. 
 	 *
 	 *  <p>EventDispatchers create instances of this class and send them to registered listeners. 
 	 *  An event object contains information that characterizes an event, most importantly the 
@@ -81,17 +81,17 @@ package tetragon.view.render2d.events
 		public static const ROOT_CREATED:String = "rootCreated";
 		/** Event type for an animated object that requests to be removed from the juggler. */
 		public static const REMOVE_FROM_JUGGLER:String = "removeFromJuggler";
-		/** An event type to be utilized in custom events. Not used by Starling right now. */
+		/** An event type to be utilized in custom events. Not used by Render2D right now. */
 		public static const CHANGE:String = "change";
-		/** An event type to be utilized in custom events. Not used by Starling right now. */
+		/** An event type to be utilized in custom events. Not used by Render2D right now. */
 		public static const CANCEL:String = "cancel";
-		/** An event type to be utilized in custom events. Not used by Starling right now. */
+		/** An event type to be utilized in custom events. Not used by Render2D right now. */
 		public static const SCROLL:String = "scroll";
-		/** An event type to be utilized in custom events. Not used by Starling right now. */
+		/** An event type to be utilized in custom events. Not used by Render2D right now. */
 		public static const OPEN:String = "open";
-		/** An event type to be utilized in custom events. Not used by Starling right now. */
+		/** An event type to be utilized in custom events. Not used by Render2D right now. */
 		public static const CLOSE:String = "close";
-		/** An event type to be utilized in custom events. Not used by Starling right now. */
+		/** An event type to be utilized in custom events. Not used by Render2D right now. */
 		public static const SELECT:String = "select";
 		private static var sEventPool:Vector.<Event2D> = new <Event2D>[];
 		private var mTarget:EventDispatcher2D;

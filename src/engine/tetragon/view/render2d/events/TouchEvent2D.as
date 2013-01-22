@@ -36,7 +36,7 @@ package tetragon.view.render2d.events
     
     /** A TouchEvent is triggered either by touch or mouse input.  
      *  
-     *  <p>In Starling, both touch events and mouse events are handled through the same class: 
+     *  <p>In Render2D, both touch events and mouse events are handled through the same class: 
      *  TouchEvent. To process user input from a touch screen or the mouse, you have to register
      *  an event listener for events of the type <code>TouchEvent.TOUCH</code>. This is the only
      *  event type you need to handle; the long list of mouse event types as they are used in
@@ -51,9 +51,9 @@ package tetragon.view.render2d.events
      *  
      *  <strong>Which objects receive touch events?</strong>
      * 
-     *  <p>In Starling, any display object receives touch events, as long as the  
+     *  <p>In Render2D, any display object receives touch events, as long as the  
      *  <code>touchable</code> property of the object and its parents is enabled. There 
-     *  is no "InteractiveObject" class in Starling.</p>
+     *  is no "InteractiveObject" class in Render2D.</p>
      *  
      *  <strong>How to work with individual touches</strong>
      *  

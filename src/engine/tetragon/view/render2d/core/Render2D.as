@@ -76,114 +76,114 @@ package tetragon.view.render2d.core
     /** Dispatched when the root class has been created. */
     [Event(name="rootCreated", type="tetragon.view.render2d.events.Event2D")]
     
-    /** The Starling class represents the core of the Starling framework.
+    /** The Render2D class represents the core of the Render2D framework.
      *
-     *  <p>The Starling framework makes it possible to create 2D applications and games that make
+     *  <p>The Render2D framework makes it possible to create 2D applications and games that make
      *  use of the Stage3D architecture introduced in Flash Player 11. It implements a display tree
      *  system that is very similar to that of conventional Flash, while leveraging modern GPUs
      *  to speed up rendering.</p>
      *  
-     *  <p>The Starling class represents the link between the conventional Flash display tree and
-     *  the Starling display tree. To create a Starling-powered application, you have to create
-     *  an instance of the Starling class:</p>
+     *  <p>The Render2D class represents the link between the conventional Flash display tree and
+     *  the Render2D display tree. To create a Render2D-powered application, you have to create
+     *  an instance of the Render2D class:</p>
      *  
-     *  <pre>var starling:Starling = new Starling(Game, stage);</pre>
+     *  <pre>var Render2D:Render2D = new Render2D(Game, stage);</pre>
      *  
-     *  <p>The first parameter has to be a Starling display object class, e.g. a subclass of 
-     *  <code>starling.display.Sprite</code>. In the sample above, the class "Game" is the
-     *  application root. An instance of "Game" will be created as soon as Starling is initialized.
-     *  The second parameter is the conventional (Flash) stage object. Per default, Starling will
+     *  <p>The first parameter has to be a Render2D display object class, e.g. a subclass of 
+     *  <code>Render2D.display.Sprite</code>. In the sample above, the class "Game" is the
+     *  application root. An instance of "Game" will be created as soon as Render2D is initialized.
+     *  The second parameter is the conventional (Flash) stage object. Per default, Render2D will
      *  display its contents directly below the stage.</p>
      *  
-     *  <p>It is recommended to store the Starling instance as a member variable, to make sure
-     *  that the Garbage Collector does not destroy it. After creating the Starling object, you 
+     *  <p>It is recommended to store the Render2D instance as a member variable, to make sure
+     *  that the Garbage Collector does not destroy it. After creating the Render2D object, you 
      *  have to start it up like this:</p>
      * 
-     *  <pre>starling.start();</pre>
+     *  <pre>Render2D.start();</pre>
      * 
      *  <p>It will now render the contents of the "Game" class in the frame rate that is set up for
      *  the application (as defined in the Flash stage).</p> 
      *  
-     *  <strong>Accessing the Starling object</strong>
+     *  <strong>Accessing the Render2D object</strong>
      * 
-     *  <p>From within your application, you can access the current Starling object anytime
-     *  through the static method <code>Starling.current</code>. It will return the active Starling
-     *  instance (most applications will only have one Starling object, anyway).</p> 
+     *  <p>From within your application, you can access the current Render2D object anytime
+     *  through the static method <code>Render2D.current</code>. It will return the active Render2D
+     *  instance (most applications will only have one Render2D object, anyway).</p> 
      * 
      *  <strong>Viewport</strong>
      * 
-     *  <p>The area the Starling content is rendered into is, per default, the complete size of the 
+     *  <p>The area the Render2D content is rendered into is, per default, the complete size of the 
      *  stage. You can, however, use the "viewPort" property to change it. This can be  useful 
      *  when you want to render only into a part of the screen, or if the player size changes. For
-     *  the latter, you can listen to the RESIZE-event dispatched by the Starling
+     *  the latter, you can listen to the RESIZE-event dispatched by the Render2D
      *  stage.</p>
      * 
      *  <strong>Native overlay</strong>
      *  
-     *  <p>Sometimes you will want to display native Flash content on top of Starling. That's what the
+     *  <p>Sometimes you will want to display native Flash content on top of Render2D. That's what the
      *  <code>nativeOverlay</code> property is for. It returns a Flash Sprite lying directly
-     *  on top of the Starling content. You can add conventional Flash objects to that overlay.</p>
+     *  on top of the Render2D content. You can add conventional Flash objects to that overlay.</p>
      *  
      *  <p>Beware, though, that conventional Flash content on top of 3D content can lead to
      *  performance penalties on some (mobile) platforms. For that reason, always remove all child
-     *  objects from the overlay when you don't need them any longer. Starling will remove the 
+     *  objects from the overlay when you don't need them any longer. Render2D will remove the 
      *  overlay from the display list when it's empty.</p>
      *  
      *  <strong>Multitouch</strong>
      *  
-     *  <p>Starling supports multitouch input on devices that provide it. During development, 
-     *  where most of us are working with a conventional mouse and keyboard, Starling can simulate 
+     *  <p>Render2D supports multitouch input on devices that provide it. During development, 
+     *  where most of us are working with a conventional mouse and keyboard, Render2D can simulate 
      *  multitouch events with the help of the "Shift" and "Ctrl" (Mac: "Cmd") keys. Activate
      *  this feature by enabling the <code>simulateMultitouch</code> property.</p>
      *  
      *  <strong>Handling a lost render context</strong>
      *  
      *  <p>On some operating systems and under certain conditions (e.g. returning from system
-     *  sleep), Starling's stage3D render context may be lost. Starling can recover from a lost
+     *  sleep), Render2D's stage3D render context may be lost. Render2D can recover from a lost
      *  context if the class property "handleLostContext" is set to "true". Keep in mind, however, 
-     *  that this comes at the price of increased memory consumption; Starling will cache textures 
+     *  that this comes at the price of increased memory consumption; Render2D will cache textures 
      *  in RAM to be able to restore them when the context is lost.</p> 
      *  
-     *  <p>In case you want to react to a context loss, Starling dispatches an event with
+     *  <p>In case you want to react to a context loss, Render2D dispatches an event with
      *  the type "Event.CONTEXT3D_CREATE" when the context is restored. You can recreate any 
      *  invalid resources in a corresponding event listener.</p>
      * 
      *  <strong>Sharing a 3D Context</strong>
      * 
-     *  <p>Per default, Starling handles the Stage3D context independently. If you want to combine
-     *  Starling with another Stage3D engine, however, this may not be what you want. In this case,
+     *  <p>Per default, Render2D handles the Stage3D context independently. If you want to combine
+     *  Render2D with another Stage3D engine, however, this may not be what you want. In this case,
      *  you can make use of the <code>shareContext</code> property:</p> 
      *  
      *  <ol>
      *    <li>Manually create and configure a context3D object that both frameworks can work with
      *        (through <code>stage3D.requestContext3D</code> and
      *        <code>context.configureBackBuffer</code>).</li>
-     *    <li>Initialize Starling with the stage3D instance that contains that configured context.
+     *    <li>Initialize Render2D with the stage3D instance that contains that configured context.
      *        This will automatically enable <code>shareContext</code>.</li>
-     *    <li>Call <code>start()</code> on your Starling instance (as usual). This will make  
-     *        Starling queue input events (keyboard/mouse/touch).</li>
+     *    <li>Call <code>start()</code> on your Render2D instance (as usual). This will make  
+     *        Render2D queue input events (keyboard/mouse/touch).</li>
      *    <li>Create a game loop (e.g. using the native <code>ENTER_FRAME</code> event) and let it  
-     *        call Starling's <code>nextFrame</code> as well as the equivalent method of the other 
+     *        call Render2D's <code>nextFrame</code> as well as the equivalent method of the other 
      *        Stage3D engine. Surround those calls with <code>context.clear()</code> and 
      *        <code>context.present()</code>.</li>
      *  </ol>
      *  
-     *  <p>The Starling wiki contains a <a href="http://goo.gl/BsXzw">tutorial</a> with more 
+     *  <p>The Render2D wiki contains a <a href="http://goo.gl/BsXzw">tutorial</a> with more 
      *  information about this topic.</p>
      * 
      */ 
     public class Render2D extends EventDispatcher2D
     {
-        /** The version of the Starling framework. */
+        /** The version of the Render2D framework. */
         public static const VERSION:String = "1.3";
         
         /** The key for the shader programs stored in 'contextData' */
-        private static const PROGRAM_DATA_NAME:String = "Starling.programs"; 
+        private static const PROGRAM_DATA_NAME:String = "Render2D.programs"; 
         
         // members
         
         private var mStage3D:Stage3D;
-        private var mStage:Stage2D; // starling.display.stage!
+        private var mStage:Stage2D; // Render2D.display.stage!
         private var mRootClass:Class;
         private var mRoot:DisplayObject2D;
         private var mJuggler:Juggler2D;
@@ -213,10 +213,10 @@ package tetragon.view.render2d.core
         
         // construction
         
-        /** Creates a new Starling instance. 
-         *  @param rootClass  A subclass of a Starling display object. It will be created as soon as
+        /** Creates a new Render2D instance. 
+         *  @param rootClass  A subclass of a Render2D display object. It will be created as soon as
          *                    initialization is finished and will become the first child of the
-         *                    Starling stage.
+         *                    Render2D stage.
          *  @param stage      The Flash (2D) stage.
          *  @param viewPort   A rectangle describing the area into which the content will be 
          *                    rendered. @default stage size
@@ -258,7 +258,7 @@ package tetragon.view.render2d.core
             sContextData[stage3D] = new Dictionary();
             sContextData[stage3D][PROGRAM_DATA_NAME] = new Dictionary();
             
-            // all other modes are problematic in Starling, so we force those here
+            // all other modes are problematic in Render2D, so we force those here
             stage.scaleMode = StageScaleMode.NO_SCALE;
             stage.align = StageAlign.TOP_LEFT;
             
@@ -279,7 +279,7 @@ package tetragon.view.render2d.core
             if (mStage3D.context3D && mStage3D.context3D.driverInfo != "Disposed")
             {
                 mShareContext = true;
-                setTimeout(initialize, 1); // we don't call it right away, because Starling should
+                setTimeout(initialize, 1); // we don't call it right away, because Render2D should
                                            // behave the same way with or without a shared context
             }
             else
@@ -349,8 +349,8 @@ package tetragon.view.render2d.core
             
             updateViewPort(true);
             
-            trace("[Starling] Initialization complete.");
-            trace("[Starling] Display Driver:", mContext.driverInfo);
+            trace("[Render2D] Initialization complete.");
+            trace("[Render2D] Display Driver:", mContext.driverInfo);
             
             dispatchEventWith(Event2D.CONTEXT3D_CREATE, false, mContext);
         }
@@ -494,13 +494,13 @@ package tetragon.view.render2d.core
             nativeOverlay.addChild(textField);
         }
         
-        /** Make this Starling instance the <code>current</code> one. */
+        /** Make this Render2D instance the <code>current</code> one. */
         public function makeCurrent():void
         {
             sCurrent = this;
         }
         
-        /** As soon as Starling is started, it will queue input events (keyboard/mouse/touch);   
+        /** As soon as Render2D is started, it will queue input events (keyboard/mouse/touch);   
          *  furthermore, the method <code>nextFrame</code> will be called once per Flash Player
          *  frame. (Except when <code>shareContext</code> is enabled: in that case, you have to
          *  call that method manually.) */
@@ -535,8 +535,8 @@ package tetragon.view.render2d.core
                 stop();
                 event.stopImmediatePropagation();
                 showFatalError("Fatal error: The application lost the device context!");
-                trace("[Starling] The device context was lost. " + 
-                      "Enable 'Starling.handleLostContext' to avoid this error.");
+                trace("[Render2D] The device context was lost. " + 
+                      "Enable 'Render2D.handleLostContext' to avoid this error.");
             }
             else
             {
@@ -547,7 +547,7 @@ package tetragon.view.render2d.core
         private function onEnterFrame(event:Event):void
         {
             // On mobile, the native display list is only updated on stage3D draw calls. 
-            // Thus, we render even when Starling is paused.
+            // Thus, we render even when Render2D is paused.
             
             if (!mShareContext)
             {
@@ -687,7 +687,7 @@ package tetragon.view.render2d.core
             return (mContext && mContext.driverInfo != "Disposed");
         }
         
-        /** Indicates if this Starling instance is started. */
+        /** Indicates if this Render2D instance is started. */
         public function get isStarted():Boolean { return mStarted; }
         
         /** The default juggler of this instance. Will be advanced once per frame. */
@@ -735,7 +735,7 @@ package tetragon.view.render2d.core
             }
         }
         
-        /** The viewport into which Starling contents will be rendered. */
+        /** The viewport into which Render2D contents will be rendered. */
         public function get viewPort():Rectangle { return mViewPort; }
         public function set viewPort(value:Rectangle):void { mViewPort = value.clone(); }
         
@@ -746,7 +746,7 @@ package tetragon.view.render2d.core
             return mViewPort.width / mStage.stageWidth;
         }
         
-        /** A Flash Sprite placed directly on top of the Starling content. Use it to display native
+        /** A Flash Sprite placed directly on top of the Render2D content. Use it to display native
          *  Flash components. */ 
         public function get nativeOverlay():Sprite { return mNativeOverlay; }
         
@@ -769,7 +769,7 @@ package tetragon.view.render2d.core
         {
             if (mContext == null)
             {
-                // Starling is not yet ready - we postpone this until it's initialized.
+                // Render2D is not yet ready - we postpone this until it's initialized.
                 addEventListener(Event2D.ROOT_CREATED, onRootCreated);
             }
             else
@@ -802,19 +802,19 @@ package tetragon.view.render2d.core
             }
         }
         
-        /** The Starling stage object, which is the root of the display tree that is rendered. */
+        /** The Render2D stage object, which is the root of the display tree that is rendered. */
         public function get stage():Stage2D
         {
             return mStage;
         }
 
-        /** The Flash Stage3D object Starling renders into. */
+        /** The Flash Stage3D object Render2D renders into. */
         public function get stage3D():Stage3D
         {
             return mStage3D;
         }
         
-        /** The Flash (2D) stage object Starling renders beneath. */
+        /** The Flash (2D) stage object Render2D renders beneath. */
         public function get nativeStage():flash.display.Stage
         {
             return mNativeStage;
@@ -827,7 +827,7 @@ package tetragon.view.render2d.core
             return mRoot;
         }
         
-        /** Indicates if the Context3D render calls are managed externally to Starling, 
+        /** Indicates if the Context3D render calls are managed externally to Render2D, 
          *  to allow other frameworks to share the Stage3D instance. @default false */
         public function get shareContext() : Boolean { return mShareContext; }
         public function set shareContext(value : Boolean) : void { mShareContext = value; }
@@ -838,16 +838,16 @@ package tetragon.view.render2d.core
         
         // static properties
         
-        /** The currently active Starling instance. */
+        /** The currently active Render2D instance. */
         public static function get current():Render2D { return sCurrent; }
         
-        /** The render context of the currently active Starling instance. */
+        /** The render context of the currently active Render2D instance. */
         public static function get context():Context3D { return sCurrent ? sCurrent.context : null; }
         
-        /** The default juggler of the currently active Starling instance. */
+        /** The default juggler of the currently active Render2D instance. */
         public static function get juggler():Juggler2D { return sCurrent ? sCurrent.juggler : null; }
         
-        /** The contentScaleFactor of the currently active Starling instance. */
+        /** The contentScaleFactor of the currently active Render2D instance. */
         public static function get contentScaleFactor():Number 
         {
             return sCurrent ? sCurrent.contentScaleFactor : 1.0;
@@ -862,15 +862,15 @@ package tetragon.view.render2d.core
         public static function set multitouchEnabled(value:Boolean):void
         {
             if (sCurrent) throw new IllegalOperationError(
-                "'multitouchEnabled' must be set before Starling instance is created");
+                "'multitouchEnabled' must be set before Render2D instance is created");
             else 
                 Multitouch.inputMode = value ? MultitouchInputMode.TOUCH_POINT :
                                                MultitouchInputMode.NONE;
         }
         
-        /** Indicates if Starling should automatically recover from a lost device context.
+        /** Indicates if Render2D should automatically recover from a lost device context.
          *  On some systems, an upcoming screensaver or entering sleep mode may 
-         *  invalidate the render context. This setting indicates if Starling should recover from 
+         *  invalidate the render context. This setting indicates if Render2D should recover from 
          *  such incidents. Beware that this has a huge impact on memory consumption!
          *  It is recommended to enable this setting on Android and Windows, but to deactivate it
          *  on iOS and Mac OS X. @default false */
@@ -878,7 +878,7 @@ package tetragon.view.render2d.core
         public static function set handleLostContext(value:Boolean):void 
         {
             if (sCurrent) throw new IllegalOperationError(
-                "'handleLostContext' must be set before Starling instance is created");
+                "'handleLostContext' must be set before Render2D instance is created");
             else
                 sHandleLostContext = value;
         }

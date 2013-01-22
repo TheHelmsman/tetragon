@@ -40,8 +40,8 @@ package tetragon.view.render2d.display
 	
     /** An Image is a quad with a texture mapped onto it.
      *  
-     *  <p>The Image class is the Starling equivalent of Flash's Bitmap class. Instead of 
-     *  BitmapData, Starling uses textures to represent the pixels of an image. To display a 
+     *  <p>The Image class is the Render2D equivalent of Flash's Bitmap class. Instead of 
+     *  BitmapData, Render2D uses textures to represent the pixels of an image. To display a 
      *  texture, you have to map it onto a quad - and that's what the Image class is for.</p>
      *  
      *  <p>As "Image" inherits from "Quad", you can give it a color. For each pixel, the resulting  
@@ -51,7 +51,7 @@ package tetragon.view.render2d.display
      *  image without changing any vertex coordinates of the quad. You can also use this feature
      *  as a very efficient way to create a rectangular mask.</p> 
      *  
-     *  @see starling.textures.Texture
+     *  @see Render2D.textures.Texture
      *  @see Quad
      */ 
     public class Image2D extends Quad2D
@@ -168,7 +168,7 @@ package tetragon.view.render2d.display
         
         /** The smoothing filter that is used for the texture. 
         *   @default bilinear
-        *   @see starling.textures.TextureSmoothing */ 
+        *   @see Render2D.textures.TextureSmoothing */ 
         public function get smoothing():String { return mSmoothing; }
         public function set smoothing(value:String):void 
         {

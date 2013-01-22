@@ -77,13 +77,13 @@ package tetragon.view.render2d.text
      *       with white characters on a transparent background (32 bit).</li>
      *    <li>Mac OS: <a href="http://glyphdesigner.71squared.com">Glyph Designer</a> from 
      *        71squared or <a href="http://http://www.bmglyph.com">bmGlyph</a> (both commercial). 
-     *        They support Starling natively.</li>
+     *        They support Render2D natively.</li>
      *  </ul> 
      */
     public class TextField2D extends DisplayObjectContainer2D
     {
         // the name container with the registered bitmap fonts
-        private static const BITMAP_FONT_DATA_NAME:String = "starling.display.TextField.BitmapFonts";
+        private static const BITMAP_FONT_DATA_NAME:String = "Render2D.display.TextField.BitmapFonts";
         
         private var mFontSize:Number;
         private var mColor:uint;
@@ -382,7 +382,7 @@ package tetragon.view.render2d.text
             }
         }
         
-        /** The horizontal alignment of the text. @default center @see starling.utils.HAlign */
+        /** The horizontal alignment of the text. @default center @see Render2D.utils.HAlign */
         public function get hAlign():String { return mHAlign; }
         public function set hAlign(value:String):void
         {
@@ -396,7 +396,7 @@ package tetragon.view.render2d.text
             }
         }
         
-        /** The vertical alignment of the text. @default center @see starling.utils.VAlign */
+        /** The vertical alignment of the text. @default center @see Render2D.utils.VAlign */
         public function get vAlign():String { return mVAlign; }
         public function set vAlign(value:String):void
         {
@@ -529,7 +529,7 @@ package tetragon.view.render2d.text
         }
         
         /** Stores the currently available bitmap fonts. Since a bitmap font will only work
-         *  in one Stage3D context, they are saved in Starling's 'contextData' property. */
+         *  in one Stage3D context, they are saved in Render2D's 'contextData' property. */
         private static function get bitmapFonts():Dictionary
         {
             var fonts:Dictionary = Render2D.current.contextData[BITMAP_FONT_DATA_NAME] as Dictionary;

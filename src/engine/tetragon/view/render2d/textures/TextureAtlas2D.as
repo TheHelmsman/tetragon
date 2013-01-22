@@ -39,21 +39,21 @@ package tetragon.view.render2d.textures
      *  <ul>
      *    <li>There is always one texture active at a given moment. Whenever you change the active
      *        texture, a "texture-switch" has to be executed, and that switch takes time.</li>
-     *    <li>Any Stage3D texture has to have side lengths that are powers of two. Starling hides 
+     *    <li>Any Stage3D texture has to have side lengths that are powers of two. Render2D hides 
      *        this limitation from you, but at the cost of additional graphics memory.</li>
      *  </ul>
      *  
      *  <p>By using a texture atlas, you avoid both texture switches and the power-of-two 
-     *  limitation. All textures are within one big "super-texture", and Starling takes care that 
+     *  limitation. All textures are within one big "super-texture", and Render2D takes care that 
      *  the correct part of this texture is displayed.</p>
      *  
      *  <p>There are several ways to create a texture atlas. One is to use the atlas generator 
-     *  script that is bundled with Starling's sibling, the <a href="http://www.sparrow-framework.org">
+     *  script that is bundled with Render2D's sibling, the <a href="http://www.sparrow-framework.org">
      *  Sparrow framework</a>. It was only tested in Mac OS X, though. A great multi-platform 
      *  alternative is the commercial tool <a href="http://www.texturepacker.com">
      *  Texture Packer</a>.</p>
      *  
-     *  <p>Whatever tool you use, Starling expects the following file format:</p>
+     *  <p>Whatever tool you use, Render2D expects the following file format:</p>
      * 
      *  <listing>
      * 	&lt;TextureAtlas imagePath='atlas.png'&gt;
@@ -97,7 +97,7 @@ package tetragon.view.render2d.textures
             mAtlasTexture.dispose();
         }
         
-        /** This function is called by the constructor and will parse an XML in Starling's 
+        /** This function is called by the constructor and will parse an XML in Render2D's 
          *  default atlas file format. Override this method to create custom parsing logic
          *  (e.g. to support a different file format). */
         protected function parseAtlasXml(atlasXml:XML):void

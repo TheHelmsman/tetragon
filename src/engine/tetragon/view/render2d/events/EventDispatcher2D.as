@@ -38,22 +38,22 @@ package tetragon.view.render2d.events
 	
 	
 	/** The EventDispatcher class is the base class for all classes that dispatch events. 
-	 *  This is the Starling version of the Flash class with the same name. 
+	 *  This is the Render2D version of the Flash class with the same name. 
 	 *  
-	 *  <p>The event mechanism is a key feature of Starling's architecture. Objects can communicate 
-	 *  with each other through events. Compared the the Flash event system, Starling's event system
-	 *  was simplified. The main difference is that Starling events have no "Capture" phase.
+	 *  <p>The event mechanism is a key feature of Render2D's architecture. Objects can communicate 
+	 *  with each other through events. Compared the the Flash event system, Render2D's event system
+	 *  was simplified. The main difference is that Render2D events have no "Capture" phase.
 	 *  They are simply dispatched at the target and may optionally bubble up. They cannot move 
 	 *  in the opposite direction.</p>  
 	 *  
 	 *  <p>As in the conventional Flash classes, display objects inherit from EventDispatcher 
-	 *  and can thus dispatch events. Beware, though, that the Starling event classes are 
-	 *  <em>not compatible with Flash events:</em> Starling display objects dispatch 
-	 *  Starling events, which will bubble along Starling display objects - but they cannot 
+	 *  and can thus dispatch events. Beware, though, that the Render2D event classes are 
+	 *  <em>not compatible with Flash events:</em> Render2D display objects dispatch 
+	 *  Render2D events, which will bubble along Render2D display objects - but they cannot 
 	 *  dispatch Flash events or bubble along Flash display objects.</p>
 	 *  
 	 *  @see Event
-	 *  @see starling.display.DisplayObject DisplayObject
+	 *  @see Render2D.display.DisplayObject DisplayObject
 	 */
 	public class EventDispatcher2D
 	{

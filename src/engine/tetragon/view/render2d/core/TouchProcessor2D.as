@@ -42,7 +42,7 @@ package tetragon.view.render2d.core
     
     /** @private
      *  The TouchProcessor is used internally to convert mouse and touch events of the conventional
-     *  Flash stage to Starling's TouchEvents. */
+     *  Flash stage to Render2D's TouchEvents. */
     internal class TouchProcessor2D
     {
         private static const MULTITAP_TIME:Number = 0.3;

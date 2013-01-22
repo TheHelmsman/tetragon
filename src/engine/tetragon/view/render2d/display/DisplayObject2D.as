@@ -65,7 +65,7 @@ package tetragon.view.render2d.display
      *  
      *  <p><strong>The Display Tree</strong></p> 
      *  
-     *  <p>In Starling, all displayable objects are organized in a display tree. Only objects that
+     *  <p>In Render2D, all displayable objects are organized in a display tree. Only objects that
      *  are part of the display tree will be displayed (rendered).</p> 
      *   
      *  <p>The display tree consists of leaf nodes (Image, Quad) that will be rendered directly to
@@ -74,7 +74,7 @@ package tetragon.view.render2d.display
      *  leaf nodes or other containers.</p> 
      *  
      *  <p>At the base of the display tree, there is the Stage, which is a container, too. To create
-     *  a Starling application, you create a custom Sprite subclass, and Starling will add an
+     *  a Render2D application, you create a custom Sprite subclass, and Render2D will add an
      *  instance of this class to the stage.</p>
      *  
      *  <p>A display object has properties that define its position in relation to its parent
@@ -115,11 +115,11 @@ package tetragon.view.render2d.display
      *  
      *  <p>Have a look at the Quad class for a sample implementation of the 'getBounds' method.
      *  For a sample on how to write a custom render function, you can have a look at this
-     *  <a href="http://wiki.starling-framework.org/manual/custom_display_objects">article</a>
-     *  in the Starling Wiki.</p> 
+     *  <a href="http://wiki.Render2D-framework.org/manual/custom_display_objects">article</a>
+     *  in the Render2D Wiki.</p> 
      * 
      *  <p>When you override the render method, it is important that you call the method
-     *  'finishQuadBatch' of the support object. This forces Starling to render all quads that 
+     *  'finishQuadBatch' of the support object. This forces Render2D to render all quads that 
      *  were accumulated before by different render methods (for performance reasons). Otherwise, 
      *  the z-ordering will be incorrect.</p> 
      * 
@@ -160,7 +160,7 @@ package tetragon.view.render2d.display
         public function DisplayObject2D()
         {
             if (Capabilities.isDebugger && 
-                getQualifiedClassName(this) == "starling.display::DisplayObject")
+                getQualifiedClassName(this) == "Render2D.display::DisplayObject")
             {
                 throw new AbstractClassException(this);
             }
@@ -373,10 +373,10 @@ package tetragon.view.render2d.display
  
         /** The transformation matrix of the object relative to its parent.
          * 
-         *  <p>If you assign a custom transformation matrix, Starling will try to figure out  
+         *  <p>If you assign a custom transformation matrix, Render2D will try to figure out  
          *  suitable values for <code>x, y, scaleX, scaleY,</code> and <code>rotation</code>.
          *  However, if the matrix was created in a different way, this might not be possible. 
-         *  In that case, Starling will apply the matrix, but not update the corresponding 
+         *  In that case, Render2D will apply the matrix, but not update the corresponding 
          *  properties.</p>
          * 
          *  @returns CAUTION: not a copy, but the actual object! */
@@ -580,7 +580,7 @@ package tetragon.view.render2d.display
             }
         }
         
-        /** The rotation of the object in radians. (In Starling, all angles are measured 
+        /** The rotation of the object in radians. (In Render2D, all angles are measured 
          *  in radians.) */
         public function get rotation():Number { return mRotation; }
         public function set rotation(value:Number):void 
@@ -611,7 +611,7 @@ package tetragon.view.render2d.display
         
         /** The blend mode determines how the object is blended with the objects underneath. 
          *   @default auto
-         *   @see starling.display.BlendMode */ 
+         *   @see Render2D.display.BlendMode */ 
         public function get blendMode():String { return mBlendMode; }
         public function set blendMode(value:String):void { mBlendMode = value; }
         
@@ -620,7 +620,7 @@ package tetragon.view.render2d.display
         public function get name():String { return mName; }
         public function set name(value:String):void { mName = value; }
         
-        /** The filter or filter group that is attached to the display object. The starling.filters 
+        /** The filter or filter group that is attached to the display object. The Render2D.filters 
          *  package contains several classes that define specific filters you can use. 
          *  Beware that you should NOT use the same filter on more than one object (for 
          *  performance reasons). */ 
@@ -639,7 +639,7 @@ package tetragon.view.render2d.display
         }
         
         /** The root object the display object is connected to (i.e. an instance of the class 
-         *  that was passed to the Starling constructor), or null if the object is not connected
+         *  that was passed to the Render2D constructor), or null if the object is not connected
          *  to the stage. */
         public function get root():DisplayObject2D
         {

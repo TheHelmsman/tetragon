@@ -98,7 +98,7 @@ package tetragon.view.render2d.display
         public function DisplayObjectContainer2D()
         {
             if (Capabilities.isDebugger && 
-                getQualifiedClassName(this) == "starling.display::DisplayObjectContainer")
+                getQualifiedClassName(this) == "Render2D.display::DisplayObjectContainer")
             {
                 throw new AbstractClassException(this);
             }

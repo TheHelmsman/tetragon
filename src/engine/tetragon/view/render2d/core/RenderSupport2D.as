@@ -233,7 +233,7 @@ package tetragon.view.render2d.core
             else        Render2D.context.setRenderToBackBuffer();
         }
         
-        /** Configures the back buffer on the current context3D. By using this method, Starling
+        /** Configures the back buffer on the current context3D. By using this method, Render2D
          *  can store the size of the back buffer and utilize this information in other methods
          *  (e.g. the scissor rectangle property). Back buffer width and height can later be
          *  accessed using the properties with the same name. */
@@ -247,7 +247,7 @@ package tetragon.view.render2d.core
         
         /** The width of the back buffer, as it was configured in the last call to 
          *  'RenderSupport.configureBackBuffer()'. Beware: changing this value does not actually
-         *  resize the back buffer; the setter should only be used to inform Starling about the
+         *  resize the back buffer; the setter should only be used to inform Render2D about the
          *  size of a back buffer it can't control (shared context situations).
          */
         public function get backBufferWidth():int { return mBackBufferWidth; }
@@ -255,7 +255,7 @@ package tetragon.view.render2d.core
         
         /** The height of the back buffer, as it was configured in the last call to 
          *  'RenderSupport.configureBackBuffer()'. Beware: changing this value does not actually
-         *  resize the back buffer; the setter should only be used to inform Starling about the
+         *  resize the back buffer; the setter should only be used to inform Render2D about the
          *  size of a back buffer it can't control (shared context situations).
          */
         public function get backBufferHeight():int { return mBackBufferHeight; }

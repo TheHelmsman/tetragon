@@ -32,14 +32,14 @@ package tetragon.view.render2d.events
 	
     /** A KeyboardEvent is dispatched in response to user input through a keyboard.
      * 
-     *  <p>This is Starling's version of the Flash KeyboardEvent class. It contains the same 
+     *  <p>This is Render2D's version of the Flash KeyboardEvent class. It contains the same 
      *  properties as the Flash equivalent.</p> 
      * 
-     *  <p>To be notified of keyboard events, add an event listener to the Starling stage. Children
-     *  of the stage won't be notified of keybaord input. Starling has no concept of a "Focus"
+     *  <p>To be notified of keyboard events, add an event listener to the Render2D stage. Children
+     *  of the stage won't be notified of keybaord input. Render2D has no concept of a "Focus"
      *  like native Flash.</p>
      *  
-     *  @see starling.display.Stage
+     *  @see Render2D.display.Stage
      */  
     public class KeyboardEvent2D extends Event2D
     {

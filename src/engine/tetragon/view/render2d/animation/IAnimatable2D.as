@@ -33,7 +33,7 @@ package tetragon.view.render2d.animation
      *   
      *   <p>When an object should no longer be animated, it has to be removed from the juggler. 
      *   To do this, you can manually remove it via the method <code>juggler.remove(object)</code>,
-     *   or the object can request to be removed by dispatching a Starling event with the type
+     *   or the object can request to be removed by dispatching a Render2D event with the type
      *   <code>Event.REMOVE_FROM_JUGGLER</code>. The "Tween" class is an example of a class that
      *   dispatches such an event; you don't have to remove tweens manually from the juggler.</p> 
      *   

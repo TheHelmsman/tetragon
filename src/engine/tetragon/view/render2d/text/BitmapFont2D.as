@@ -136,7 +136,7 @@ package tetragon.view.render2d.text
             
             if (mSize <= 0)
             {
-                trace("[Starling] Warning: invalid font size in '" + mName + "' font.");
+                trace("[Render2D] Warning: invalid font size in '" + mName + "' font.");
                 mSize = (mSize == 0.0 ? 16.0 : mSize * -1.0);
             }
             
@@ -278,7 +278,7 @@ package tetragon.view.render2d.text
                         }
                         else if (char == null)
                         {
-                            trace("[Starling] Missing character: " + charID);
+                            trace("[Render2D] Missing character: " + charID);
                         }
                         else
                         {

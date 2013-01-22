@@ -70,7 +70,7 @@ package tetragon.view.render2d.textures
      *  <p>To erase parts of a render texture, you can use any display object like a "rubber" by
      *  setting its blending mode to "BlendMode.ERASE".</p>
      * 
-     *  <p>Beware that render textures can't be restored when the Starling's render context is lost.
+     *  <p>Beware that render textures can't be restored when the Render2D's render context is lost.
      *  </p>
      *     
      */

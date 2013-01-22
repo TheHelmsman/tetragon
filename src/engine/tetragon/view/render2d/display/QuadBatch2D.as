@@ -59,8 +59,8 @@ package tetragon.view.render2d.display
     
     /** Optimizes rendering of a number of quads with an identical state.
      * 
-     *  <p>The majority of all rendered objects in Starling are quads. In fact, all the default
-     *  leaf nodes of Starling are quads (the Image and Quad classes). The rendering of those 
+     *  <p>The majority of all rendered objects in Render2D are quads. In fact, all the default
+     *  leaf nodes of Render2D are quads (the Image and Quad classes). The rendering of those 
      *  quads can be accelerated by a big factor if all quads with an identical state are sent 
      *  to the GPU in just one call. That's what the QuadBatch class can do.</p>
      *  
@@ -114,7 +114,7 @@ package tetragon.view.render2d.display
             mTinted = false;
             mSyncRequired = false;
             
-            // Handle lost context. We use the conventional event here (not the one from Starling)
+            // Handle lost context. We use the conventional event here (not the one from Render2D)
             // so we're able to create a weak event listener; this avoids memory leaks when people 
             // forget to call "dispose" on the QuadBatch.
             Render2D.current.stage3D.addEventListener(Event2D.CONTEXT3D_CREATE, 

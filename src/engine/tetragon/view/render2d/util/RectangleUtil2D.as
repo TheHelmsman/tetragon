@@ -66,7 +66,7 @@ package tetragon.view.render2d.util
          *  furthermore, you can avoid pixel alignment errors by only allowing whole-number  
          *  multipliers/divisors (e.g. 3, 2, 1, 1/2, 1/3).</p>
          *  
-         *  @see starling.utils.ScaleMode
+         *  @see Render2D.utils.ScaleMode
          */
         public static function fit(rectangle:Rectangle, into:Rectangle, 
                                    scaleMode:String="showAll", pixelPerfect:Boolean=false,
