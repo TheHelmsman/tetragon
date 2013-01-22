@@ -30,6 +30,7 @@ package tetragon.view.render2d.display
 {
 	import tetragon.view.render2d.core.Render2D;
 	import tetragon.view.render2d.core.RenderSupport2D;
+	import tetragon.view.render2d.core.VertexData2D;
 	import tetragon.view.render2d.core.render2d_internal;
 	import tetragon.view.render2d.events.Event2D;
 	import tetragon.view.render2d.filters.FragmentFilter2D;
@@ -37,7 +38,6 @@ package tetragon.view.render2d.display
 	import tetragon.view.render2d.textures.Texture2D;
 	import tetragon.view.render2d.textures.TextureSmoothing2D;
 	import tetragon.view.render2d.util.MatrixUtil2D;
-	import tetragon.view.render2d.util.VertexData2D;
 
 	import com.hexagonstar.exception.MissingContext3DException;
 	import com.hexagonstar.util.agal.AGAL;
@@ -53,6 +53,8 @@ package tetragon.view.render2d.display
 	import flash.geom.Rectangle;
 	import flash.utils.Dictionary;
 	import flash.utils.getQualifiedClassName;
+
+
 
 	use namespace render2d_internal;
 	/** Optimizes rendering of a number of quads with an identical state.

@@ -29,11 +29,12 @@
 package tetragon.view.render2d.display
 {
 	import tetragon.view.render2d.core.RenderSupport2D;
-	import tetragon.view.render2d.util.VertexData2D;
+	import tetragon.view.render2d.core.VertexData2D;
 
 	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
+
 
 	/** A Quad represents a rectangle with a uniform color or a color gradient.
 	 *  

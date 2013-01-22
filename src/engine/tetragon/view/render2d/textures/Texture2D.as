@@ -29,8 +29,8 @@
 package tetragon.view.render2d.textures
 {
 	import tetragon.view.render2d.core.Render2D;
+	import tetragon.view.render2d.core.VertexData2D;
 	import tetragon.view.render2d.events.Event2D;
-	import tetragon.view.render2d.util.VertexData2D;
 
 	import com.hexagonstar.exception.MissingContext3DException;
 	import com.hexagonstar.util.math.nextPowerOfTwo;
@@ -44,6 +44,8 @@ package tetragon.view.render2d.textures
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.utils.ByteArray;
+
+
 
 	/** <p>A texture stores the information that represents an image. It cannot be added to the
 	 *  display list directly; instead it has to be mapped onto a display object. In Render2D, 

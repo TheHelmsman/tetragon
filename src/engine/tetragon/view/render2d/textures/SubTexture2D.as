@@ -28,11 +28,12 @@
  */
 package tetragon.view.render2d.textures
 {
-	import tetragon.view.render2d.util.VertexData2D;
+	import tetragon.view.render2d.core.VertexData2D;
 
 	import flash.display3D.textures.TextureBase;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
+
 
 	/** A SubTexture represents a section of another texture. This is achieved solely by 
 	 *  manipulation of texture coordinates, making the class very efficient. 

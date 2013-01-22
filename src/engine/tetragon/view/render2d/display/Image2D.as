@@ -29,13 +29,14 @@
 package tetragon.view.render2d.display
 {
 	import tetragon.view.render2d.core.RenderSupport2D;
+	import tetragon.view.render2d.core.VertexData2D;
 	import tetragon.view.render2d.textures.Texture2D;
 	import tetragon.view.render2d.textures.TextureSmoothing2D;
-	import tetragon.view.render2d.util.VertexData2D;
 
 	import flash.display.Bitmap;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
+
 
 	/** An Image is a quad with a texture mapped onto it.
 	 *  

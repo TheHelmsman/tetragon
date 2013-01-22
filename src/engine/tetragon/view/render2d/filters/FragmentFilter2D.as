@@ -30,6 +30,7 @@ package tetragon.view.render2d.filters
 {
 	import tetragon.view.render2d.core.Render2D;
 	import tetragon.view.render2d.core.RenderSupport2D;
+	import tetragon.view.render2d.core.VertexData2D;
 	import tetragon.view.render2d.core.render2d_internal;
 	import tetragon.view.render2d.display.BlendMode2D;
 	import tetragon.view.render2d.display.DisplayObject2D;
@@ -40,7 +41,6 @@ package tetragon.view.render2d.filters
 	import tetragon.view.render2d.textures.Texture2D;
 	import tetragon.view.render2d.util.MatrixUtil2D;
 	import tetragon.view.render2d.util.RectangleUtil2D;
-	import tetragon.view.render2d.util.VertexData2D;
 
 	import com.hexagonstar.exception.AbstractClassException;
 	import com.hexagonstar.exception.MissingContext3DException;
@@ -57,6 +57,8 @@ package tetragon.view.render2d.filters
 	import flash.geom.Rectangle;
 	import flash.system.Capabilities;
 	import flash.utils.getQualifiedClassName;
+
+
 
 	/** The FragmentFilter class is the base class for all filter effects in Render2D.
 	 *  All other filters of this package extend this class. You can attach them to any display
