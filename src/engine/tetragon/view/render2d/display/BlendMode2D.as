@@ -29,6 +29,7 @@
 package tetragon.view.render2d.display
 {
 	import com.hexagonstar.exception.AbstractClassException;
+
 	import flash.display3D.Context3DBlendFactor;
     
     /** A class that provides constant values for visual blend mode effects. 

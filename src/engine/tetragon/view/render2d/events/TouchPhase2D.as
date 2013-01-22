@@ -28,7 +28,7 @@
  */
 package tetragon.view.render2d.events
 {
-    import com.hexagonstar.exception.AbstractClassException;
+	import com.hexagonstar.exception.AbstractClassException;
 
     /** A class that provides constant values for the phases of a touch object. 
      *  

@@ -28,8 +28,8 @@
  */
 package tetragon.view.render2d.textures
 {
-	import tetragon.view.render2d.core.RenderSupport2D;
 	import tetragon.view.render2d.core.Render2D;
+	import tetragon.view.render2d.core.RenderSupport2D;
 	import tetragon.view.render2d.display.DisplayObject2D;
 	import tetragon.view.render2d.display.Image2D;
 	import tetragon.view.render2d.util.getNextPowerOfTwo2D;

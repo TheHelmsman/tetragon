@@ -29,6 +29,7 @@
 package tetragon.view.render2d.animation
 {
 	import com.hexagonstar.exception.AbstractClassException;
+
 	import flash.utils.Dictionary;
     
     /** The Transitions class contains static methods that define easing functions. 

@@ -29,6 +29,7 @@
 package tetragon.view.render2d.util
 {
 	import com.hexagonstar.exception.AbstractClassException;
+
 	import flash.geom.Matrix;
 	import flash.geom.Matrix3D;
 	import flash.geom.Point;

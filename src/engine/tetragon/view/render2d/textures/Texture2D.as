@@ -39,7 +39,6 @@ package tetragon.view.render2d.textures
 	import flash.display.BitmapData;
 	import flash.display3D.Context3D;
 	import flash.display3D.Context3DTextureFormat;
-	import tetragon.view.render2d.textures.Texture2D;
 	import flash.display3D.textures.TextureBase;
 	import flash.geom.Matrix;
 	import flash.geom.Point;

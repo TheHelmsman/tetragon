@@ -28,8 +28,8 @@
  */
 package tetragon.view.render2d.filters
 {
-	import tetragon.view.render2d.core.RenderSupport2D;
 	import tetragon.view.render2d.core.Render2D;
+	import tetragon.view.render2d.core.RenderSupport2D;
 	import tetragon.view.render2d.core.render2d_internal;
 	import tetragon.view.render2d.display.BlendMode2D;
 	import tetragon.view.render2d.display.DisplayObject2D;

@@ -28,8 +28,8 @@
  */
 package tetragon.view.render2d.textures
 {
-    import flash.display3D.Context3DTextureFormat;
-    import flash.utils.ByteArray;
+	import flash.display3D.Context3DTextureFormat;
+	import flash.utils.ByteArray;
 
     /** A parser for the ATF data format. */
     internal class ATFData2D
