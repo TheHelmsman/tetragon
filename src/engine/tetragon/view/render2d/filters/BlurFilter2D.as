@@ -29,7 +29,8 @@
 package tetragon.view.render2d.filters
 {
 	import tetragon.view.render2d.textures.Texture2D;
-	import tetragon.view.render2d.util.ColorUtil2D;
+
+	import com.hexagonstar.util.color.ColorUtil;
 
 	import flash.display3D.Context3D;
 	import flash.display3D.Context3DProgramType;
@@ -276,9 +277,9 @@ package tetragon.view.render2d.filters
 		 *  first parameter to deactivate the uniform color. */
 		public function setUniformColor(enable:Boolean, color:uint = 0x0, alpha:Number = 1.0):void
 		{
-			mColor[0] = ColorUtil2D.getRed(color) / 255.0;
-			mColor[1] = ColorUtil2D.getGreen(color) / 255.0;
-			mColor[2] = ColorUtil2D.getBlue(color) / 255.0;
+			mColor[0] = ColorUtil.getRed(color) / 255.0;
+			mColor[1] = ColorUtil.getGreen(color) / 255.0;
+			mColor[2] = ColorUtil.getBlue(color) / 255.0;
 			mColor[3] = alpha;
 			mUniformColor = enable;
 		}

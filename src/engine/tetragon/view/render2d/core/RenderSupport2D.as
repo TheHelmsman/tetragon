@@ -33,11 +33,11 @@ package tetragon.view.render2d.core
 	import tetragon.view.render2d.display.Quad2D;
 	import tetragon.view.render2d.display.QuadBatch2D;
 	import tetragon.view.render2d.textures.Texture2D;
-	import tetragon.view.render2d.util.ColorUtil2D;
 	import tetragon.view.render2d.util.MatrixUtil2D;
 
 	import com.hexagonstar.exception.MissingContext3DException;
 	import com.hexagonstar.util.agal.AGAL;
+	import com.hexagonstar.util.color.ColorUtil;
 
 	import flash.display3D.Context3D;
 	import flash.display3D.Context3DProgramType;
@@ -408,7 +408,7 @@ package tetragon.view.render2d.core
 		/** Clears the render context with a certain color and alpha value. */
 		public static function clear(rgb:uint = 0, alpha:Number = 0.0):void
 		{
-			Render2D.context.clear(ColorUtil2D.getRed(rgb) / 255.0, ColorUtil2D.getGreen(rgb) / 255.0, ColorUtil2D.getBlue(rgb) / 255.0, alpha);
+			Render2D.context.clear(ColorUtil.getRed(rgb) / 255.0, ColorUtil.getGreen(rgb) / 255.0, ColorUtil.getBlue(rgb) / 255.0, alpha);
 		}
 
 
