@@ -46,7 +46,8 @@ package tetragon.view.render2d.core
 	import flash.geom.Matrix3D;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
-
+	
+	
 	/** A class that contains helper methods simplifying Stage3D rendering.
 	 *
 	 *  A RenderSupport instance is passed to any "render" method of display objects. 
