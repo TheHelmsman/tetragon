@@ -156,7 +156,7 @@ package view.render2d
 		 */
 		override protected function createChildren():void
 		{
-			_render2D = new Render2D(Render2DGameView, main.stage);
+			_render2D = new Render2D(main.stage, Render2DGameView);
 			_render2D.antiAliasing = 1;
 			_render2D.start();
 		}
