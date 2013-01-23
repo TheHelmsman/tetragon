@@ -30,8 +30,9 @@ package view.render2d
 {
 	import tetragon.view.obsolete.Screen;
 	import tetragon.view.render2d.core.Render2D;
+	import tetragon.view.stage3d.Stage3DEvent;
+	import tetragon.view.stage3d.Stage3DProxy;
 
-	import flash.display.Stage3D;
 	import flash.events.Event;
 	import flash.system.Capabilities;
 	
@@ -51,7 +52,9 @@ package view.render2d
 		// Properties
 		//-----------------------------------------------------------------------------------------
 		
-		private var _stage3D:Stage3D;
+		//private var _stage3DManager:Stage3D;
+		
+		private var _stage3DProxy:Stage3DProxy;
 		private var _render2D1:Render2D;
 		private var _render2D2:Render2D;
 		private var _render2D3:Render2D;
@@ -139,37 +142,37 @@ package view.render2d
 		}
 		
 		
-		private function onContext3DCreated(e:Event):void
+		private function onContext3DCreated(e:Stage3DEvent):void
 		{
 			// Manually configure the context. Important: if you use a different
 			// size than "stage.stageWidth x stage.stageHeight", you have to update
 			// Starling's viewPort property accordingly.
-			_stage3D.context3D.configureBackBuffer(main.stage.stageWidth, main.stage.stageHeight, 2, false);
+			//_stage3D.context3D.configureBackBuffer(main.stage.stageWidth, main.stage.stageHeight, 2, false);
 
 			// Create our two Starling instances with the preconfigured stage3D.
 			// Starling will recognize that the context is being shared, and
 			// will not modify it.
 			if (!_render2D1)
 			{
-				_render2D1 = new Render2D(Render2DGameView, null, _stage3D);
+				_render2D1 = new Render2D(Render2DGameView, null, _stage3DProxy.stage3D);
 				_render2D1.enableErrorChecking = true;
 				_render2D1.simulateMultitouch = true;
 				_render2D1.antiAliasing = 2;
 				_render2D1.start();
 
-				_render2D2 = new Render2D(Render2DGameView2, null, _stage3D);
+				_render2D2 = new Render2D(Render2DGameView2, null, _stage3DProxy.stage3D);
 				_render2D2.enableErrorChecking = true;
 				_render2D2.simulateMultitouch = true;
 				_render2D2.antiAliasing = 2;
 				_render2D2.start();
 
-				_render2D3 = new Render2D(Render2DGameView3, null, _stage3D);
+				_render2D3 = new Render2D(Render2DGameView3, null, _stage3DProxy.stage3D);
 				_render2D3.enableErrorChecking = true;
 				_render2D3.simulateMultitouch = true;
 				_render2D3.antiAliasing = 2;
 				_render2D3.start();
 				
-				_render2D4 = new Render2D(Render2DGameView4, null, _stage3D);
+				_render2D4 = new Render2D(Render2DGameView4, null, _stage3DProxy.stage3D);
 				_render2D4.enableErrorChecking = true;
 				_render2D4.simulateMultitouch = true;
 				_render2D4.antiAliasing = 2;
@@ -183,7 +186,7 @@ package view.render2d
 		private function onEnterFrame(event:Event):void
 		{
 			// The back buffer needs to be cleared once per frame
-			_stage3D.context3D.clear();
+			_stage3DProxy.context3D.clear();
 
 			// Advance both Starling instances
 			_render2D1.nextFrame();
@@ -192,7 +195,7 @@ package view.render2d
 			_render2D4.nextFrame();
 
 			// This moves the active back buffer into the foreground.
-			_stage3D.context3D.present();
+			_stage3DProxy.context3D.present();
 		}		
 		
 		
@@ -225,9 +228,10 @@ package view.render2d
 			var isApple:Boolean = Capabilities.manufacturer.match(/(iOS)|(Macintosh)/) != null;
 			Render2D.handleLostContext = !isApple; // not required on Apple devices			
 			
-			_stage3D = main.stage.stage3Ds[0];
-			_stage3D.addEventListener(Event.CONTEXT3D_CREATE, onContext3DCreated);
-			_stage3D.requestContext3D();
+			_stage3DProxy = main.stage3DManager.getFreeStage3DProxy();
+			_stage3DProxy.antiAlias = 8;
+			_stage3DProxy.color = 0x000000;
+			_stage3DProxy.addEventListener(Stage3DEvent.CONTEXT3D_CREATED, onContext3DCreated);
 			
 //			var render2D1:Render2D = new Render2D(Render2DGameView, new Rectangle(0, 0, 512, 320), main.stage.stage3Ds[0]);
 //			render2D1.antiAliasing = 1;

@@ -28,16 +28,6 @@
  */
 package tetragon
 {
-	import com.hexagonstar.exception.SingletonException;
-	import com.hexagonstar.util.debug.HLog;
-	import com.hexagonstar.util.display.StageReference;
-	import flash.display.DisplayObjectContainer;
-	import flash.display.Sprite;
-	import flash.display.Stage;
-	import flash.display.StageDisplayState;
-	import flash.events.ErrorEvent;
-	import flash.events.UncaughtErrorEvent;
-	import flash.external.ExternalInterface;
 	import tetragon.command.Command;
 	import tetragon.command.CommandManager;
 	import tetragon.command.env.StartupApplicationCommand;
@@ -56,11 +46,20 @@ package tetragon
 	import tetragon.modules.ModuleManager;
 	import tetragon.state.StateManager;
 	import tetragon.view.obsolete.ScreenManager;
+	import tetragon.view.stage3d.Stage3DManager;
 	import tetragon.view.theme.UIThemeManager;
 
+	import com.hexagonstar.exception.SingletonException;
+	import com.hexagonstar.util.debug.HLog;
+	import com.hexagonstar.util.display.StageReference;
 
-
-
+	import flash.display.DisplayObjectContainer;
+	import flash.display.Sprite;
+	import flash.display.Stage;
+	import flash.display.StageDisplayState;
+	import flash.events.ErrorEvent;
+	import flash.events.UncaughtErrorEvent;
+	import flash.external.ExternalInterface;
 	
 	
 	/**
@@ -111,6 +110,8 @@ package tetragon
 		private var _localSettingsManager:LocalSettingsManager;
 		/** @private */
 		//private var _renderBufferManager:RenderBufferManager;
+		/** @private */
+		private var _stage3DManager:Stage3DManager;
 		/** @private */
 		private var _keyInputManager:KeyInputManager;
 		/** @private */
@@ -373,6 +374,16 @@ package tetragon
 		//}
 
 
+		/**
+		 * A reference to the stage3d manager.
+		 */
+		public function get stage3DManager():Stage3DManager
+		{
+			if (!_stage3DManager) _stage3DManager = new Stage3DManager(stage);
+			return _stage3DManager;
+		}
+		
+		
 		/**
 		 * A reference to the key input manager.
 		 */
