@@ -276,20 +276,21 @@ package tetragon.view.render2d.core
 			stage3D:Stage3D = null, renderMode:String = "auto",
 			profile:String = "baselineConstrained")
 		{
+			_stage = Main.instance.stage;
+			
 			if (!rootClass) throw new ArgumentError("Root class must not be null");
-			if (!viewPort) viewPort = new Rectangle(0, 0, stage.stageWidth, stage.stageHeight);
-			if (!stage3D) stage3D = stage.stage3Ds[0];
+			if (!viewPort) viewPort = new Rectangle(0, 0, _stage.stageWidth, _stage.stageHeight);
+			if (!stage3D) stage3D = _stage.stage3Ds[0];
 			if (!_contextData) _contextData = new Dictionary(true);
 			
 			makeCurrent();
 			
-			_stage = Main.instance.stage;
 			_rootClass = rootClass;
 			_viewPort = viewPort;
 			_stage3D = stage3D;
 			
 			_previousViewPort = new Rectangle();
-			_stage2D = new Stage2D(viewPort.width, viewPort.height, stage.color);
+			_stage2D = new Stage2D(viewPort.width, viewPort.height, _stage.color);
 			_touchProcessor = new TouchProcessor2D(_stage2D);
 			_juggler = new Juggler2D();
 			_renderSupport = new RenderSupport2D();

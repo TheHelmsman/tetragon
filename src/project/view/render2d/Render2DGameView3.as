@@ -28,10 +28,10 @@
  */
 package view.render2d
 {
+	import tetragon.view.render2d.text.TextField2D;
 	import tetragon.view.render2d.display.Quad2D;
 	import tetragon.view.render2d.display.Sprite2D;
 	import tetragon.view.render2d.events.Event2D;
-	import tetragon.view.render2d.text.TextField2D;
 	
 	
 	/**
@@ -39,7 +39,7 @@ package view.render2d
 	 *
 	 * @author hexagon
 	 */
-	public class Render2DGameView extends Sprite2D
+	public class Render2DGameView3 extends Sprite2D
 	{
 		//-----------------------------------------------------------------------------------------
 		// Properties
@@ -56,7 +56,7 @@ package view.render2d
 		/**
 		 * Creates a new instance of the class.
 		 */
-		public function Render2DGameView()
+		public function Render2DGameView3()
 		{
 			addEventListener(Event2D.ADDED_TO_STAGE, onAddedToStage);
 		}
@@ -83,7 +83,8 @@ package view.render2d
 			stage.color = Math.random() * 0xFFFFFF;
 			pivotX = 100;
 			pivotY = 100;
-			x = y = 100;
+			x = 100;
+			y = 420;
 			
 			_quad = new Quad2D(200, 200);
 			_quad.setVertexColor(0, Math.random() * 0xFFFFFF);
@@ -92,14 +93,14 @@ package view.render2d
 			_quad.setVertexColor(3, Math.random() * 0xFFFFFF);
 			addChild(_quad);
 			
-			_tf = new TextField2D(200, 200, "View1", "Verdana", 28, 0xFFFFFF);
+			_tf = new TextField2D(200, 200, "View3", "Verdana", 28, 0xFFFFFF);
 			_tf.border = true;
 			addChild(_tf);
 			
 			addEventListener(Event2D.ENTER_FRAME, onEnterFrame);
 		}
-
-
+		
+		
 		private function onEnterFrame(e:Event2D):void
 		{
 			rotation += 0.01;
