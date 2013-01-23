@@ -32,6 +32,7 @@ package tetragon.view.render2d.core
 	import tetragon.debug.Log;
 	import tetragon.view.render2d.animation.Juggler2D;
 	import tetragon.view.render2d.display.DisplayObject2D;
+	import tetragon.view.render2d.display.Sprite2D;
 	import tetragon.view.render2d.display.Stage2D;
 	import tetragon.view.render2d.events.Event2D;
 	import tetragon.view.render2d.events.EventDispatcher2D;
@@ -208,9 +209,7 @@ package tetragon.view.render2d.core
 		private var _nativeOverlay:Sprite;
 		
 		/** @private */
-		private var _rootClass:Class;
-		/** @private */
-		private var _root:DisplayObject2D;
+		private var _root:Sprite2D;
 		
 		/** @private */
 		private var _juggler:Juggler2D;
@@ -272,20 +271,20 @@ package tetragon.view.render2d.core
 		 * @param renderMode Use this parameter to force "software" rendering.
 		 * @param profile The Context3DProfile that should be requested.
 		 */
-		public function Render2D(rootClass:Class, viewPort:Rectangle = null,
+		public function Render2D(root:Sprite2D, viewPort:Rectangle = null,
 			stage3D:Stage3D = null, renderMode:String = "auto",
 			profile:String = "baselineConstrained")
 		{
 			_stage = Main.instance.stage;
 			
-			if (!rootClass) throw new ArgumentError("Root class must not be null");
+			if (!root) root = new Sprite2D();
 			if (!viewPort) viewPort = new Rectangle(0, 0, _stage.stageWidth, _stage.stageHeight);
 			if (!stage3D) stage3D = _stage.stage3Ds[0];
 			if (!_contextData) _contextData = new Dictionary(true);
 			
 			makeCurrent();
 			
-			_rootClass = rootClass;
+			_root = root;
 			_viewPort = viewPort;
 			_stage3D = stage3D;
 			
@@ -1130,13 +1129,8 @@ package tetragon.view.render2d.core
 		 */
 		private function initializeRoot():void
 		{
-			if (!_root)
-			{
-				_root = new _rootClass() as DisplayObject2D;
-				if (!_root) throw new Error("Invalid root class: " + _rootClass);
-				_stage2D.addChildAt(_root, 0);
-				dispatchEventWith(Event2D.ROOT_CREATED, false, _root);
-			}
+			_stage2D.addChildAt(_root, 0);
+			dispatchEventWith(Event2D.ROOT_CREATED, false, _root);
 		}
 		
 		

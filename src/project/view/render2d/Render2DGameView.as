@@ -45,6 +45,7 @@ package view.render2d
 		// Properties
 		//-----------------------------------------------------------------------------------------
 		
+		private var _id:String;
 		private var _quad:Quad2D;
 		private var _tf:TextField2D;
 		
@@ -56,8 +57,9 @@ package view.render2d
 		/**
 		 * Creates a new instance of the class.
 		 */
-		public function Render2DGameView()
+		public function Render2DGameView(id:String)
 		{
+			_id = id;
 			addEventListener(Event2D.ADDED_TO_STAGE, onAddedToStage);
 		}
 		
@@ -80,10 +82,8 @@ package view.render2d
 		{
 			removeEventListener(Event2D.ADDED_TO_STAGE, onAddedToStage);
 			
-			stage.color = Math.random() * 0xFFFFFF;
-			pivotX = 100;
-			pivotY = 100;
-			x = y = 100;
+			x = int(Math.random() * stage.stageWidth);
+			y = int(Math.random() * stage.stageHeight);
 			
 			_quad = new Quad2D(200, 200);
 			_quad.setVertexColor(0, Math.random() * 0xFFFFFF);
@@ -92,7 +92,7 @@ package view.render2d
 			_quad.setVertexColor(3, Math.random() * 0xFFFFFF);
 			addChild(_quad);
 			
-			_tf = new TextField2D(200, 200, "View1", "Verdana", 28, 0xFFFFFF);
+			_tf = new TextField2D(200, 200, _id, "Verdana", 28, 0xFFFFFF);
 			_tf.border = true;
 			addChild(_tf);
 			

@@ -54,10 +54,7 @@ package view.render2d
 		//private var _stage3DManager:Stage3D;
 		
 		private var _stage3DProxy:Stage3DProxy;
-		private var _render2D1:Render2D;
-		private var _render2D2:Render2D;
-		private var _render2D3:Render2D;
-		private var _render2D4:Render2D;
+		private var _render2Ds:Vector.<Render2D>;
 
 		
 		//-----------------------------------------------------------------------------------------
@@ -143,51 +140,27 @@ package view.render2d
 		
 		private function onContext3DCreated(e:Stage3DEvent):void
 		{
-			// Manually configure the context. Important: if you use a different
-			// size than "stage.stageWidth x stage.stageHeight", you have to update
-			// Starling's viewPort property accordingly.
-			//_stage3D.context3D.configureBackBuffer(main.stage.stageWidth, main.stage.stageHeight, 2, false);
-
-			// Create our two Starling instances with the preconfigured stage3D.
-			// Starling will recognize that the context is being shared, and
-			// will not modify it.
-			if (!_render2D1)
+			_render2Ds = new Vector.<Render2D>(10, true);
+			for (var i:uint = 0; i < _render2Ds.length; i++)
 			{
-				_render2D1 = new Render2D(Render2DGameView, null, _stage3DProxy.stage3D);
-				_render2D1.enableErrorChecking = true;
-				_render2D1.simulateMultitouch = true;
-				_render2D1.antiAliasing = 2;
-				_render2D1.start();
-
-				_render2D2 = new Render2D(Render2DGameView2, null, _stage3DProxy.stage3D);
-				_render2D2.enableErrorChecking = true;
-				_render2D2.simulateMultitouch = true;
-				_render2D2.antiAliasing = 2;
-				_render2D2.start();
-
-				_render2D3 = new Render2D(Render2DGameView3, null, _stage3DProxy.stage3D);
-				_render2D3.enableErrorChecking = true;
-				_render2D3.simulateMultitouch = true;
-				_render2D3.antiAliasing = 2;
-				_render2D3.start();
-				
-				_render2D4 = new Render2D(Render2DGameView4, null, _stage3DProxy.stage3D);
-				_render2D4.enableErrorChecking = true;
-				_render2D4.simulateMultitouch = true;
-				_render2D4.antiAliasing = 2;
-				_render2D4.start();
-				
-				_stage3DProxy.addEventListener(Event.ENTER_FRAME, onEnterFrame);
+				var render2D:Render2D = new Render2D(new Render2DGameView("" + i), null, _stage3DProxy.stage3D);
+				render2D.enableErrorChecking = true;
+				render2D.simulateMultitouch = true;
+				render2D.antiAliasing = 2;
+				render2D.start();
+				_render2Ds[i] = render2D;
 			}
+				
+			_stage3DProxy.addEventListener(Event.ENTER_FRAME, onEnterFrame);
 		}
 
 
 		private function onEnterFrame(event:Event):void
 		{
-			_render2D1.nextFrame();
-			_render2D2.nextFrame();
-			_render2D3.nextFrame();
-			_render2D4.nextFrame();
+			for (var i:uint = 0; i < _render2Ds.length; i++)
+			{
+				_render2Ds[i].nextFrame();
+			}
 		}		
 		
 		
@@ -219,7 +192,7 @@ package view.render2d
 		{
 			_stage3DProxy = main.stage3DManager.getFreeStage3DProxy();
 			_stage3DProxy.antiAlias = 8;
-			_stage3DProxy.color = 0x005577;
+			_stage3DProxy.color = 0x003355;
 			_stage3DProxy.addEventListener(Stage3DEvent.CONTEXT3D_CREATED, onContext3DCreated);
 			_stage3DProxy.requestContext3D();
 		}
