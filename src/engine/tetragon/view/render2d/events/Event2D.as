@@ -28,14 +28,9 @@
  */
 package tetragon.view.render2d.events
 {
-	import tetragon.view.render2d.core.render2d_internal;
-
 	import com.hexagonstar.util.string.formatString;
 
 	import flash.utils.getQualifiedClassName;
-	
-	
-	use namespace render2d_internal;
 	
 	
 	/** Event objects are passed as parameters to event listeners when an event occurs.  
@@ -209,7 +204,7 @@ package tetragon.view.render2d.events
 
 		// event pooling
 		/** @private */
-		render2d_internal static function fromPool(type:String, bubbles:Boolean = false, data:Object = null):Event2D
+		public static function fromPool(type:String, bubbles:Boolean = false, data:Object = null):Event2D
 		{
 			if (_eventPool.length) return (_eventPool.pop() as Event2D).reset(type, bubbles, data);
 			else return new Event2D(type, bubbles, data);
@@ -217,7 +212,7 @@ package tetragon.view.render2d.events
 
 
 		/** @private */
-		render2d_internal static function toPool(event:Event2D):void
+		public static function toPool(event:Event2D):void
 		{
 			event._data = event._target = event._currentTarget = null;
 			_eventPool.push(event);
@@ -225,7 +220,7 @@ package tetragon.view.render2d.events
 
 
 		/** @private */
-		render2d_internal function reset(type:String, bubbles:Boolean = false, data:Object = null):Event2D
+		public function reset(type:String, bubbles:Boolean = false, data:Object = null):Event2D
 		{
 			_type = type;
 			_bubbles = bubbles;

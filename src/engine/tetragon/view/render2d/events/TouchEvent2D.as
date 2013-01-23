@@ -28,10 +28,9 @@
  */
 package tetragon.view.render2d.events
 {
-	import tetragon.view.render2d.core.render2d_internal;
 	import tetragon.view.render2d.display.DisplayObject2D;
-
-	use namespace render2d_internal;
+	
+	
 	/** A TouchEvent is triggered either by touch or mouse input.  
 	 *  
 	 *  <p>In Render2D, both touch events and mouse events are handled through the same class: 
@@ -157,7 +156,7 @@ package tetragon.view.render2d.events
 		/** @private
 		 *  Dispatches the event along a custom bubble chain. During the lifetime of the event,
 		 *  each object is visited only once. */
-		render2d_internal function dispatch(chain:Vector.<EventDispatcher2D>):void
+		public function dispatch(chain:Vector.<EventDispatcher2D>):void
 		{
 			if (chain && chain.length)
 			{

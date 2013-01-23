@@ -28,13 +28,13 @@
  */
 package tetragon.view.render2d.core
 {
+	import flash.display.BitmapData;
+	import flash.display.Shape;
+	import flash.geom.Point;
 	import tetragon.view.render2d.display.Image2D;
 	import tetragon.view.render2d.display.Sprite2D;
 	import tetragon.view.render2d.textures.Texture2D;
 
-	import flash.display.BitmapData;
-	import flash.display.Shape;
-	import flash.geom.Point;
 	
 	
 	/** The TouchMarker is used internally to mark touches created through "simulateMultitouch". */

@@ -28,10 +28,10 @@
  */
 package tetragon.view.render2d.animation
 {
-	import tetragon.view.render2d.core.render2d_internal;
 	import tetragon.view.render2d.events.Event2D;
 	import tetragon.view.render2d.events.EventDispatcher2D;
-
+	
+	
 	/** A Tween animates numeric properties of objects. It uses different transition functions 
 	 *  to give the animations various styles.
 	 *  
@@ -485,7 +485,7 @@ package tetragon.view.render2d.animation
 
 
 		/** @private */
-		render2d_internal static function fromPool(target:Object, time:Number, transition:Object = "linear"):Tween2D
+		public static function fromPool(target:Object, time:Number, transition:Object = "linear"):Tween2D
 		{
 			if (sTweenPool.length) return (sTweenPool.pop() as Tween2D).reset(target, time, transition);
 			else return new Tween2D(target, time, transition);
@@ -493,7 +493,7 @@ package tetragon.view.render2d.animation
 
 
 		/** @private */
-		render2d_internal static function toPool(tween:Tween2D):void
+		public static function toPool(tween:Tween2D):void
 		{
 			// reset any object-references, to make sure we don't prevent any garbage collection
 			tween.mOnStart = tween.mOnUpdate = tween.mOnRepeat = tween.mOnComplete = null;

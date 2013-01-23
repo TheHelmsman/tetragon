@@ -29,7 +29,6 @@
 package tetragon.view.render2d.display
 {
 	import tetragon.view.render2d.core.RenderSupport2D;
-	import tetragon.view.render2d.core.render2d_internal;
 	import tetragon.view.render2d.events.Event2D;
 	import tetragon.view.render2d.filters.FragmentFilter2D;
 
@@ -38,9 +37,6 @@ package tetragon.view.render2d.display
 	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
-	
-	
-	use namespace render2d_internal;
 	
 	
 	/**

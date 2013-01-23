@@ -28,10 +28,10 @@
  */
 package tetragon.view.render2d.animation
 {
-	import tetragon.view.render2d.core.render2d_internal;
 	import tetragon.view.render2d.events.Event2D;
 	import tetragon.view.render2d.events.EventDispatcher2D;
-
+	
+	
 	/** The Juggler takes objects that implement IAnimatable (like Tweens) and executes them.
 	 * 
 	 *  <p>A juggler is a simple object. It does no more than saving a list of objects implementing 
@@ -174,7 +174,7 @@ package tetragon.view.render2d.animation
 		 */
 		public function tween(target:Object, time:Number, properties:Object):void
 		{
-			var tween:Tween2D = Tween2D.render2d_internal::fromPool(target, time);
+			var tween:Tween2D = Tween2D.fromPool(target, time);
 
 			for (var property:String in properties)
 			{
@@ -195,7 +195,7 @@ package tetragon.view.render2d.animation
 
 		private function onPooledTweenComplete(event:Event2D):void
 		{
-			Tween2D.render2d_internal::toPool(event.target as Tween2D);
+			Tween2D.toPool(event.target as Tween2D);
 		}
 
 

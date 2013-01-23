@@ -28,15 +28,11 @@
  */
 package tetragon.view.render2d.display
 {
-	import tetragon.view.render2d.core.render2d_internal;
 	import tetragon.view.render2d.events.EnterFrameEvent2D;
 	import tetragon.view.render2d.events.Event2D;
 
 	import flash.errors.IllegalOperationError;
 	import flash.geom.Point;
-	
-	
-	use namespace render2d_internal;
 	
 	
 	/** Dispatched when the Flash container is resized. */

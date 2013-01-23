@@ -39,9 +39,6 @@ package tetragon.view.render2d.core
 	import flash.utils.getDefinitionByName;
 	
 	
-	use namespace render2d_internal;
-	
-	
 	/** @private
 	 *  The TouchProcessor is used internally to convert mouse and touch events of the conventional
 	 *  Flash stage to Render2D's TouchEvents. */
