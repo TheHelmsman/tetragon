@@ -37,7 +37,8 @@ package tetragon.view.render2d.core
 	import tetragon.view.render2d.events.EventDispatcher2D;
 	import tetragon.view.render2d.events.KeyboardEvent2D;
 	import tetragon.view.render2d.events.ResizeEvent2D;
-	import tetragon.view.render2d.events.TouchPhase2D;
+	import tetragon.view.render2d.touch.TouchPhase2D;
+	import tetragon.view.render2d.touch.TouchProcessor2D;
 
 	import com.hexagonstar.constants.HAlign;
 	import com.hexagonstar.constants.VAlign;

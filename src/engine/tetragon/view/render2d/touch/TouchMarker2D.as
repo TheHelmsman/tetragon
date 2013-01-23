@@ -26,15 +26,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package tetragon.view.render2d.core
+package tetragon.view.render2d.touch
 {
-	import flash.display.BitmapData;
-	import flash.display.Shape;
-	import flash.geom.Point;
+	import tetragon.view.render2d.core.Render2D;
 	import tetragon.view.render2d.display.Image2D;
 	import tetragon.view.render2d.display.Sprite2D;
 	import tetragon.view.render2d.textures.Texture2D;
 
+	import flash.display.BitmapData;
+	import flash.display.Shape;
+	import flash.geom.Point;
 	
 	
 	/** The TouchMarker is used internally to mark touches created through "simulateMultitouch". */

@@ -26,10 +26,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package tetragon.view.render2d.events
+package tetragon.view.render2d.touch
 {
-	import com.hexagonstar.exception.AbstractClassException;
-
 	/** A class that provides constant values for the phases of a touch object. 
 	 *  
 	 *  <p>A touch moves through at least the following phases in its life:</p>
@@ -48,13 +46,6 @@ package tetragon.view.render2d.events
 	 */
 	public final class TouchPhase2D
 	{
-		/** @private */
-		public function TouchPhase2D()
-		{
-			throw new AbstractClassException(this);
-		}
-
-
 		/** Only available for mouse input: the cursor hovers over an object <em>without</em> a 
 		 *  pressed button. */
 		public static const HOVER:String = "hover";

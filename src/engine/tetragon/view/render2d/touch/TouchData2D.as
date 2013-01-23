@@ -26,11 +26,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package tetragon.view.render2d.core
+package tetragon.view.render2d.touch
 {
 	import tetragon.view.render2d.display.DisplayObject2D;
 	import tetragon.view.render2d.events.EventDispatcher2D;
-	import tetragon.view.render2d.events.Touch2D;
 	
 	
 	/**

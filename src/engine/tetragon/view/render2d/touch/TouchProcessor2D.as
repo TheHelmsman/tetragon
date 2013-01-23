@@ -26,13 +26,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package tetragon.view.render2d.core
+package tetragon.view.render2d.touch
 {
 	import tetragon.view.render2d.display.Stage2D;
 	import tetragon.view.render2d.events.KeyboardEvent2D;
-	import tetragon.view.render2d.events.Touch2D;
 	import tetragon.view.render2d.events.TouchEvent2D;
-	import tetragon.view.render2d.events.TouchPhase2D;
 
 	import flash.events.EventDispatcher;
 	import flash.geom.Point;
@@ -42,7 +40,7 @@ package tetragon.view.render2d.core
 	/** @private
 	 *  The TouchProcessor is used internally to convert mouse and touch events of the conventional
 	 *  Flash stage to Render2D's TouchEvents. */
-	internal class TouchProcessor2D
+	public class TouchProcessor2D
 	{
 		private static const MULTITAP_TIME:Number = 0.3;
 		private static const MULTITAP_DISTANCE:Number = 25;

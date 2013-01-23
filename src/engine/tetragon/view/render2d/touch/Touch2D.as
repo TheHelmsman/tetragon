@@ -26,9 +26,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package tetragon.view.render2d.events
+package tetragon.view.render2d.touch
 {
 	import tetragon.view.render2d.display.DisplayObject2D;
+	import tetragon.view.render2d.events.EventDispatcher2D;
+	import tetragon.view.render2d.events.TouchEvent2D;
 
 	import com.hexagonstar.util.geom.MatrixUtil;
 	import com.hexagonstar.util.string.formatString;

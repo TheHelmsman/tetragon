@@ -29,11 +29,11 @@
 package tetragon.view.render2d.display
 {
 	import tetragon.view.render2d.events.Event2D;
-	import tetragon.view.render2d.events.Touch2D;
 	import tetragon.view.render2d.events.TouchEvent2D;
-	import tetragon.view.render2d.events.TouchPhase2D;
 	import tetragon.view.render2d.text.TextField2D;
 	import tetragon.view.render2d.textures.Texture2D;
+	import tetragon.view.render2d.touch.Touch2D;
+	import tetragon.view.render2d.touch.TouchPhase2D;
 
 	import com.hexagonstar.constants.HAlign;
 	import com.hexagonstar.constants.VAlign;
@@ -41,7 +41,8 @@ package tetragon.view.render2d.display
 	import flash.geom.Rectangle;
 	import flash.ui.Mouse;
 	import flash.ui.MouseCursor;
-
+	
+	
 	/** Dispatched when the user triggers the button. Bubbles. */
 	[Event(name="triggered", type="tetragon.view.render2d.events.Event2D")]
 	/** A simple button composed of an image and, optionally, text.

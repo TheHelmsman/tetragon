@@ -29,6 +29,8 @@
 package tetragon.view.render2d.events
 {
 	import tetragon.view.render2d.display.DisplayObject2D;
+	import tetragon.view.render2d.touch.Touch2D;
+	import tetragon.view.render2d.touch.TouchPhase2D;
 	
 	
 	/** A TouchEvent is triggered either by touch or mouse input.  
