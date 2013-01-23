@@ -30,7 +30,8 @@ package tetragon.view.render2d.textures
 {
 	import flash.geom.Rectangle;
 	import flash.utils.Dictionary;
-
+	
+	
 	/** A texture atlas is a collection of many smaller textures in one big image. This class
 	 *  is used to access textures from such an atlas.
 	 *  
@@ -73,40 +74,41 @@ package tetragon.view.render2d.textures
 	 */
 	public class TextureAtlas2D
 	{
-		private var mAtlasTexture:Texture2D;
-		private var mTextureRegions:Dictionary;
-		private var mTextureFrames:Dictionary;
+		private var _atlasTexture:Texture2D;
+		private var _textureRegions:Dictionary;
+		private var _textureFrames:Dictionary;
+		
 		/** helper objects */
-		private var sNames:Vector.<String> = new <String>[];
+		private var _names:Vector.<String> = new <String>[];
 
 
 		/** Create a texture atlas from a texture by parsing the regions from an XML file. */
-		public function TextureAtlas2D(texture:Texture2D, atlasXml:XML = null)
+		public function TextureAtlas2D(texture:Texture2D, atlasXML:XML = null)
 		{
-			mTextureRegions = new Dictionary();
-			mTextureFrames = new Dictionary();
-			mAtlasTexture = texture;
+			_textureRegions = new Dictionary();
+			_textureFrames = new Dictionary();
+			_atlasTexture = texture;
 
-			if (atlasXml)
-				parseAtlasXml(atlasXml);
+			if (atlasXML)
+				parseAtlasXML(atlasXML);
 		}
 
 
 		/** Disposes the atlas texture. */
 		public function dispose():void
 		{
-			mAtlasTexture.dispose();
+			_atlasTexture.dispose();
 		}
 
 
 		/** This function is called by the constructor and will parse an XML in Render2D's 
 		 *  default atlas file format. Override this method to create custom parsing logic
 		 *  (e.g. to support a different file format). */
-		protected function parseAtlasXml(atlasXml:XML):void
+		protected function parseAtlasXML(atlasXML:XML):void
 		{
-			var scale:Number = mAtlasTexture.scale;
+			var scale:Number = _atlasTexture.scale;
 
-			for each (var subTexture:XML in atlasXml.SubTexture)
+			for each (var subTexture:XML in atlasXML.SubTexture)
 			{
 				var name:String = subTexture.attribute("name");
 				var x:Number = parseFloat(subTexture.attribute("x")) / scale;
@@ -129,10 +131,10 @@ package tetragon.view.render2d.textures
 		/** Retrieves a subtexture by name. Returns <code>null</code> if it is not found. */
 		public function getTexture(name:String):Texture2D
 		{
-			var region:Rectangle = mTextureRegions[name];
+			var region:Rectangle = _textureRegions[name];
 
 			if (region == null) return null;
-			else return Texture2D.fromTexture(mAtlasTexture, region, mTextureFrames[name]);
+			else return Texture2D.fromTexture(_atlasTexture, region, _textureFrames[name]);
 		}
 
 
@@ -142,10 +144,10 @@ package tetragon.view.render2d.textures
 		{
 			if (result == null) result = new <Texture2D>[];
 
-			for each (var name:String in getNames(prefix, sNames))
+			for each (var name:String in getNames(prefix, _names))
 				result.push(getTexture(name));
 
-			sNames.length = 0;
+			_names.length = 0;
 			return result;
 		}
 
@@ -155,7 +157,7 @@ package tetragon.view.render2d.textures
 		{
 			if (result == null) result = new <String>[];
 
-			for (var name:String in mTextureRegions)
+			for (var name:String in _textureRegions)
 				if (name.indexOf(prefix) == 0)
 					result.push(name);
 
@@ -167,7 +169,7 @@ package tetragon.view.render2d.textures
 		/** Returns the region rectangle associated with a specific name. */
 		public function getRegion(name:String):Rectangle
 		{
-			return mTextureRegions[name];
+			return _textureRegions[name];
 		}
 
 
@@ -175,7 +177,7 @@ package tetragon.view.render2d.textures
 		 *  has no frame. */
 		public function getFrame(name:String):Rectangle
 		{
-			return mTextureFrames[name];
+			return _textureFrames[name];
 		}
 
 
@@ -183,16 +185,16 @@ package tetragon.view.render2d.textures
 		 *  pixels) with an optional frame. */
 		public function addRegion(name:String, region:Rectangle, frame:Rectangle = null):void
 		{
-			mTextureRegions[name] = region;
-			mTextureFrames[name] = frame;
+			_textureRegions[name] = region;
+			_textureFrames[name] = frame;
 		}
 
 
 		/** Removes a region with a certain name. */
 		public function removeRegion(name:String):void
 		{
-			delete mTextureRegions[name];
-			delete mTextureFrames[name];
+			delete _textureRegions[name];
+			delete _textureFrames[name];
 		}
 	}
 }

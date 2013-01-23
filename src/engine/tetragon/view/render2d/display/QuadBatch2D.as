@@ -55,8 +55,9 @@ package tetragon.view.render2d.display
 	import flash.utils.getQualifiedClassName;
 
 
-
 	use namespace render2d_internal;
+	
+	
 	/** Optimizes rendering of a number of quads with an identical state.
 	 * 
 	 *  <p>The majority of all rendered objects in Render2D are quads. In fact, all the default
@@ -86,30 +87,32 @@ package tetragon.view.render2d.display
 	public class QuadBatch2D extends DisplayObject2D
 	{
 		private static const QUAD_PROGRAM_NAME:String = "QB_q";
-		private var mNumQuads:int;
-		private var mSyncRequired:Boolean;
-		private var mTinted:Boolean;
-		private var mTexture:Texture2D;
-		private var mSmoothing:String;
-		private var mVertexData:VertexData2D;
-		private var mVertexBuffer:VertexBuffer3D;
-		private var mIndexData:Vector.<uint>;
-		private var mIndexBuffer:IndexBuffer3D;
+		
+		private var _numQuads:int;
+		private var _syncRequired:Boolean;
+		private var _tinted:Boolean;
+		private var _texture:Texture2D;
+		private var _smoothing:String;
+		private var _vertexData:VertexData2D;
+		private var _vertexBuffer:VertexBuffer3D;
+		private var _indexData:Vector.<uint>;
+		private var _indexBuffer:IndexBuffer3D;
+		
 		/** Helper objects. */
-		private static var sHelperMatrix:Matrix = new Matrix();
-		private static var sRenderAlpha:Vector.<Number> = new <Number>[1.0, 1.0, 1.0, 1.0];
-		private static var sRenderMatrix:Matrix3D = new Matrix3D();
-		private static var sProgramNameCache:Dictionary = new Dictionary();
+		private static var _helperMatrix:Matrix = new Matrix();
+		private static var _renderAlpha:Vector.<Number> = new <Number>[1.0, 1.0, 1.0, 1.0];
+		private static var _renderMatrix:Matrix3D = new Matrix3D();
+		private static var _programNameCache:Dictionary = new Dictionary();
 
 
 		/** Creates a new QuadBatch instance with empty batch data. */
 		public function QuadBatch2D()
 		{
-			mVertexData = new VertexData2D(0, true);
-			mIndexData = new <uint>[];
-			mNumQuads = 0;
-			mTinted = false;
-			mSyncRequired = false;
+			_vertexData = new VertexData2D(0, true);
+			_indexData = new <uint>[];
+			_numQuads = 0;
+			_tinted = false;
+			_syncRequired = false;
 
 			// Handle lost context. We use the conventional event here (not the one from Render2D)
 			// so we're able to create a weak event listener; this avoids memory leaks when people
@@ -123,8 +126,8 @@ package tetragon.view.render2d.display
 		{
 			Render2D.current.stage3D.removeEventListener(Event2D.CONTEXT3D_CREATE, onContextCreated);
 
-			if (mVertexBuffer) mVertexBuffer.dispose();
-			if (mIndexBuffer) mIndexBuffer.dispose();
+			if (_vertexBuffer) _vertexBuffer.dispose();
+			if (_indexBuffer) _indexBuffer.dispose();
 
 			super.dispose();
 		}
@@ -141,13 +144,13 @@ package tetragon.view.render2d.display
 		public function clone():QuadBatch2D
 		{
 			var clone:QuadBatch2D = new QuadBatch2D();
-			clone.mVertexData = mVertexData.clone(0, mNumQuads * 4);
-			clone.mIndexData = mIndexData.slice(0, mNumQuads * 6);
-			clone.mNumQuads = mNumQuads;
-			clone.mTinted = mTinted;
-			clone.mTexture = mTexture;
-			clone.mSmoothing = mSmoothing;
-			clone.mSyncRequired = true;
+			clone._vertexData = _vertexData.clone(0, _numQuads * 4);
+			clone._indexData = _indexData.slice(0, _numQuads * 6);
+			clone._numQuads = _numQuads;
+			clone._tinted = _tinted;
+			clone._texture = _texture;
+			clone._smoothing = _smoothing;
+			clone._syncRequired = true;
 			clone.blendMode = blendMode;
 			clone.alpha = alpha;
 			return clone;
@@ -162,16 +165,16 @@ package tetragon.view.render2d.display
 			if (newCapacity == 0) newCapacity = 16;
 			if (newCapacity <= oldCapacity) return;
 
-			mVertexData.numVertices = newCapacity * 4;
+			_vertexData.numVertices = newCapacity * 4;
 
 			for (var i:int = oldCapacity; i < newCapacity; ++i)
 			{
-				mIndexData[int(i * 6)] = i * 4;
-				mIndexData[int(i * 6 + 1)] = i * 4 + 1;
-				mIndexData[int(i * 6 + 2)] = i * 4 + 2;
-				mIndexData[int(i * 6 + 3)] = i * 4 + 1;
-				mIndexData[int(i * 6 + 4)] = i * 4 + 3;
-				mIndexData[int(i * 6 + 5)] = i * 4 + 2;
+				_indexData[int(i * 6)] = i * 4;
+				_indexData[int(i * 6 + 1)] = i * 4 + 1;
+				_indexData[int(i * 6 + 2)] = i * 4 + 2;
+				_indexData[int(i * 6 + 3)] = i * 4 + 1;
+				_indexData[int(i * 6 + 4)] = i * 4 + 3;
+				_indexData[int(i * 6 + 5)] = i * 4 + 2;
 			}
 
 			createBuffers();
@@ -181,37 +184,37 @@ package tetragon.view.render2d.display
 
 		private function createBuffers():void
 		{
-			var numVertices:int = mVertexData.numVertices;
-			var numIndices:int = mIndexData.length;
+			var numVertices:int = _vertexData.numVertices;
+			var numIndices:int = _indexData.length;
 			var context:Context3D = Render2D.context;
 
-			if (mVertexBuffer) mVertexBuffer.dispose();
-			if (mIndexBuffer) mIndexBuffer.dispose();
+			if (_vertexBuffer) _vertexBuffer.dispose();
+			if (_indexBuffer) _indexBuffer.dispose();
 			if (numVertices == 0) return;
 			if (context == null) throw new MissingContext3DException();
 
-			mVertexBuffer = context.createVertexBuffer(numVertices, VertexData2D.ELEMENTS_PER_VERTEX);
-			mVertexBuffer.uploadFromVector(mVertexData.rawData, 0, numVertices);
+			_vertexBuffer = context.createVertexBuffer(numVertices, VertexData2D.ELEMENTS_PER_VERTEX);
+			_vertexBuffer.uploadFromVector(_vertexData.rawData, 0, numVertices);
 
-			mIndexBuffer = context.createIndexBuffer(numIndices);
-			mIndexBuffer.uploadFromVector(mIndexData, 0, numIndices);
+			_indexBuffer = context.createIndexBuffer(numIndices);
+			_indexBuffer.uploadFromVector(_indexData, 0, numIndices);
 
-			mSyncRequired = false;
+			_syncRequired = false;
 		}
 
 
 		/** Uploads the raw data of all batched quads to the vertex buffer. */
 		private function syncBuffers():void
 		{
-			if (mVertexBuffer == null)
+			if (_vertexBuffer == null)
 				createBuffers();
 			else
 			{
 				// as 3rd parameter, we could also use 'mNumQuads * 4', but on some GPU hardware (iOS!),
 				// this is slower than updating the complete buffer.
 
-				mVertexBuffer.uploadFromVector(mVertexData.rawData, 0, mVertexData.numVertices);
-				mSyncRequired = false;
+				_vertexBuffer.uploadFromVector(_vertexData.rawData, 0, _vertexData.numVertices);
+				_syncRequired = false;
 			}
 		}
 
@@ -221,37 +224,37 @@ package tetragon.view.render2d.display
 		 *  display list. */
 		public function renderCustom(mvpMatrix:Matrix, parentAlpha:Number = 1.0, blendMode:String = null):void
 		{
-			if (mNumQuads == 0) return;
-			if (mSyncRequired) syncBuffers();
+			if (_numQuads == 0) return;
+			if (_syncRequired) syncBuffers();
 
-			var pma:Boolean = mVertexData.premultipliedAlpha;
+			var pma:Boolean = _vertexData.premultipliedAlpha;
 			var context:Context3D = Render2D.context;
-			var tinted:Boolean = mTinted || (parentAlpha != 1.0);
-			var programName:String = mTexture ? getImageProgramName(tinted, mTexture.mipMapping, mTexture.repeat, mTexture.format, mSmoothing) : QUAD_PROGRAM_NAME;
+			var tinted:Boolean = _tinted || (parentAlpha != 1.0);
+			var programName:String = _texture ? getImageProgramName(tinted, _texture.mipMapping, _texture.repeat, _texture.format, _smoothing) : QUAD_PROGRAM_NAME;
 
-			sRenderAlpha[0] = sRenderAlpha[1] = sRenderAlpha[2] = pma ? parentAlpha : 1.0;
-			sRenderAlpha[3] = parentAlpha;
+			_renderAlpha[0] = _renderAlpha[1] = _renderAlpha[2] = pma ? parentAlpha : 1.0;
+			_renderAlpha[3] = parentAlpha;
 
-			MatrixUtil.convertTo3D(mvpMatrix, sRenderMatrix);
+			MatrixUtil.convertTo3D(mvpMatrix, _renderMatrix);
 			RenderSupport2D.setBlendFactors(pma, blendMode ? blendMode : this.blendMode);
 
 			context.setProgram(Render2D.current.getProgram(programName));
-			context.setProgramConstantsFromVector(Context3DProgramType.VERTEX, 0, sRenderAlpha, 1);
-			context.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, 1, sRenderMatrix, true);
-			context.setVertexBufferAt(0, mVertexBuffer, VertexData2D.POSITION_OFFSET, Context3DVertexBufferFormat.FLOAT_2);
+			context.setProgramConstantsFromVector(Context3DProgramType.VERTEX, 0, _renderAlpha, 1);
+			context.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, 1, _renderMatrix, true);
+			context.setVertexBufferAt(0, _vertexBuffer, VertexData2D.POSITION_OFFSET, Context3DVertexBufferFormat.FLOAT_2);
 
-			if (mTexture == null || tinted)
-				context.setVertexBufferAt(1, mVertexBuffer, VertexData2D.COLOR_OFFSET, Context3DVertexBufferFormat.FLOAT_4);
+			if (_texture == null || tinted)
+				context.setVertexBufferAt(1, _vertexBuffer, VertexData2D.COLOR_OFFSET, Context3DVertexBufferFormat.FLOAT_4);
 
-			if (mTexture)
+			if (_texture)
 			{
-				context.setTextureAt(0, mTexture.base);
-				context.setVertexBufferAt(2, mVertexBuffer, VertexData2D.TEXCOORD_OFFSET, Context3DVertexBufferFormat.FLOAT_2);
+				context.setTextureAt(0, _texture.base);
+				context.setVertexBufferAt(2, _vertexBuffer, VertexData2D.TEXCOORD_OFFSET, Context3DVertexBufferFormat.FLOAT_2);
 			}
 
-			context.drawTriangles(mIndexBuffer, 0, mNumQuads * 2);
+			context.drawTriangles(_indexBuffer, 0, _numQuads * 2);
 
-			if (mTexture)
+			if (_texture)
 			{
 				context.setTextureAt(0, null);
 				context.setVertexBufferAt(2, null);
@@ -266,10 +269,10 @@ package tetragon.view.render2d.display
 		 *  can be reused quickly. */
 		public function reset():void
 		{
-			mNumQuads = 0;
-			mTexture = null;
-			mSmoothing = null;
-			mSyncRequired = true;
+			_numQuads = 0;
+			_texture = null;
+			_smoothing = null;
+			_syncRequired = true;
 		}
 
 
@@ -292,26 +295,26 @@ package tetragon.view.render2d.display
 
 			var tinted:Boolean = texture ? (quad.tinted || parentAlpha != 1.0) : false;
 			var alpha:Number = parentAlpha * quad.alpha;
-			var vertexID:int = mNumQuads * 4;
+			var vertexID:int = _numQuads * 4;
 
-			if (mNumQuads + 1 > mVertexData.numVertices / 4) expand();
-			if (mNumQuads == 0)
+			if (_numQuads + 1 > _vertexData.numVertices / 4) expand();
+			if (_numQuads == 0)
 			{
 				this.blendMode = blendMode ? blendMode : quad.blendMode;
-				mTexture = texture;
-				mTinted = tinted;
-				mSmoothing = smoothing;
-				mVertexData.setPremultipliedAlpha(texture ? texture.premultipliedAlpha : true, false);
+				_texture = texture;
+				_tinted = tinted;
+				_smoothing = smoothing;
+				_vertexData.setPremultipliedAlpha(texture ? texture.premultipliedAlpha : true, false);
 			}
 
-			quad.copyVertexDataTo(mVertexData, vertexID);
-			mVertexData.transformVertex(vertexID, modelViewMatrix, 4);
+			quad.copyVertexDataTo(_vertexData, vertexID);
+			_vertexData.transformVertex(vertexID, modelViewMatrix, 4);
 
 			if (alpha != 1.0)
-				mVertexData.scaleAlpha(vertexID, alpha, 4);
+				_vertexData.scaleAlpha(vertexID, alpha, 4);
 
-			mSyncRequired = true;
-			mNumQuads++;
+			_syncRequired = true;
+			_numQuads++;
 		}
 
 
@@ -320,29 +323,29 @@ package tetragon.view.render2d.display
 			if (modelViewMatrix == null)
 				modelViewMatrix = quadBatch.transformationMatrix;
 
-			var tinted:Boolean = quadBatch.mTinted || parentAlpha != 1.0;
+			var tinted:Boolean = quadBatch._tinted || parentAlpha != 1.0;
 			var alpha:Number = parentAlpha * quadBatch.alpha;
-			var vertexID:int = mNumQuads * 4;
+			var vertexID:int = _numQuads * 4;
 			var numQuads:int = quadBatch.numQuads;
 
-			if (mNumQuads + numQuads > capacity) expand(mNumQuads + numQuads);
-			if (mNumQuads == 0)
+			if (_numQuads + numQuads > capacity) expand(_numQuads + numQuads);
+			if (_numQuads == 0)
 			{
 				this.blendMode = blendMode ? blendMode : quadBatch.blendMode;
-				mTexture = quadBatch.mTexture;
-				mTinted = tinted;
-				mSmoothing = quadBatch.mSmoothing;
-				mVertexData.setPremultipliedAlpha(quadBatch.mVertexData.premultipliedAlpha, false);
+				_texture = quadBatch._texture;
+				_tinted = tinted;
+				_smoothing = quadBatch._smoothing;
+				_vertexData.setPremultipliedAlpha(quadBatch._vertexData.premultipliedAlpha, false);
 			}
 
-			quadBatch.mVertexData.copyTo(mVertexData, vertexID, 0, numQuads * 4);
-			mVertexData.transformVertex(vertexID, modelViewMatrix, numQuads * 4);
+			quadBatch._vertexData.copyTo(_vertexData, vertexID, 0, numQuads * 4);
+			_vertexData.transformVertex(vertexID, modelViewMatrix, numQuads * 4);
 
 			if (alpha != 1.0)
-				mVertexData.scaleAlpha(vertexID, alpha, numQuads * 4);
+				_vertexData.scaleAlpha(vertexID, alpha, numQuads * 4);
 
-			mSyncRequired = true;
-			mNumQuads += numQuads;
+			_syncRequired = true;
+			_numQuads += numQuads;
 		}
 
 
@@ -352,11 +355,11 @@ package tetragon.view.render2d.display
 		 *  (one batch can contain up to 8192 quads). */
 		public function isStateChange(tinted:Boolean, parentAlpha:Number, texture:Texture2D, smoothing:String, blendMode:String, numQuads:int = 1):Boolean
 		{
-			if (mNumQuads == 0) return false;
-			else if (mNumQuads + numQuads > 8192) return true; // maximum buffer size
-			else if (mTexture == null && texture == null) return false;
-			else if (mTexture != null && texture != null)
-				return mTexture.base != texture.base || mTexture.repeat != texture.repeat || mSmoothing != smoothing || mTinted != (tinted || parentAlpha != 1.0) || this.blendMode != blendMode;
+			if (_numQuads == 0) return false;
+			else if (_numQuads + numQuads > 8192) return true; // maximum buffer size
+			else if (_texture == null && texture == null) return false;
+			else if (_texture != null && texture != null)
+				return _texture.base != texture.base || _texture.repeat != texture.repeat || _smoothing != smoothing || _tinted != (tinted || parentAlpha != 1.0) || this.blendMode != blendMode;
 			else return true;
 		}
 
@@ -367,16 +370,16 @@ package tetragon.view.render2d.display
 		{
 			if (resultRect == null) resultRect = new Rectangle();
 
-			var transformationMatrix:Matrix = targetSpace == this ? null : getTransformationMatrix(targetSpace, sHelperMatrix);
+			var transformationMatrix:Matrix = targetSpace == this ? null : getTransformationMatrix(targetSpace, _helperMatrix);
 
-			return mVertexData.getBounds(transformationMatrix, 0, mNumQuads * 4, resultRect);
+			return _vertexData.getBounds(transformationMatrix, 0, _numQuads * 4, resultRect);
 		}
 
 
 		/** @inheritDoc */
 		public override function render(support:RenderSupport2D, parentAlpha:Number):void
 		{
-			if (mNumQuads)
+			if (_numQuads)
 			{
 				support.finishQuadBatch();
 				support.raiseDrawCount();
@@ -467,10 +470,10 @@ package tetragon.view.render2d.display
 				}
 				else
 				{
-					texture = batch.mTexture;
-					smoothing = batch.mSmoothing;
-					tinted = batch.mTinted;
-					numQuads = batch.mNumQuads;
+					texture = batch._texture;
+					smoothing = batch._smoothing;
+					tinted = batch._tinted;
+					numQuads = batch._numQuads;
 				}
 
 				quadBatch = quadBatches[quadBatchID];
@@ -509,31 +512,31 @@ package tetragon.view.render2d.display
 		// properties
 		public function get numQuads():int
 		{
-			return mNumQuads;
+			return _numQuads;
 		}
 
 
 		public function get tinted():Boolean
 		{
-			return mTinted;
+			return _tinted;
 		}
 
 
 		public function get texture():Texture2D
 		{
-			return mTexture;
+			return _texture;
 		}
 
 
 		public function get smoothing():String
 		{
-			return mSmoothing;
+			return _smoothing;
 		}
 
 
 		private function get capacity():int
 		{
-			return mVertexData.numVertices / 4;
+			return _vertexData.numVertices / 4;
 		}
 
 
@@ -639,12 +642,12 @@ package tetragon.view.render2d.display
 			else if (format == "compressedAlpha")
 				bitField |= 1 << 6;
 
-			var name:String = sProgramNameCache[bitField];
+			var name:String = _programNameCache[bitField];
 
 			if (name == null)
 			{
 				name = "QB_i." + bitField.toString(16);
-				sProgramNameCache[bitField] = name;
+				_programNameCache[bitField] = name;
 			}
 
 			return name;

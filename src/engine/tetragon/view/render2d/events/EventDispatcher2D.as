@@ -32,8 +32,11 @@ package tetragon.view.render2d.events
 	import tetragon.view.render2d.display.DisplayObject2D;
 
 	import flash.utils.Dictionary;
-
+	
+	
 	use namespace render2d_internal;
+	
+	
 	/** The EventDispatcher class is the base class for all classes that dispatch events. 
 	 *  This is the Render2D version of the Flash class with the same name. 
 	 *  
@@ -49,14 +52,14 @@ package tetragon.view.render2d.events
 	 *  Render2D events, which will bubble along Render2D display objects - but they cannot 
 	 *  dispatch Flash events or bubble along Flash display objects.</p>
 	 *  
-	 *  @see Event
-	 *  @see Render2D.display.DisplayObject DisplayObject
+	 *  @see Event2D
+	 *  @see Render2D.display.DisplayObject2D DisplayObject2D
 	 */
 	public class EventDispatcher2D
 	{
-		private var mEventListeners:Dictionary;
+		private var _eventListeners:Dictionary;
 		/** Helper object. */
-		private static var sBubbleChains:Array = [];
+		private static var _bubbleChains:Array = [];
 
 
 		/** Creates an EventDispatcher. */
@@ -68,12 +71,12 @@ package tetragon.view.render2d.events
 		/** Registers an event listener at a certain object. */
 		public function addEventListener(type:String, listener:Function):void
 		{
-			if (mEventListeners == null)
-				mEventListeners = new Dictionary();
+			if (_eventListeners == null)
+				_eventListeners = new Dictionary();
 
-			var listeners:Vector.<Function> = mEventListeners[type] as Vector.<Function>;
+			var listeners:Vector.<Function> = _eventListeners[type] as Vector.<Function>;
 			if (listeners == null)
-				mEventListeners[type] = new <Function>[listener];
+				_eventListeners[type] = new <Function>[listener];
 			else if (listeners.indexOf(listener) == -1) // check for duplicates
 				listeners.push(listener);
 		}
@@ -82,9 +85,9 @@ package tetragon.view.render2d.events
 		/** Removes an event listener from the object. */
 		public function removeEventListener(type:String, listener:Function):void
 		{
-			if (mEventListeners)
+			if (_eventListeners)
 			{
-				var listeners:Vector.<Function> = mEventListeners[type] as Vector.<Function>;
+				var listeners:Vector.<Function> = _eventListeners[type] as Vector.<Function>;
 				if (listeners)
 				{
 					var numListeners:int = listeners.length;
@@ -93,7 +96,7 @@ package tetragon.view.render2d.events
 					for (var i:int = 0; i < numListeners; ++i)
 						if (listeners[i] != listener) remainingListeners.push(listeners[i]);
 
-					mEventListeners[type] = remainingListeners;
+					_eventListeners[type] = remainingListeners;
 				}
 			}
 		}
@@ -103,10 +106,10 @@ package tetragon.view.render2d.events
 		 *  Be careful when removing all event listeners: you never know who else was listening. */
 		public function removeEventListeners(type:String = null):void
 		{
-			if (type && mEventListeners)
-				delete mEventListeners[type];
+			if (type && _eventListeners)
+				delete _eventListeners[type];
 			else
-				mEventListeners = null;
+				_eventListeners = null;
 		}
 
 
@@ -118,7 +121,7 @@ package tetragon.view.render2d.events
 		{
 			var bubbles:Boolean = event.bubbles;
 
-			if (!bubbles && (mEventListeners == null || !(event.type in mEventListeners)))
+			if (!bubbles && (_eventListeners == null || !(event.type in _eventListeners)))
 				return;
 			// no need to do anything
 
@@ -141,7 +144,7 @@ package tetragon.view.render2d.events
 		 *  method uses this method internally. */
 		internal function invokeEvent(event:Event2D):Boolean
 		{
-			var listeners:Vector.<Function> = mEventListeners ? mEventListeners[event.type] as Vector.<Function> : null;
+			var listeners:Vector.<Function> = _eventListeners ? _eventListeners[event.type] as Vector.<Function> : null;
 			var numListeners:int = listeners == null ? 0 : listeners.length;
 
 			if (numListeners)
@@ -184,9 +187,9 @@ package tetragon.view.render2d.events
 			var element:DisplayObject2D = this as DisplayObject2D;
 			var length:int = 1;
 
-			if (sBubbleChains.length > 0)
+			if (_bubbleChains.length > 0)
 			{
-				chain = sBubbleChains.pop();
+				chain = _bubbleChains.pop();
 				chain[0] = element;
 			}
 			else chain = new <EventDispatcher2D>[element];
@@ -201,7 +204,7 @@ package tetragon.view.render2d.events
 			}
 
 			chain.length = 0;
-			sBubbleChains.push(chain);
+			_bubbleChains.push(chain);
 		}
 
 
@@ -222,7 +225,7 @@ package tetragon.view.render2d.events
 		/** Returns if there are listeners registered for a certain event type. */
 		public function hasEventListener(type:String):Boolean
 		{
-			var listeners:Vector.<Function> = mEventListeners ? mEventListeners[type] as Vector.<Function> : null;
+			var listeners:Vector.<Function> = _eventListeners ? _eventListeners[type] as Vector.<Function> : null;
 			return listeners ? listeners.length != 0 : false;
 		}
 	}

@@ -54,12 +54,13 @@ package tetragon.view.render2d.display
 	 */
 	public class Quad2D extends DisplayObject2D
 	{
-		private var mTinted:Boolean;
+		private var _tinted:Boolean;
 		/** The raw vertex data of the quad. */
-		protected var mVertexData:VertexData2D;
+		protected var _vertexData:VertexData2D;
+		
 		/** Helper objects. */
-		private static var sHelperPoint:Point = new Point();
-		private static var sHelperMatrix:Matrix = new Matrix();
+		private static var _helperPoint:Point = new Point();
+		private static var _helperMatrix:Matrix = new Matrix();
 
 
 		/** Creates a quad with a certain size and color. The last parameter controls if the 
@@ -67,14 +68,14 @@ package tetragon.view.render2d.display
 		 *  influence blending output. You can use the default value in most cases.  */
 		public function Quad2D(width:Number, height:Number, color:uint = 0xffffff, premultipliedAlpha:Boolean = true)
 		{
-			mTinted = color != 0xffffff;
+			_tinted = color != 0xffffff;
 
-			mVertexData = new VertexData2D(4, premultipliedAlpha);
-			mVertexData.setPosition(0, 0.0, 0.0);
-			mVertexData.setPosition(1, width, 0.0);
-			mVertexData.setPosition(2, 0.0, height);
-			mVertexData.setPosition(3, width, height);
-			mVertexData.setUniformColor(color);
+			_vertexData = new VertexData2D(4, premultipliedAlpha);
+			_vertexData.setPosition(0, 0.0, 0.0);
+			_vertexData.setPosition(1, width, 0.0);
+			_vertexData.setPosition(2, 0.0, height);
+			_vertexData.setPosition(3, width, height);
+			_vertexData.setUniformColor(color);
 
 			onVertexDataChanged();
 		}
@@ -94,15 +95,15 @@ package tetragon.view.render2d.display
 
 			if (targetSpace == this) // optimization
 			{
-				mVertexData.getPosition(3, sHelperPoint);
-				resultRect.setTo(0.0, 0.0, sHelperPoint.x, sHelperPoint.y);
+				_vertexData.getPosition(3, _helperPoint);
+				resultRect.setTo(0.0, 0.0, _helperPoint.x, _helperPoint.y);
 			}
 			else if (targetSpace == parent && rotation == 0.0) // optimization
 			{
 				var scaleX:Number = this.scaleX;
 				var scaleY:Number = this.scaleY;
-				mVertexData.getPosition(3, sHelperPoint);
-				resultRect.setTo(x - pivotX * scaleX, y - pivotY * scaleY, sHelperPoint.x * scaleX, sHelperPoint.y * scaleY);
+				_vertexData.getPosition(3, _helperPoint);
+				resultRect.setTo(x - pivotX * scaleX, y - pivotY * scaleY, _helperPoint.x * scaleX, _helperPoint.y * scaleY);
 				if (scaleX < 0)
 				{
 					resultRect.width *= -1;
@@ -116,8 +117,8 @@ package tetragon.view.render2d.display
 			}
 			else
 			{
-				getTransformationMatrix(targetSpace, sHelperMatrix);
-				mVertexData.getBounds(sHelperMatrix, 0, 4, resultRect);
+				getTransformationMatrix(targetSpace, _helperMatrix);
+				_vertexData.getBounds(_helperMatrix, 0, 4, resultRect);
 			}
 
 			return resultRect;
@@ -127,43 +128,43 @@ package tetragon.view.render2d.display
 		/** Returns the color of a vertex at a certain index. */
 		public function getVertexColor(vertexID:int):uint
 		{
-			return mVertexData.getColor(vertexID);
+			return _vertexData.getColor(vertexID);
 		}
 
 
 		/** Sets the color of a vertex at a certain index. */
 		public function setVertexColor(vertexID:int, color:uint):void
 		{
-			mVertexData.setColor(vertexID, color);
+			_vertexData.setColor(vertexID, color);
 			onVertexDataChanged();
 
-			if (color != 0xffffff) mTinted = true;
-			else mTinted = mVertexData.tinted;
+			if (color != 0xffffff) _tinted = true;
+			else _tinted = _vertexData.tinted;
 		}
 
 
 		/** Returns the alpha value of a vertex at a certain index. */
 		public function getVertexAlpha(vertexID:int):Number
 		{
-			return mVertexData.getAlpha(vertexID);
+			return _vertexData.getAlpha(vertexID);
 		}
 
 
 		/** Sets the alpha value of a vertex at a certain index. */
 		public function setVertexAlpha(vertexID:int, alpha:Number):void
 		{
-			mVertexData.setAlpha(vertexID, alpha);
+			_vertexData.setAlpha(vertexID, alpha);
 			onVertexDataChanged();
 
-			if (alpha != 1.0) mTinted = true;
-			else mTinted = mVertexData.tinted;
+			if (alpha != 1.0) _tinted = true;
+			else _tinted = _vertexData.tinted;
 		}
 
 
 		/** Returns the color of the quad, or of vertex 0 if vertices have different colors. */
 		public function get color():uint
 		{
-			return mVertexData.getColor(0);
+			return _vertexData.getColor(0);
 		}
 
 
@@ -173,8 +174,8 @@ package tetragon.view.render2d.display
 			for (var i:int = 0; i < 4; ++i)
 				setVertexColor(i, value);
 
-			if (value != 0xffffff || alpha != 1.0) mTinted = true;
-			else mTinted = mVertexData.tinted;
+			if (value != 0xffffff || alpha != 1.0) _tinted = true;
+			else _tinted = _vertexData.tinted;
 		}
 
 
@@ -183,15 +184,15 @@ package tetragon.view.render2d.display
 		{
 			super.alpha = value;
 
-			if (value < 1.0) mTinted = true;
-			else mTinted = mVertexData.tinted;
+			if (value < 1.0) _tinted = true;
+			else _tinted = _vertexData.tinted;
 		}
 
 
 		/** Copies the raw vertex data to a VertexData instance. */
 		public function copyVertexDataTo(targetData:VertexData2D, targetVertexID:int = 0):void
 		{
-			mVertexData.copyTo(targetData, targetVertexID);
+			_vertexData.copyTo(targetData, targetVertexID);
 		}
 
 
@@ -205,7 +206,7 @@ package tetragon.view.render2d.display
 		/** Returns true if the quad (or any of its vertices) is non-white or non-opaque. */
 		public function get tinted():Boolean
 		{
-			return mTinted;
+			return _tinted;
 		}
 	}
 }

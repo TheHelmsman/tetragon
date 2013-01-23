@@ -33,16 +33,16 @@ package tetragon.view.render2d.display
 	import tetragon.view.render2d.events.Event2D;
 	import tetragon.view.render2d.filters.FragmentFilter2D;
 
-	import com.hexagonstar.exception.AbstractClassException;
 	import com.hexagonstar.util.geom.MatrixUtil;
 
 	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
-	import flash.system.Capabilities;
-	import flash.utils.getQualifiedClassName;
-
+	
+	
 	use namespace render2d_internal;
+	
+	
 	/**
 	 *  A DisplayObjectContainer represents a collection of display objects.
 	 *  It is the base class of all display objects that act as a container for other objects. By 
@@ -83,31 +83,29 @@ package tetragon.view.render2d.display
 	public class DisplayObjectContainer2D extends DisplayObject2D
 	{
 		// members
-		private var mChildren:Vector.<DisplayObject2D>;
+		private var _children:Vector.<DisplayObject2D>;
+		
 		/** Helper objects. */
-		private static var sHelperMatrix:Matrix = new Matrix();
-		private static var sHelperPoint:Point = new Point();
-		private static var sBroadcastListeners:Vector.<DisplayObject2D> = new <DisplayObject2D>[];
+		private static var _helperMatrix:Matrix = new Matrix();
+		private static var _helperPoint:Point = new Point();
+		private static var _broadcastListeners:Vector.<DisplayObject2D> = new <DisplayObject2D>[];
 
 
 		// construction
 		/** @private */
 		public function DisplayObjectContainer2D()
 		{
-			if (Capabilities.isDebugger && getQualifiedClassName(this) == "Render2D.display::DisplayObjectContainer")
-			{
-				throw new AbstractClassException(this);
-			}
-
-			mChildren = new <DisplayObject2D>[];
+			_children = new <DisplayObject2D>[];
 		}
 
 
 		/** Disposes the resources of all children. */
 		public override function dispose():void
 		{
-			for (var i:int = mChildren.length - 1; i >= 0; --i)
-				mChildren[i].dispose();
+			for (var i:int = _children.length - 1; i >= 0; --i)
+			{
+				_children[i].dispose();
+			}
 
 			super.dispose();
 		}
@@ -125,15 +123,15 @@ package tetragon.view.render2d.display
 		/** Adds a child to the container at a certain index. */
 		public function addChildAt(child:DisplayObject2D, index:int):DisplayObject2D
 		{
-			var numChildren:int = mChildren.length;
+			var numChildren:int = _children.length;
 
 			if (index >= 0 && index <= numChildren)
 			{
 				child.removeFromParent();
 
 				// 'splice' creates a temporary object, so we avoid it if it's not necessary
-				if (index == numChildren) mChildren.push(child);
-				else mChildren.splice(index, 0, child);
+				if (index == numChildren) _children.push(child);
+				else _children.splice(index, 0, child);
 
 				child.setParent(this);
 				child.dispatchEventWith(Event2D.ADDED, true);
@@ -170,7 +168,7 @@ package tetragon.view.render2d.display
 		{
 			if (index >= 0 && index < numChildren)
 			{
-				var child:DisplayObject2D = mChildren[index];
+				var child:DisplayObject2D = _children[index];
 				child.dispatchEventWith(Event2D.REMOVED, true);
 
 				if (stage)
@@ -181,9 +179,9 @@ package tetragon.view.render2d.display
 				}
 
 				child.setParent(null);
-				index = mChildren.indexOf(child);
+				index = _children.indexOf(child);
 				// index might have changed by event handler
-				if (index >= 0) mChildren.splice(index, 1);
+				if (index >= 0) _children.splice(index, 1);
 				if (dispose) child.dispose();
 
 				return child;
@@ -211,7 +209,7 @@ package tetragon.view.render2d.display
 		public function getChildAt(index:int):DisplayObject2D
 		{
 			if (index >= 0 && index < numChildren)
-				return mChildren[index];
+				return _children[index];
 			else
 				throw new RangeError("Invalid child index");
 		}
@@ -220,9 +218,9 @@ package tetragon.view.render2d.display
 		/** Returns a child object with a certain name (non-recursively). */
 		public function getChildByName(name:String):DisplayObject2D
 		{
-			var numChildren:int = mChildren.length;
+			var numChildren:int = _children.length;
 			for (var i:int = 0; i < numChildren; ++i)
-				if (mChildren[i].name == name) return mChildren[i];
+				if (_children[i].name == name) return _children[i];
 
 			return null;
 		}
@@ -231,7 +229,7 @@ package tetragon.view.render2d.display
 		/** Returns the index of a child within the container, or "-1" if it is not found. */
 		public function getChildIndex(child:DisplayObject2D):int
 		{
-			return mChildren.indexOf(child);
+			return _children.indexOf(child);
 		}
 
 
@@ -240,8 +238,8 @@ package tetragon.view.render2d.display
 		{
 			var oldIndex:int = getChildIndex(child);
 			if (oldIndex == -1) throw new ArgumentError("Not a child of this container");
-			mChildren.splice(oldIndex, 1);
-			mChildren.splice(index, 0, child);
+			_children.splice(oldIndex, 1);
+			_children.splice(index, 0, child);
 		}
 
 
@@ -260,8 +258,8 @@ package tetragon.view.render2d.display
 		{
 			var child1:DisplayObject2D = getChildAt(index1);
 			var child2:DisplayObject2D = getChildAt(index2);
-			mChildren[index1] = child2;
-			mChildren[index2] = child1;
+			_children[index1] = child2;
+			_children[index2] = child1;
 		}
 
 
@@ -269,7 +267,7 @@ package tetragon.view.render2d.display
 		 *  of the Vector class). */
 		public function sortChildren(compareFunction:Function):void
 		{
-			mChildren = mChildren.sort(compareFunction);
+			_children = _children.sort(compareFunction);
 		}
 
 
@@ -290,18 +288,18 @@ package tetragon.view.render2d.display
 		{
 			if (resultRect == null) resultRect = new Rectangle();
 
-			var numChildren:int = mChildren.length;
+			var numChildren:int = _children.length;
 
 			if (numChildren == 0)
 			{
-				getTransformationMatrix(targetSpace, sHelperMatrix);
-				MatrixUtil.transformCoords(sHelperMatrix, 0.0, 0.0, sHelperPoint);
-				resultRect.setTo(sHelperPoint.x, sHelperPoint.y, 0, 0);
+				getTransformationMatrix(targetSpace, _helperMatrix);
+				MatrixUtil.transformCoords(_helperMatrix, 0.0, 0.0, _helperPoint);
+				resultRect.setTo(_helperPoint.x, _helperPoint.y, 0, 0);
 				return resultRect;
 			}
 			else if (numChildren == 1)
 			{
-				return mChildren[0].getBounds(targetSpace, resultRect);
+				return _children[0].getBounds(targetSpace, resultRect);
 			}
 			else
 			{
@@ -310,7 +308,7 @@ package tetragon.view.render2d.display
 
 				for (var i:int = 0; i < numChildren; ++i)
 				{
-					mChildren[i].getBounds(targetSpace, resultRect);
+					_children[i].getBounds(targetSpace, resultRect);
 					minX = minX < resultRect.x ? minX : resultRect.x;
 					maxX = maxX > resultRect.right ? maxX : resultRect.right;
 					minY = minY < resultRect.y ? minY : resultRect.y;
@@ -332,14 +330,14 @@ package tetragon.view.render2d.display
 			var localX:Number = localPoint.x;
 			var localY:Number = localPoint.y;
 
-			var numChildren:int = mChildren.length;
+			var numChildren:int = _children.length;
 			for (var i:int = numChildren - 1; i >= 0; --i) // front to back!
 			{
-				var child:DisplayObject2D = mChildren[i];
-				getTransformationMatrix(child, sHelperMatrix);
+				var child:DisplayObject2D = _children[i];
+				getTransformationMatrix(child, _helperMatrix);
 
-				MatrixUtil.transformCoords(sHelperMatrix, localX, localY, sHelperPoint);
-				var target:DisplayObject2D = child.hitTest(sHelperPoint, forTouch);
+				MatrixUtil.transformCoords(_helperMatrix, localX, localY, _helperPoint);
+				var target:DisplayObject2D = child.hitTest(_helperPoint, forTouch);
 
 				if (target) return target;
 			}
@@ -352,12 +350,12 @@ package tetragon.view.render2d.display
 		public override function render(support:RenderSupport2D, parentAlpha:Number):void
 		{
 			var alpha:Number = parentAlpha * this.alpha;
-			var numChildren:int = mChildren.length;
+			var numChildren:int = _children.length;
 			var blendMode:String = support.blendMode;
 
 			for (var i:int = 0; i < numChildren; ++i)
 			{
-				var child:DisplayObject2D = mChildren[i];
+				var child:DisplayObject2D = _children[i];
 
 				if (child.hasVisibleArea)
 				{
@@ -388,14 +386,16 @@ package tetragon.view.render2d.display
 			// And since another listener could call this method internally, we have to take
 			// care that the static helper vector does not get currupted.
 
-			var fromIndex:int = sBroadcastListeners.length;
-			getChildEventListeners(this, event.type, sBroadcastListeners);
-			var toIndex:int = sBroadcastListeners.length;
+			var fromIndex:int = _broadcastListeners.length;
+			getChildEventListeners(this, event.type, _broadcastListeners);
+			var toIndex:int = _broadcastListeners.length;
 
 			for (var i:int = fromIndex; i < toIndex; ++i)
-				sBroadcastListeners[i].dispatchEvent(event);
+			{
+				_broadcastListeners[i].dispatchEvent(event);
+			}
 
-			sBroadcastListeners.length = fromIndex;
+			_broadcastListeners.length = fromIndex;
 		}
 
 
@@ -418,11 +418,13 @@ package tetragon.view.render2d.display
 
 			if (container)
 			{
-				var children:Vector.<DisplayObject2D> = container.mChildren;
+				var children:Vector.<DisplayObject2D> = container._children;
 				var numChildren:int = children.length;
 
 				for (var i:int = 0; i < numChildren; ++i)
+				{
 					getChildEventListeners(children[i], eventType, listeners);
+				}
 			}
 		}
 
@@ -430,7 +432,7 @@ package tetragon.view.render2d.display
 		/** The number of children of this container. */
 		public function get numChildren():int
 		{
-			return mChildren.length;
+			return _children.length;
 		}
 	}
 }

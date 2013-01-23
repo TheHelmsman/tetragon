@@ -42,12 +42,13 @@ package tetragon.view.render2d.textures
 	 */
 	public class SubTexture2D extends Texture2D
 	{
-		private var mParent:Texture2D;
-		private var mClipping:Rectangle;
-		private var mRootClipping:Rectangle;
-		private var mOwnsParent:Boolean;
+		private var _parent:Texture2D;
+		private var _clipping:Rectangle;
+		private var _rootClipping:Rectangle;
+		private var _ownsParent:Boolean;
+		
 		/** Helper object. */
-		private static var sTexCoords:Point = new Point();
+		private static var _texCoords:Point = new Point();
 
 
 		/** Creates a new subtexture containing the specified region (in points) of a parent 
@@ -55,8 +56,8 @@ package tetragon.view.render2d.textures
 		 *  when the subtexture is disposed. */
 		public function SubTexture2D(parentTexture:Texture2D, region:Rectangle, ownsParent:Boolean = false)
 		{
-			mParent = parentTexture;
-			mOwnsParent = ownsParent;
+			_parent = parentTexture;
+			_ownsParent = ownsParent;
 
 			if (region == null) setClipping(new Rectangle(0, 0, 1, 1));
 			else setClipping(new Rectangle(region.x / parentTexture.width, region.y / parentTexture.height, region.width / parentTexture.width, region.height / parentTexture.height));
@@ -66,25 +67,25 @@ package tetragon.view.render2d.textures
 		/** Disposes the parent texture if this texture owns it. */
 		public override function dispose():void
 		{
-			if (mOwnsParent) mParent.dispose();
+			if (_ownsParent) _parent.dispose();
 			super.dispose();
 		}
 
 
 		private function setClipping(value:Rectangle):void
 		{
-			mClipping = value;
-			mRootClipping = value.clone();
+			_clipping = value;
+			_rootClipping = value.clone();
 
-			var parentTexture:SubTexture2D = mParent as SubTexture2D;
+			var parentTexture:SubTexture2D = _parent as SubTexture2D;
 			while (parentTexture)
 			{
-				var parentClipping:Rectangle = parentTexture.mClipping;
-				mRootClipping.x = parentClipping.x + mRootClipping.x * parentClipping.width;
-				mRootClipping.y = parentClipping.y + mRootClipping.y * parentClipping.height;
-				mRootClipping.width *= parentClipping.width;
-				mRootClipping.height *= parentClipping.height;
-				parentTexture = parentTexture.mParent as SubTexture2D;
+				var parentClipping:Rectangle = parentTexture._clipping;
+				_rootClipping.x = parentClipping.x + _rootClipping.x * parentClipping.width;
+				_rootClipping.y = parentClipping.y + _rootClipping.y * parentClipping.height;
+				_rootClipping.width *= parentClipping.width;
+				_rootClipping.height *= parentClipping.height;
+				parentTexture = parentTexture._parent as SubTexture2D;
 			}
 		}
 
@@ -94,16 +95,16 @@ package tetragon.view.render2d.textures
 		{
 			super.adjustVertexData(vertexData, vertexID, count);
 
-			var clipX:Number = mRootClipping.x;
-			var clipY:Number = mRootClipping.y;
-			var clipWidth:Number = mRootClipping.width;
-			var clipHeight:Number = mRootClipping.height;
+			var clipX:Number = _rootClipping.x;
+			var clipY:Number = _rootClipping.y;
+			var clipWidth:Number = _rootClipping.width;
+			var clipHeight:Number = _rootClipping.height;
 			var endIndex:int = vertexID + count;
 
 			for (var i:int = vertexID; i < endIndex; ++i)
 			{
-				vertexData.getTexCoords(i, sTexCoords);
-				vertexData.setTexCoords(i, clipX + sTexCoords.x * clipWidth, clipY + sTexCoords.y * clipHeight);
+				vertexData.getTexCoords(i, _texCoords);
+				vertexData.setTexCoords(i, clipX + _texCoords.x * clipWidth, clipY + _texCoords.y * clipHeight);
 			}
 		}
 
@@ -111,14 +112,14 @@ package tetragon.view.render2d.textures
 		/** The texture which the subtexture is based on. */
 		public function get parent():Texture2D
 		{
-			return mParent;
+			return _parent;
 		}
 
 
 		/** Indicates if the parent texture is disposed when this object is disposed. */
 		public function get ownsParent():Boolean
 		{
-			return mOwnsParent;
+			return _ownsParent;
 		}
 
 
@@ -126,77 +127,77 @@ package tetragon.view.render2d.textures
 		 *  scaled into [0.0, 1.0]. */
 		public function get clipping():Rectangle
 		{
-			return mClipping.clone();
+			return _clipping.clone();
 		}
 
 
 		/** @inheritDoc */
 		public override function get base():TextureBase
 		{
-			return mParent.base;
+			return _parent.base;
 		}
 
 
 		/** @inheritDoc */
 		public override function get root():ConcreteTexture2D
 		{
-			return mParent.root;
+			return _parent.root;
 		}
 
 
 		/** @inheritDoc */
 		public override function get format():String
 		{
-			return mParent.format;
+			return _parent.format;
 		}
 
 
 		/** @inheritDoc */
 		public override function get width():Number
 		{
-			return mParent.width * mClipping.width;
+			return _parent.width * _clipping.width;
 		}
 
 
 		/** @inheritDoc */
 		public override function get height():Number
 		{
-			return mParent.height * mClipping.height;
+			return _parent.height * _clipping.height;
 		}
 
 
 		/** @inheritDoc */
 		public override function get nativeWidth():Number
 		{
-			return mParent.nativeWidth * mClipping.width;
+			return _parent.nativeWidth * _clipping.width;
 		}
 
 
 		/** @inheritDoc */
 		public override function get nativeHeight():Number
 		{
-			return mParent.nativeHeight * mClipping.height;
+			return _parent.nativeHeight * _clipping.height;
 		}
 
 
 		/** @inheritDoc */
 		public override function get mipMapping():Boolean
 		{
-			return mParent.mipMapping;
+			return _parent.mipMapping;
 		}
 
 
 		/** @inheritDoc */
 		public override function get premultipliedAlpha():Boolean
 		{
-			return mParent.premultipliedAlpha;
+			return _parent.premultipliedAlpha;
 		}
 
 
 		/** @inheritDoc */
 		public override function get scale():Number
 		{
-			return mParent.scale;
+			return _parent.scale;
 		}
 	}
 }

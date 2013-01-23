@@ -30,15 +30,16 @@ package tetragon.view.render2d.textures
 {
 	import flash.display3D.Context3DTextureFormat;
 	import flash.utils.ByteArray;
-
+	
+	
 	/** A parser for the ATF data format. */
 	internal class ATFData2D
 	{
-		private var mFormat:String;
-		private var mWidth:int;
-		private var mHeight:int;
-		private var mNumTextures:int;
-		private var mData:ByteArray;
+		private var _format:String;
+		private var _width:int;
+		private var _height:int;
+		private var _numTextures:int;
+		private var _data:ByteArray;
 
 
 		/** Create a new instance by parsing the given byte array. */
@@ -51,15 +52,15 @@ package tetragon.view.render2d.textures
 			{
 				case 0:
 				case 1:
-					mFormat = Context3DTextureFormat.BGRA;
+					_format = Context3DTextureFormat.BGRA;
 					break;
 				case 2:
 				case 3:
-					mFormat = Context3DTextureFormat.COMPRESSED;
+					_format = Context3DTextureFormat.COMPRESSED;
 					break;
 				case 4:
 				case 5:
-					mFormat = "compressedAlpha";
+					_format = "compressedAlpha";
 					break;
 				// explicit string to stay compatible 
 				// with older versions
@@ -67,40 +68,40 @@ package tetragon.view.render2d.textures
 					throw new Error("Invalid ATF format");
 			}
 
-			mWidth = Math.pow(2, data[7]);
-			mHeight = Math.pow(2, data[8]);
-			mNumTextures = data[9];
-			mData = data;
+			_width = Math.pow(2, data[7]);
+			_height = Math.pow(2, data[8]);
+			_numTextures = data[9];
+			_data = data;
 		}
 
 
 		public function get format():String
 		{
-			return mFormat;
+			return _format;
 		}
 
 
 		public function get width():int
 		{
-			return mWidth;
+			return _width;
 		}
 
 
 		public function get height():int
 		{
-			return mHeight;
+			return _height;
 		}
 
 
 		public function get numTextures():int
 		{
-			return mNumTextures;
+			return _numTextures;
 		}
 
 
 		public function get data():ByteArray
 		{
-			return mData;
+			return _data;
 		}
 	}
 }

@@ -35,24 +35,25 @@ package tetragon.view.render2d.core
 	import flash.display.BitmapData;
 	import flash.display.Shape;
 	import flash.geom.Point;
-
+	
+	
 	/** The TouchMarker is used internally to mark touches created through "simulateMultitouch". */
 	internal class TouchMarker2D extends Sprite2D
 	{
-		private var mCenter:Point;
-		private var mTexture:Texture2D;
+		private var _center:Point;
+		private var _texture:Texture2D;
 
 
 		public function TouchMarker2D()
 		{
-			mCenter = new Point();
-			mTexture = createTexture();
+			_center = new Point();
+			_texture = createTexture();
 
 			for (var i:int = 0; i < 2; ++i)
 			{
-				var marker:Image2D = new Image2D(mTexture);
-				marker.pivotX = mTexture.width / 2;
-				marker.pivotY = mTexture.height / 2;
+				var marker:Image2D = new Image2D(_texture);
+				marker.pivotX = _texture.width / 2;
+				marker.pivotY = _texture.height / 2;
 				marker.touchable = false;
 				addChild(marker);
 			}
@@ -61,7 +62,7 @@ package tetragon.view.render2d.core
 
 		public override function dispose():void
 		{
-			mTexture.dispose();
+			_texture.dispose();
 			super.dispose();
 		}
 
@@ -70,21 +71,21 @@ package tetragon.view.render2d.core
 		{
 			if (withCenter)
 			{
-				mCenter.x += x - realMarker.x;
-				mCenter.y += y - realMarker.y;
+				_center.x += x - realMarker.x;
+				_center.y += y - realMarker.y;
 			}
 
 			realMarker.x = x;
 			realMarker.y = y;
-			mockMarker.x = 2 * mCenter.x - x;
-			mockMarker.y = 2 * mCenter.y - y;
+			mockMarker.x = 2 * _center.x - x;
+			mockMarker.y = 2 * _center.y - y;
 		}
 
 
 		public function moveCenter(x:Number, y:Number):void
 		{
-			mCenter.x = x;
-			mCenter.y = y;
+			_center.x = x;
+			_center.y = y;
 			moveMarker(realX, realY);
 			// reset mock position
 		}

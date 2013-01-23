@@ -56,10 +56,10 @@ package tetragon.view.render2d.display
 	 */
 	public class Image2D extends Quad2D
 	{
-		private var mTexture:Texture2D;
-		private var mSmoothing:String;
-		private var mVertexDataCache:VertexData2D;
-		private var mVertexDataCacheInvalid:Boolean;
+		private var _texture:Texture2D;
+		private var _smoothing:String;
+		private var _vertexDataCache:VertexData2D;
+		private var _vertexDataCacheInvalid:Boolean;
 
 
 		/** Creates a quad with a texture mapped onto it. */
@@ -74,15 +74,15 @@ package tetragon.view.render2d.display
 
 				super(width, height, 0xffffff, pma);
 
-				mVertexData.setTexCoords(0, 0.0, 0.0);
-				mVertexData.setTexCoords(1, 1.0, 0.0);
-				mVertexData.setTexCoords(2, 0.0, 1.0);
-				mVertexData.setTexCoords(3, 1.0, 1.0);
+				_vertexData.setTexCoords(0, 0.0, 0.0);
+				_vertexData.setTexCoords(1, 1.0, 0.0);
+				_vertexData.setTexCoords(2, 0.0, 1.0);
+				_vertexData.setTexCoords(3, 1.0, 1.0);
 
-				mTexture = texture;
-				mSmoothing = TextureSmoothing2D.BILINEAR;
-				mVertexDataCache = new VertexData2D(4, pma);
-				mVertexDataCacheInvalid = true;
+				_texture = texture;
+				_smoothing = TextureSmoothing2D.BILINEAR;
+				_vertexDataCache = new VertexData2D(4, pma);
+				_vertexDataCacheInvalid = true;
 			}
 			else
 			{
@@ -101,7 +101,7 @@ package tetragon.view.render2d.display
 		/** @inheritDoc */
 		protected override function onVertexDataChanged():void
 		{
-			mVertexDataCacheInvalid = true;
+			_vertexDataCacheInvalid = true;
 		}
 
 
@@ -113,10 +113,10 @@ package tetragon.view.render2d.display
 			var width:Number = frame ? frame.width : texture.width;
 			var height:Number = frame ? frame.height : texture.height;
 
-			mVertexData.setPosition(0, 0.0, 0.0);
-			mVertexData.setPosition(1, width, 0.0);
-			mVertexData.setPosition(2, 0.0, height);
-			mVertexData.setPosition(3, width, height);
+			_vertexData.setPosition(0, 0.0, 0.0);
+			_vertexData.setPosition(1, width, 0.0);
+			_vertexData.setPosition(2, 0.0, height);
+			_vertexData.setPosition(3, width, height);
 
 			onVertexDataChanged();
 		}
@@ -125,7 +125,7 @@ package tetragon.view.render2d.display
 		/** Sets the texture coordinates of a vertex. Coordinates are in the range [0, 1]. */
 		public function setTexCoords(vertexID:int, coords:Point):void
 		{
-			mVertexData.setTexCoords(vertexID, coords.x, coords.y);
+			_vertexData.setTexCoords(vertexID, coords.x, coords.y);
 			onVertexDataChanged();
 		}
 
@@ -136,7 +136,7 @@ package tetragon.view.render2d.display
 		public function getTexCoords(vertexID:int, resultPoint:Point = null):Point
 		{
 			if (resultPoint == null) resultPoint = new Point();
-			mVertexData.getTexCoords(vertexID, resultPoint);
+			_vertexData.getTexCoords(vertexID, resultPoint);
 			return resultPoint;
 		}
 
@@ -145,21 +145,21 @@ package tetragon.view.render2d.display
 		 *  The texture coordinates are already in the format required for rendering. */
 		public override function copyVertexDataTo(targetData:VertexData2D, targetVertexID:int = 0):void
 		{
-			if (mVertexDataCacheInvalid)
+			if (_vertexDataCacheInvalid)
 			{
-				mVertexDataCacheInvalid = false;
-				mVertexData.copyTo(mVertexDataCache);
-				mTexture.adjustVertexData(mVertexDataCache, 0, 4);
+				_vertexDataCacheInvalid = false;
+				_vertexData.copyTo(_vertexDataCache);
+				_texture.adjustVertexData(_vertexDataCache, 0, 4);
 			}
 
-			mVertexDataCache.copyTo(targetData, targetVertexID);
+			_vertexDataCache.copyTo(targetData, targetVertexID);
 		}
 
 
 		/** The texture that is displayed on the quad. */
 		public function get texture():Texture2D
 		{
-			return mTexture;
+			return _texture;
 		}
 
 
@@ -169,10 +169,10 @@ package tetragon.view.render2d.display
 			{
 				throw new ArgumentError("Texture cannot be null");
 			}
-			else if (value != mTexture)
+			else if (value != _texture)
 			{
-				mTexture = value;
-				mVertexData.setPremultipliedAlpha(mTexture.premultipliedAlpha);
+				_texture = value;
+				_vertexData.setPremultipliedAlpha(_texture.premultipliedAlpha);
 				onVertexDataChanged();
 			}
 		}
@@ -183,14 +183,14 @@ package tetragon.view.render2d.display
 		 *   @see Render2D.textures.TextureSmoothing */
 		public function get smoothing():String
 		{
-			return mSmoothing;
+			return _smoothing;
 		}
 
 
 		public function set smoothing(value:String):void
 		{
 			if (TextureSmoothing2D.isValid(value))
-				mSmoothing = value;
+				_smoothing = value;
 			else
 				throw new ArgumentError("Invalid smoothing mode: " + value);
 		}
@@ -199,7 +199,7 @@ package tetragon.view.render2d.display
 		/** @inheritDoc */
 		public override function render(support:RenderSupport2D, parentAlpha:Number):void
 		{
-			support.batchQuad(this, parentAlpha, mTexture, mSmoothing);
+			support.batchQuad(this, parentAlpha, _texture, _smoothing);
 		}
 	}
 }

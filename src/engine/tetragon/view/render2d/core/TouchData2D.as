@@ -33,6 +33,9 @@ package tetragon.view.render2d.core
 	import tetragon.view.render2d.events.Touch2D;
 	
 	
+	/**
+	 * Value Object for touch data used by TouchProcessor2D.
+	 */
 	public final class TouchData2D
 	{
 		//-----------------------------------------------------------------------------------------

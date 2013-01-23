@@ -46,7 +46,6 @@ package tetragon.view.render2d.textures
 	import flash.utils.ByteArray;
 
 
-
 	/** <p>A texture stores the information that represents an image. It cannot be added to the
 	 *  display list directly; instead it has to be mapped onto a display object. In Render2D, 
 	 *  that display object is the class "Image".</p>
@@ -102,16 +101,17 @@ package tetragon.view.render2d.textures
 	 */
 	public class Texture2D
 	{
-		private var mFrame:Rectangle;
-		private var mRepeat:Boolean;
+		private var _frame:Rectangle;
+		private var _repeat:Boolean;
+		
 		/** helper object */
-		private static var sOrigin:Point = new Point();
+		private static var _origin:Point = new Point();
 
 
 		/** @private */
 		public function Texture2D()
 		{
-			mRepeat = false;
+			_repeat = false;
 		}
 
 
@@ -151,7 +151,7 @@ package tetragon.view.render2d.textures
 			if (legalWidth > origWidth || legalHeight > origHeight)
 			{
 				potData = new BitmapData(legalWidth, legalHeight, true, 0);
-				potData.copyPixels(data, data.rect, sOrigin);
+				potData.copyPixels(data, data.rect, _origin);
 				data = potData;
 			}
 
@@ -273,7 +273,7 @@ package tetragon.view.render2d.textures
 		public static function fromTexture(texture:Texture2D, region:Rectangle = null, frame:Rectangle = null):Texture2D
 		{
 			var subTexture:Texture2D = new SubTexture2D(texture, region);
-			subTexture.mFrame = frame;
+			subTexture._frame = frame;
 			return subTexture;
 		}
 
@@ -282,17 +282,17 @@ package tetragon.view.render2d.textures
 		 *  required for rendering. */
 		public function adjustVertexData(vertexData:VertexData2D, vertexID:int, count:int):void
 		{
-			if (mFrame)
+			if (_frame)
 			{
 				if (count != 4)
 					throw new ArgumentError("Textures with a frame can only be used on quads");
 
-				var deltaRight:Number = mFrame.width + mFrame.x - width;
-				var deltaBottom:Number = mFrame.height + mFrame.y - height;
+				var deltaRight:Number = _frame.width + _frame.x - width;
+				var deltaBottom:Number = _frame.height + _frame.y - height;
 
-				vertexData.translateVertex(vertexID, -mFrame.x, -mFrame.y);
-				vertexData.translateVertex(vertexID + 1, -deltaRight, -mFrame.y);
-				vertexData.translateVertex(vertexID + 2, -mFrame.x, -deltaBottom);
+				vertexData.translateVertex(vertexID, -_frame.x, -_frame.y);
+				vertexData.translateVertex(vertexID + 1, -deltaRight, -_frame.y);
+				vertexData.translateVertex(vertexID + 2, -_frame.x, -deltaBottom);
 				vertexData.translateVertex(vertexID + 3, -deltaRight, -deltaBottom);
 			}
 		}
@@ -340,7 +340,7 @@ package tetragon.view.render2d.textures
 		/** The texture frame (see class description). */
 		public function get frame():Rectangle
 		{
-			return mFrame ? mFrame.clone() : new Rectangle(0, 0, width, height);
+			return _frame ? _frame.clone() : new Rectangle(0, 0, width, height);
 
 			// the frame property is readonly - set the frame in the 'fromTexture' method.
 			// why is it readonly? To be able to efficiently cache the texture coordinates on
@@ -354,13 +354,13 @@ package tetragon.view.render2d.textures
 		 *  that are not loaded from a texture atlas (i.e. no subtextures). @default false */
 		public function get repeat():Boolean
 		{
-			return mRepeat;
+			return _repeat;
 		}
 
 
 		public function set repeat(value:Boolean):void
 		{
-			mRepeat = value;
+			_repeat = value;
 		}
 
 

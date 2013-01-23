@@ -42,7 +42,11 @@ package tetragon.view.render2d.core
 	import flash.system.System;
 
 	/** A small, lightweight box that displays the current framerate, memory consumption and
-	 *  the number of draw calls per frame. */
+	 *  the number of draw calls per frame.
+	 *  
+	 *  TODO Depricated!
+	 *  
+	 *  */
 	internal class StatsDisplay2D extends Sprite2D
 	{
 		private var mBackground:Quad2D;

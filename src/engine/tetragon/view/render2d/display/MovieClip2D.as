@@ -34,9 +34,12 @@ package tetragon.view.render2d.display
 
 	import flash.errors.IllegalOperationError;
 	import flash.media.Sound;
-
+	
+	
 	/** Dispatched whenever the movie has displayed its last frame. */
 	[Event(name="complete", type="tetragon.view.render2d.events.Event2D")]
+	
+	
 	/** A MovieClip is a simple way to display an animation depicted by a list of textures.
 	 *  
 	 *  <p>Pass the frames of the movie in a vector of textures to the constructor. The movie clip 
@@ -60,16 +63,16 @@ package tetragon.view.render2d.display
 	 */
 	public class MovieClip2D extends Image2D implements IAnimatable2D
 	{
-		private var mTextures:Vector.<Texture2D>;
-		private var mSounds:Vector.<Sound>;
-		private var mDurations:Vector.<Number>;
-		private var mStartTimes:Vector.<Number>;
-		private var mDefaultFrameDuration:Number;
-		private var mTotalTime:Number;
-		private var mCurrentTime:Number;
-		private var mCurrentFrame:int;
-		private var mLoop:Boolean;
-		private var mPlaying:Boolean;
+		private var _textures:Vector.<Texture2D>;
+		private var _sounds:Vector.<Sound>;
+		private var _durations:Vector.<Number>;
+		private var _startTimes:Vector.<Number>;
+		private var _defaultFrameDuration:Number;
+		private var _totalTime:Number;
+		private var _currentTime:Number;
+		private var _currentFrame:int;
+		private var _loop:Boolean;
+		private var _playing:Boolean;
 
 
 		/** Creates a movie clip from the provided textures and with the specified default framerate.
@@ -93,21 +96,21 @@ package tetragon.view.render2d.display
 			if (fps <= 0) throw new ArgumentError("Invalid fps: " + fps);
 			var numFrames:int = textures.length;
 
-			mDefaultFrameDuration = 1.0 / fps;
-			mLoop = true;
-			mPlaying = true;
-			mCurrentTime = 0.0;
-			mCurrentFrame = 0;
-			mTotalTime = mDefaultFrameDuration * numFrames;
-			mTextures = textures.concat();
-			mSounds = new Vector.<Sound>(numFrames);
-			mDurations = new Vector.<Number>(numFrames);
-			mStartTimes = new Vector.<Number>(numFrames);
+			_defaultFrameDuration = 1.0 / fps;
+			_loop = true;
+			_playing = true;
+			_currentTime = 0.0;
+			_currentFrame = 0;
+			_totalTime = _defaultFrameDuration * numFrames;
+			_textures = textures.concat();
+			_sounds = new Vector.<Sound>(numFrames);
+			_durations = new Vector.<Number>(numFrames);
+			_startTimes = new Vector.<Number>(numFrames);
 
 			for (var i:int = 0; i < numFrames; ++i)
 			{
-				mDurations[i] = mDefaultFrameDuration;
-				mStartTimes[i] = i * mDefaultFrameDuration;
+				_durations[i] = _defaultFrameDuration;
+				_startTimes[i] = i * _defaultFrameDuration;
 			}
 		}
 
@@ -125,15 +128,15 @@ package tetragon.view.render2d.display
 		public function addFrameAt(frameID:int, texture:Texture2D, sound:Sound = null, duration:Number = -1):void
 		{
 			if (frameID < 0 || frameID > numFrames) throw new ArgumentError("Invalid frame id");
-			if (duration < 0) duration = mDefaultFrameDuration;
+			if (duration < 0) duration = _defaultFrameDuration;
 
-			mTextures.splice(frameID, 0, texture);
-			mSounds.splice(frameID, 0, sound);
-			mDurations.splice(frameID, 0, duration);
-			mTotalTime += duration;
+			_textures.splice(frameID, 0, texture);
+			_sounds.splice(frameID, 0, sound);
+			_durations.splice(frameID, 0, duration);
+			_totalTime += duration;
 
 			if (frameID > 0 && frameID == numFrames)
-				mStartTimes[frameID] = mStartTimes[frameID - 1] + mDurations[frameID - 1];
+				_startTimes[frameID] = _startTimes[frameID - 1] + _durations[frameID - 1];
 			else
 				updateStartTimes();
 		}
@@ -145,10 +148,10 @@ package tetragon.view.render2d.display
 			if (frameID < 0 || frameID >= numFrames) throw new ArgumentError("Invalid frame id");
 			if (numFrames == 1) throw new IllegalOperationError("Movie clip must not be empty");
 
-			mTotalTime -= getFrameDuration(frameID);
-			mTextures.splice(frameID, 1);
-			mSounds.splice(frameID, 1);
-			mDurations.splice(frameID, 1);
+			_totalTime -= getFrameDuration(frameID);
+			_textures.splice(frameID, 1);
+			_sounds.splice(frameID, 1);
+			_durations.splice(frameID, 1);
 
 			updateStartTimes();
 		}
@@ -158,7 +161,7 @@ package tetragon.view.render2d.display
 		public function getFrameTexture(frameID:int):Texture2D
 		{
 			if (frameID < 0 || frameID >= numFrames) throw new ArgumentError("Invalid frame id");
-			return mTextures[frameID];
+			return _textures[frameID];
 		}
 
 
@@ -166,7 +169,7 @@ package tetragon.view.render2d.display
 		public function setFrameTexture(frameID:int, texture:Texture2D):void
 		{
 			if (frameID < 0 || frameID >= numFrames) throw new ArgumentError("Invalid frame id");
-			mTextures[frameID] = texture;
+			_textures[frameID] = texture;
 		}
 
 
@@ -174,7 +177,7 @@ package tetragon.view.render2d.display
 		public function getFrameSound(frameID:int):Sound
 		{
 			if (frameID < 0 || frameID >= numFrames) throw new ArgumentError("Invalid frame id");
-			return mSounds[frameID];
+			return _sounds[frameID];
 		}
 
 
@@ -183,7 +186,7 @@ package tetragon.view.render2d.display
 		public function setFrameSound(frameID:int, sound:Sound):void
 		{
 			if (frameID < 0 || frameID >= numFrames) throw new ArgumentError("Invalid frame id");
-			mSounds[frameID] = sound;
+			_sounds[frameID] = sound;
 		}
 
 
@@ -191,7 +194,7 @@ package tetragon.view.render2d.display
 		public function getFrameDuration(frameID:int):Number
 		{
 			if (frameID < 0 || frameID >= numFrames) throw new ArgumentError("Invalid frame id");
-			return mDurations[frameID];
+			return _durations[frameID];
 		}
 
 
@@ -199,9 +202,9 @@ package tetragon.view.render2d.display
 		public function setFrameDuration(frameID:int, duration:Number):void
 		{
 			if (frameID < 0 || frameID >= numFrames) throw new ArgumentError("Invalid frame id");
-			mTotalTime -= getFrameDuration(frameID);
-			mTotalTime += duration;
-			mDurations[frameID] = duration;
+			_totalTime -= getFrameDuration(frameID);
+			_totalTime += duration;
+			_durations[frameID] = duration;
 			updateStartTimes();
 		}
 
@@ -210,21 +213,21 @@ package tetragon.view.render2d.display
 		/** Starts playback. Beware that the clip has to be added to a juggler, too! */
 		public function play():void
 		{
-			mPlaying = true;
+			_playing = true;
 		}
 
 
 		/** Pauses playback. */
 		public function pause():void
 		{
-			mPlaying = false;
+			_playing = false;
 		}
 
 
 		/** Stops playback, resetting "currentFrame" to zero. */
 		public function stop():void
 		{
-			mPlaying = false;
+			_playing = false;
 			currentFrame = 0;
 		}
 
@@ -234,11 +237,11 @@ package tetragon.view.render2d.display
 		{
 			var numFrames:int = this.numFrames;
 
-			mStartTimes.length = 0;
-			mStartTimes[0] = 0;
+			_startTimes.length = 0;
+			_startTimes[0] = 0;
 
 			for (var i:int = 1; i < numFrames; ++i)
-				mStartTimes[i] = mStartTimes[i - 1] + mDurations[i - 1];
+				_startTimes[i] = _startTimes[i - 1] + _durations[i - 1];
 		}
 
 
@@ -247,60 +250,60 @@ package tetragon.view.render2d.display
 		public function advanceTime(passedTime:Number):void
 		{
 			var finalFrame:int;
-			var previousFrame:int = mCurrentFrame;
+			var previousFrame:int = _currentFrame;
 			var restTime:Number = 0.0;
 			var breakAfterFrame:Boolean = false;
 
-			if (mLoop && mCurrentTime == mTotalTime)
+			if (_loop && _currentTime == _totalTime)
 			{
-				mCurrentTime = 0.0;
-				mCurrentFrame = 0;
+				_currentTime = 0.0;
+				_currentFrame = 0;
 			}
 
-			if (mPlaying && passedTime > 0.0 && mCurrentTime < mTotalTime)
+			if (_playing && passedTime > 0.0 && _currentTime < _totalTime)
 			{
-				mCurrentTime += passedTime;
-				finalFrame = mTextures.length - 1;
+				_currentTime += passedTime;
+				finalFrame = _textures.length - 1;
 
-				while (mCurrentTime >= mStartTimes[mCurrentFrame] + mDurations[mCurrentFrame])
+				while (_currentTime >= _startTimes[_currentFrame] + _durations[_currentFrame])
 				{
-					if (mCurrentFrame == finalFrame)
+					if (_currentFrame == finalFrame)
 					{
 						if (hasEventListener(Event2D.COMPLETE))
 						{
-							if (mCurrentFrame != previousFrame)
-								texture = mTextures[mCurrentFrame];
+							if (_currentFrame != previousFrame)
+								texture = _textures[_currentFrame];
 
-							restTime = mCurrentTime - mTotalTime;
-							mCurrentTime = mTotalTime;
+							restTime = _currentTime - _totalTime;
+							_currentTime = _totalTime;
 							dispatchEventWith(Event2D.COMPLETE);
 							breakAfterFrame = true;
 						}
 
-						if (mLoop)
+						if (_loop)
 						{
-							mCurrentTime -= mTotalTime;
-							mCurrentFrame = 0;
+							_currentTime -= _totalTime;
+							_currentFrame = 0;
 						}
 						else
 						{
-							mCurrentTime = mTotalTime;
+							_currentTime = _totalTime;
 							breakAfterFrame = true;
 						}
 					}
 					else
 					{
-						mCurrentFrame++;
+						_currentFrame++;
 					}
 
-					var sound:Sound = mSounds[mCurrentFrame];
+					var sound:Sound = _sounds[_currentFrame];
 					if (sound) sound.play();
 					if (breakAfterFrame) break;
 				}
 			}
 
-			if (mCurrentFrame != previousFrame)
-				texture = mTextures[mCurrentFrame];
+			if (_currentFrame != previousFrame)
+				texture = _textures[_currentFrame];
 
 			if (restTime)
 				advanceTime(restTime);
@@ -310,7 +313,7 @@ package tetragon.view.render2d.display
 		/** Indicates if a (non-looping) movie has come to its end. */
 		public function get isComplete():Boolean
 		{
-			return !mLoop && mCurrentTime >= mTotalTime;
+			return !_loop && _currentTime >= _totalTime;
 		}
 
 
@@ -318,47 +321,47 @@ package tetragon.view.render2d.display
 		/** The total duration of the clip in seconds. */
 		public function get totalTime():Number
 		{
-			return mTotalTime;
+			return _totalTime;
 		}
 
 
 		/** The total number of frames. */
 		public function get numFrames():int
 		{
-			return mTextures.length;
+			return _textures.length;
 		}
 
 
 		/** Indicates if the clip should loop. */
 		public function get loop():Boolean
 		{
-			return mLoop;
+			return _loop;
 		}
 
 
 		public function set loop(value:Boolean):void
 		{
-			mLoop = value;
+			_loop = value;
 		}
 
 
 		/** The index of the frame that is currently displayed. */
 		public function get currentFrame():int
 		{
-			return mCurrentFrame;
+			return _currentFrame;
 		}
 
 
 		public function set currentFrame(value:int):void
 		{
-			mCurrentFrame = value;
-			mCurrentTime = 0.0;
+			_currentFrame = value;
+			_currentTime = 0.0;
 
 			for (var i:int = 0; i < value; ++i)
-				mCurrentTime += getFrameDuration(i);
+				_currentTime += getFrameDuration(i);
 
-			texture = mTextures[mCurrentFrame];
-			if (mSounds[mCurrentFrame]) mSounds[mCurrentFrame].play();
+			texture = _textures[_currentFrame];
+			if (_sounds[_currentFrame]) _sounds[_currentFrame].play();
 		}
 
 
@@ -367,7 +370,7 @@ package tetragon.view.render2d.display
 		 *  relatively to the previous value. */
 		public function get fps():Number
 		{
-			return 1.0 / mDefaultFrameDuration;
+			return 1.0 / _defaultFrameDuration;
 		}
 
 
@@ -376,15 +379,15 @@ package tetragon.view.render2d.display
 			if (value <= 0) throw new ArgumentError("Invalid fps: " + value);
 
 			var newFrameDuration:Number = 1.0 / value;
-			var acceleration:Number = newFrameDuration / mDefaultFrameDuration;
-			mCurrentTime *= acceleration;
-			mDefaultFrameDuration = newFrameDuration;
+			var acceleration:Number = newFrameDuration / _defaultFrameDuration;
+			_currentTime *= acceleration;
+			_defaultFrameDuration = newFrameDuration;
 
 			for (var i:int = 0; i < numFrames; ++i)
 			{
-				var duration:Number = mDurations[i] * acceleration;
-				mTotalTime = mTotalTime - mDurations[i] + duration;
-				mDurations[i] = duration;
+				var duration:Number = _durations[i] * acceleration;
+				_totalTime = _totalTime - _durations[i] + duration;
+				_durations[i] = duration;
 			}
 
 			updateStartTimes();
@@ -395,8 +398,8 @@ package tetragon.view.render2d.display
 		 *  is reached. */
 		public function get isPlaying():Boolean
 		{
-			if (mPlaying)
-				return mLoop || mCurrentTime < mTotalTime;
+			if (_playing)
+				return _loop || _currentTime < _totalTime;
 			else
 				return false;
 		}

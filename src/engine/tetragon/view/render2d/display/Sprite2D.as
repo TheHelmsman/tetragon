@@ -32,9 +32,12 @@ package tetragon.view.render2d.display
 	import tetragon.view.render2d.events.Event2D;
 
 	import flash.geom.Matrix;
-
+	
+	
 	/** Dispatched on all children when the object is flattened. */
 	[Event(name="flatten", type="tetragon.view.render2d.events.Event2D")]
+	
+	
 	/** A Sprite is the most lightweight, non-abstract container class.
 	 *  <p>Use it as a simple means of grouping objects together in one coordinate system, or
 	 *  as the base class for custom display objects.</p>
@@ -55,8 +58,8 @@ package tetragon.view.render2d.display
 	 */
 	public class Sprite2D extends DisplayObjectContainer2D
 	{
-		private var mFlattenedContents:Vector.<QuadBatch2D>;
-		private var mFlattenRequested:Boolean;
+		private var _flattenedContents:Vector.<QuadBatch2D>;
+		private var _flattenRequested:Boolean;
 
 
 		/** Creates an empty sprite. */
@@ -76,12 +79,12 @@ package tetragon.view.render2d.display
 
 		private function disposeFlattenedContents():void
 		{
-			if (mFlattenedContents)
+			if (_flattenedContents)
 			{
-				for (var i:int = 0, max:int = mFlattenedContents.length; i < max; ++i)
-					mFlattenedContents[i].dispose();
+				for (var i:int = 0, max:int = _flattenedContents.length; i < max; ++i)
+					_flattenedContents[i].dispose();
 
-				mFlattenedContents = null;
+				_flattenedContents = null;
 			}
 		}
 
@@ -93,7 +96,7 @@ package tetragon.view.render2d.display
 		 *  next rendering. */
 		public function flatten():void
 		{
-			mFlattenRequested = true;
+			_flattenRequested = true;
 			broadcastEventWith(Event2D.FLATTEN);
 		}
 
@@ -102,7 +105,7 @@ package tetragon.view.render2d.display
 		 *  Changes to the sprite's children will immediately become visible again. */
 		public function unflatten():void
 		{
-			mFlattenRequested = false;
+			_flattenRequested = false;
 			disposeFlattenedContents();
 		}
 
@@ -110,26 +113,26 @@ package tetragon.view.render2d.display
 		/** Indicates if the sprite was flattened. */
 		public function get isFlattened():Boolean
 		{
-			return (mFlattenedContents != null) || mFlattenRequested;
+			return (_flattenedContents != null) || _flattenRequested;
 		}
 
 
 		/** @inheritDoc */
 		public override function render(support:RenderSupport2D, parentAlpha:Number):void
 		{
-			if (mFlattenedContents || mFlattenRequested)
+			if (_flattenedContents || _flattenRequested)
 			{
-				if (mFlattenedContents == null)
-					mFlattenedContents = new <QuadBatch2D>[];
+				if (_flattenedContents == null)
+					_flattenedContents = new <QuadBatch2D>[];
 
-				if (mFlattenRequested)
+				if (_flattenRequested)
 				{
-					QuadBatch2D.compile(this, mFlattenedContents);
-					mFlattenRequested = false;
+					QuadBatch2D.compile(this, _flattenedContents);
+					_flattenRequested = false;
 				}
 
 				var alpha:Number = parentAlpha * this.alpha;
-				var numBatches:int = mFlattenedContents.length;
+				var numBatches:int = _flattenedContents.length;
 				var mvpMatrix:Matrix = support.mvpMatrix;
 
 				support.finishQuadBatch();
@@ -137,7 +140,7 @@ package tetragon.view.render2d.display
 
 				for (var i:int = 0; i < numBatches; ++i)
 				{
-					var quadBatch:QuadBatch2D = mFlattenedContents[i];
+					var quadBatch:QuadBatch2D = _flattenedContents[i];
 					var blendMode:String = quadBatch.blendMode == BlendMode2D.AUTO ? support.blendMode : quadBatch.blendMode;
 					quadBatch.renderCustom(mvpMatrix, alpha, blendMode);
 				}

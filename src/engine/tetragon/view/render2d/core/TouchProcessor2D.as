@@ -37,8 +37,11 @@ package tetragon.view.render2d.core
 	import flash.events.EventDispatcher;
 	import flash.geom.Point;
 	import flash.utils.getDefinitionByName;
-
+	
+	
 	use namespace render2d_internal;
+	
+	
 	/** @private
 	 *  The TouchProcessor is used internally to convert mouse and touch events of the conventional
 	 *  Flash stage to Render2D's TouchEvents. */
@@ -46,29 +49,32 @@ package tetragon.view.render2d.core
 	{
 		private static const MULTITAP_TIME:Number = 0.3;
 		private static const MULTITAP_DISTANCE:Number = 25;
-		private var mStage:Stage2D;
-		private var mElapsedTime:Number;
-		private var mTouchMarker:TouchMarker2D;
-		private var mCurrentTouches:Vector.<Touch2D>;
-		private var mQueue:Vector.<Array>;
-		private var mLastTaps:Vector.<Touch2D>;
-		private var mShiftDown:Boolean = false;
-		private var mCtrlDown:Boolean = false;
+		
+		private var _stage2D:Stage2D;
+		private var _elapsedTime:Number;
+		private var _touchMarker:TouchMarker2D;
+		private var _currentTouches:Vector.<Touch2D>;
+		private var _queue:Vector.<Array>;
+		private var _lastTaps:Vector.<Touch2D>;
+		
+		private var _shiftDown:Boolean;
+		private var _ctrlDown:Boolean;
+		
 		/** Helper objects. */
-		private static var sProcessedTouchIDs:Vector.<int> = new <int>[];
-		private static var sHoveringTouchData:Vector.<TouchData2D> = new <TouchData2D>[];
+		private static var _processedTouchIDs:Vector.<int> = new <int>[];
+		private static var _hoveringTouchData:Vector.<TouchData2D> = new <TouchData2D>[];
 
 
-		public function TouchProcessor2D(stage:Stage2D)
+		public function TouchProcessor2D(stage2D:Stage2D)
 		{
-			mStage = stage;
-			mElapsedTime = 0.0;
-			mCurrentTouches = new <Touch2D>[];
-			mQueue = new <Array>[];
-			mLastTaps = new <Touch2D>[];
+			_stage2D = stage2D;
+			_elapsedTime = 0.0;
+			_currentTouches = new <Touch2D>[];
+			_queue = new <Array>[];
+			_lastTaps = new <Touch2D>[];
 
-			mStage.addEventListener(KeyboardEvent2D.KEY_DOWN, onKey);
-			mStage.addEventListener(KeyboardEvent2D.KEY_UP, onKey);
+			_stage2D.addEventListener(KeyboardEvent2D.KEY_DOWN, onKey);
+			_stage2D.addEventListener(KeyboardEvent2D.KEY_UP, onKey);
 			monitorInterruptions(true);
 		}
 
@@ -76,9 +82,9 @@ package tetragon.view.render2d.core
 		public function dispose():void
 		{
 			monitorInterruptions(false);
-			mStage.removeEventListener(KeyboardEvent2D.KEY_DOWN, onKey);
-			mStage.removeEventListener(KeyboardEvent2D.KEY_UP, onKey);
-			if (mTouchMarker) mTouchMarker.dispose();
+			_stage2D.removeEventListener(KeyboardEvent2D.KEY_DOWN, onKey);
+			_stage2D.removeEventListener(KeyboardEvent2D.KEY_UP, onKey);
+			if (_touchMarker) _touchMarker.dispose();
 		}
 
 
@@ -88,73 +94,73 @@ package tetragon.view.render2d.core
 			var touchID:int;
 			var touch:Touch2D;
 
-			mElapsedTime += passedTime;
+			_elapsedTime += passedTime;
 
 			// remove old taps
-			if (mLastTaps.length > 0)
+			if (_lastTaps.length > 0)
 			{
-				for (i = mLastTaps.length - 1; i >= 0; --i)
-					if (mElapsedTime - mLastTaps[i].timestamp > MULTITAP_TIME)
-						mLastTaps.splice(i, 1);
+				for (i = _lastTaps.length - 1; i >= 0; --i)
+					if (_elapsedTime - _lastTaps[i].timestamp > MULTITAP_TIME)
+						_lastTaps.splice(i, 1);
 			}
 
-			while (mQueue.length > 0)
+			while (_queue.length > 0)
 			{
-				sProcessedTouchIDs.length = sHoveringTouchData.length = 0;
+				_processedTouchIDs.length = _hoveringTouchData.length = 0;
 
 				// set touches that were new or moving to phase 'stationary'
-				for each (touch in mCurrentTouches)
+				for each (touch in _currentTouches)
 					if (touch.phase == TouchPhase2D.BEGAN || touch.phase == TouchPhase2D.MOVED)
 						touch.setPhase(TouchPhase2D.STATIONARY);
 
 				// process new touches, but each ID only once
-				while (mQueue.length > 0 && sProcessedTouchIDs.indexOf(mQueue[mQueue.length - 1][0]) == -1)
+				while (_queue.length > 0 && _processedTouchIDs.indexOf(_queue[_queue.length - 1][0]) == -1)
 				{
-					var touchArgs:Array = mQueue.pop();
+					var touchArgs:Array = _queue.pop();
 					touchID = touchArgs[0] as int;
 					touch = getCurrentTouch(touchID);
 
 					// hovering touches need special handling (see below)
 					if (touch && touch.phase == TouchPhase2D.HOVER && touch.target)
 					{
-						sHoveringTouchData.push(new TouchData2D(touch, touch.target, touch.bubbleChain));
+						_hoveringTouchData.push(new TouchData2D(touch, touch.target, touch.bubbleChain));
 					}
 
 					processTouch.apply(this, touchArgs);
-					sProcessedTouchIDs.push(touchID);
+					_processedTouchIDs.push(touchID);
 				}
 
 				// the same touch event will be dispatched to all targets;
 				// the 'dispatch' method will make sure each bubble target is visited only once.
-				var touchEvent:TouchEvent2D = new TouchEvent2D(TouchEvent2D.TOUCH, mCurrentTouches, mShiftDown, mCtrlDown);
+				var touchEvent:TouchEvent2D = new TouchEvent2D(TouchEvent2D.TOUCH, _currentTouches, _shiftDown, _ctrlDown);
 
 				// if the target of a hovering touch changed, we dispatch the event to the previous
 				// target to notify it that it's no longer being hovered over.
-				for each (var touchData:TouchData2D in sHoveringTouchData)
+				for each (var touchData:TouchData2D in _hoveringTouchData)
 					if (touchData.touch.target != touchData.target)
 						touchEvent.dispatch(touchData.bubbleChain);
 
 				// dispatch events
-				for each (touchID in sProcessedTouchIDs)
+				for each (touchID in _processedTouchIDs)
 					getCurrentTouch(touchID).dispatchEvent(touchEvent);
 
 				// remove ended touches
-				for (i = mCurrentTouches.length - 1; i >= 0; --i)
-					if (mCurrentTouches[i].phase == TouchPhase2D.ENDED)
-						mCurrentTouches.splice(i, 1);
+				for (i = _currentTouches.length - 1; i >= 0; --i)
+					if (_currentTouches[i].phase == TouchPhase2D.ENDED)
+						_currentTouches.splice(i, 1);
 			}
 		}
 
 
 		public function enqueue(touchID:int, phase:String, globalX:Number, globalY:Number, pressure:Number = 1.0, width:Number = 1.0, height:Number = 1.0):void
 		{
-			mQueue.unshift(arguments);
+			_queue.unshift(arguments);
 
 			// multitouch simulation (only with mouse)
-			if (mCtrlDown && simulateMultitouch && touchID == 0)
+			if (_ctrlDown && simulateMultitouch && touchID == 0)
 			{
-				mTouchMarker.moveMarker(globalX, globalY, mShiftDown);
-				mQueue.unshift([1, phase, mTouchMarker.mockX, mTouchMarker.mockY]);
+				_touchMarker.moveMarker(globalX, globalY, _shiftDown);
+				_queue.unshift([1, phase, _touchMarker.mockX, _touchMarker.mockY]);
 			}
 		}
 
@@ -172,18 +178,18 @@ package tetragon.view.render2d.core
 			var exitX:Number = mouse.globalX;
 			var exitY:Number = mouse.globalY;
 			var distLeft:Number = mouse.globalX;
-			var distRight:Number = mStage.stageWidth - distLeft;
+			var distRight:Number = _stage2D.stageWidth - distLeft;
 			var distTop:Number = mouse.globalY;
-			var distBottom:Number = mStage.stageHeight - distTop;
+			var distBottom:Number = _stage2D.stageHeight - distTop;
 			var minDist:Number = Math.min(distLeft, distRight, distTop, distBottom);
 
 			// the new hover point should be just outside the stage, near the point where
 			// the mouse point was last to be seen.
 
 			if (minDist == distLeft) exitX = -offset;
-			else if (minDist == distRight) exitX = mStage.stageWidth + offset;
+			else if (minDist == distRight) exitX = _stage2D.stageWidth + offset;
 			else if (minDist == distTop) exitY = -offset;
-			else exitY = mStage.stageHeight + offset;
+			else exitY = _stage2D.stageHeight + offset;
 
 			enqueue(0, TouchPhase2D.HOVER, exitX, exitY);
 		}
@@ -202,12 +208,12 @@ package tetragon.view.render2d.core
 
 			touch.setPosition(globalX, globalY);
 			touch.setPhase(phase);
-			touch.setTimestamp(mElapsedTime);
+			touch.setTimestamp(_elapsedTime);
 			touch.setPressure(pressure);
 			touch.setSize(width, height);
 
 			if (phase == TouchPhase2D.HOVER || phase == TouchPhase2D.BEGAN)
-				touch.setTarget(mStage.hitTest(position, true));
+				touch.setTarget(_stage2D.hitTest(position, true));
 
 			if (phase == TouchPhase2D.BEGAN)
 				processTap(touch);
@@ -218,36 +224,36 @@ package tetragon.view.render2d.core
 		{
 			if (event.keyCode == 17 || event.keyCode == 15) // ctrl or cmd key
 			{
-				var wasCtrlDown:Boolean = mCtrlDown;
-				mCtrlDown = event.type == KeyboardEvent2D.KEY_DOWN;
+				var wasCtrlDown:Boolean = _ctrlDown;
+				_ctrlDown = event.type == KeyboardEvent2D.KEY_DOWN;
 
-				if (simulateMultitouch && wasCtrlDown != mCtrlDown)
+				if (simulateMultitouch && wasCtrlDown != _ctrlDown)
 				{
-					mTouchMarker.visible = mCtrlDown;
-					mTouchMarker.moveCenter(mStage.stageWidth / 2, mStage.stageHeight / 2);
+					_touchMarker.visible = _ctrlDown;
+					_touchMarker.moveCenter(_stage2D.stageWidth / 2, _stage2D.stageHeight / 2);
 
 					var mouseTouch:Touch2D = getCurrentTouch(0);
 					var mockedTouch:Touch2D = getCurrentTouch(1);
 
 					if (mouseTouch)
-						mTouchMarker.moveMarker(mouseTouch.globalX, mouseTouch.globalY);
+						_touchMarker.moveMarker(mouseTouch.globalX, mouseTouch.globalY);
 
 					// end active touch ...
 					if (wasCtrlDown && mockedTouch && mockedTouch.phase != TouchPhase2D.ENDED)
-						mQueue.unshift([1, TouchPhase2D.ENDED, mockedTouch.globalX, mockedTouch.globalY]);
+						_queue.unshift([1, TouchPhase2D.ENDED, mockedTouch.globalX, mockedTouch.globalY]);
 					// ... or start new one
-					else if (mCtrlDown && mouseTouch)
+					else if (_ctrlDown && mouseTouch)
 					{
 						if (mouseTouch.phase == TouchPhase2D.HOVER || mouseTouch.phase == TouchPhase2D.ENDED)
-							mQueue.unshift([1, TouchPhase2D.HOVER, mTouchMarker.mockX, mTouchMarker.mockY]);
+							_queue.unshift([1, TouchPhase2D.HOVER, _touchMarker.mockX, _touchMarker.mockY]);
 						else
-							mQueue.unshift([1, TouchPhase2D.BEGAN, mTouchMarker.mockX, mTouchMarker.mockY]);
+							_queue.unshift([1, TouchPhase2D.BEGAN, _touchMarker.mockX, _touchMarker.mockY]);
 					}
 				}
 			}
 			else if (event.keyCode == 16) // shift key
 			{
-				mShiftDown = event.type == KeyboardEvent2D.KEY_DOWN;
+				_shiftDown = event.type == KeyboardEvent2D.KEY_DOWN;
 			}
 		}
 
@@ -257,7 +263,7 @@ package tetragon.view.render2d.core
 			var nearbyTap:Touch2D = null;
 			var minSqDist:Number = MULTITAP_DISTANCE * MULTITAP_DISTANCE;
 
-			for each (var tap:Touch2D in mLastTaps)
+			for each (var tap:Touch2D in _lastTaps)
 			{
 				var sqDist:Number = Math.pow(tap.globalX - touch.globalX, 2) + Math.pow(tap.globalY - touch.globalY, 2);
 				if (sqDist <= minSqDist)
@@ -270,30 +276,30 @@ package tetragon.view.render2d.core
 			if (nearbyTap)
 			{
 				touch.setTapCount(nearbyTap.tapCount + 1);
-				mLastTaps.splice(mLastTaps.indexOf(nearbyTap), 1);
+				_lastTaps.splice(_lastTaps.indexOf(nearbyTap), 1);
 			}
 			else
 			{
 				touch.setTapCount(1);
 			}
 
-			mLastTaps.push(touch.clone());
+			_lastTaps.push(touch.clone());
 		}
 
 
 		private function addCurrentTouch(touch:Touch2D):void
 		{
-			for (var i:int = mCurrentTouches.length - 1; i >= 0; --i)
-				if (mCurrentTouches[i].id == touch.id)
-					mCurrentTouches.splice(i, 1);
+			for (var i:int = _currentTouches.length - 1; i >= 0; --i)
+				if (_currentTouches[i].id == touch.id)
+					_currentTouches.splice(i, 1);
 
-			mCurrentTouches.push(touch);
+			_currentTouches.push(touch);
 		}
 
 
 		private function getCurrentTouch(touchID:int):Touch2D
 		{
-			for each (var touch:Touch2D in mCurrentTouches)
+			for each (var touch:Touch2D in _currentTouches)
 				if (touch.id == touchID) return touch;
 			return null;
 		}
@@ -301,7 +307,7 @@ package tetragon.view.render2d.core
 
 		public function get simulateMultitouch():Boolean
 		{
-			return mTouchMarker != null;
+			return _touchMarker != null;
 		}
 
 
@@ -311,14 +317,14 @@ package tetragon.view.render2d.core
 			// no change
 			if (value)
 			{
-				mTouchMarker = new TouchMarker2D();
-				mTouchMarker.visible = false;
-				mStage.addChild(mTouchMarker);
+				_touchMarker = new TouchMarker2D();
+				_touchMarker.visible = false;
+				_stage2D.addChild(_touchMarker);
 			}
 			else
 			{
-				mTouchMarker.removeFromParent(true);
-				mTouchMarker = null;
+				_touchMarker.removeFromParent(true);
+				_touchMarker = null;
 			}
 		}
 
@@ -351,7 +357,7 @@ package tetragon.view.render2d.core
 			var touch:Touch2D;
 
 			// abort touches
-			for each (touch in mCurrentTouches)
+			for each (touch in _currentTouches)
 			{
 				if (touch.phase == TouchPhase2D.BEGAN || touch.phase == TouchPhase2D.MOVED || touch.phase == TouchPhase2D.STATIONARY)
 				{
@@ -360,13 +366,13 @@ package tetragon.view.render2d.core
 			}
 
 			// dispatch events
-			var touchEvent:TouchEvent2D = new TouchEvent2D(TouchEvent2D.TOUCH, mCurrentTouches, mShiftDown, mCtrlDown);
+			var touchEvent:TouchEvent2D = new TouchEvent2D(TouchEvent2D.TOUCH, _currentTouches, _shiftDown, _ctrlDown);
 
-			for each (touch in mCurrentTouches)
+			for each (touch in _currentTouches)
 				touch.dispatchEvent(touchEvent);
 
 			// purge touches
-			mCurrentTouches.length = 0;
+			_currentTouches.length = 0;
 		}
 	}
 }

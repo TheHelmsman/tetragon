@@ -33,8 +33,11 @@ package tetragon.view.render2d.events
 	import com.hexagonstar.util.string.formatString;
 
 	import flash.utils.getQualifiedClassName;
-
+	
+	
 	use namespace render2d_internal;
+	
+	
 	/** Event objects are passed as parameters to event listeners when an event occurs.  
 	 *  This is Render2D's version of the Flash Event class. 
 	 *
@@ -51,7 +54,7 @@ package tetragon.view.render2d.events
 	 *  <p>Furthermore, the event class contains methods that can stop the event from being 
 	 *  processed by other listeners - either completely or at the next bubble stage.</p>
 	 * 
-	 *  @see EventDispatcher
+	 *  @see EventDispatcher2D
 	 */
 	public class Event2D
 	{
@@ -91,78 +94,80 @@ package tetragon.view.render2d.events
 		public static const CLOSE:String = "close";
 		/** An event type to be utilized in custom events. Not used by Render2D right now. */
 		public static const SELECT:String = "select";
-		private static var sEventPool:Vector.<Event2D> = new <Event2D>[];
-		private var mTarget:EventDispatcher2D;
-		private var mCurrentTarget:EventDispatcher2D;
-		private var mType:String;
-		private var mBubbles:Boolean;
-		private var mStopsPropagation:Boolean;
-		private var mStopsImmediatePropagation:Boolean;
-		private var mData:Object;
+		
+		private static var _eventPool:Vector.<Event2D> = new <Event2D>[];
+		
+		private var _target:EventDispatcher2D;
+		private var _currentTarget:EventDispatcher2D;
+		private var _type:String;
+		private var _bubbles:Boolean;
+		private var _stopsPropagation:Boolean;
+		private var _stopsImmediatePropagation:Boolean;
+		private var _data:Object;
 
 
 		/** Creates an event object that can be passed to listeners. */
 		public function Event2D(type:String, bubbles:Boolean = false, data:Object = null)
 		{
-			mType = type;
-			mBubbles = bubbles;
-			mData = data;
+			_type = type;
+			_bubbles = bubbles;
+			_data = data;
 		}
 
 
 		/** Prevents listeners at the next bubble stage from receiving the event. */
 		public function stopPropagation():void
 		{
-			mStopsPropagation = true;
+			_stopsPropagation = true;
 		}
 
 
 		/** Prevents any other listeners from receiving the event. */
 		public function stopImmediatePropagation():void
 		{
-			mStopsPropagation = mStopsImmediatePropagation = true;
+			_stopsPropagation = _stopsImmediatePropagation = true;
 		}
 
 
 		/** Returns a description of the event, containing type and bubble information. */
 		public function toString():String
 		{
-			return formatString("[{0} type=\"{1}\" bubbles={2}]", getQualifiedClassName(this).split("::").pop(), mType, mBubbles);
+			return formatString("[{0} type=\"{1}\" bubbles={2}]", getQualifiedClassName(this).split("::").pop(), _type, _bubbles);
 		}
 
 
 		/** Indicates if event will bubble. */
 		public function get bubbles():Boolean
 		{
-			return mBubbles;
+			return _bubbles;
 		}
 
 
 		/** The object that dispatched the event. */
 		public function get target():EventDispatcher2D
 		{
-			return mTarget;
+			return _target;
 		}
 
 
 		/** The object the event is currently bubbling at. */
 		public function get currentTarget():EventDispatcher2D
 		{
-			return mCurrentTarget;
+			return _currentTarget;
 		}
 
 
 		/** A string that identifies the event. */
 		public function get type():String
 		{
-			return mType;
+			return _type;
 		}
 
 
 		/** Arbitrary data that is attached to the event. */
 		public function get data():Object
 		{
-			return mData;
+			return _data;
 		}
 
 
@@ -170,35 +175,35 @@ package tetragon.view.render2d.events
 		/** @private */
 		internal function setTarget(value:EventDispatcher2D):void
 		{
-			mTarget = value;
+			_target = value;
 		}
 
 
 		/** @private */
 		internal function setCurrentTarget(value:EventDispatcher2D):void
 		{
-			mCurrentTarget = value;
+			_currentTarget = value;
 		}
 
 
 		/** @private */
 		internal function setData(value:Object):void
 		{
-			mData = value;
+			_data = value;
 		}
 
 
 		/** @private */
 		internal function get stopsPropagation():Boolean
 		{
-			return mStopsPropagation;
+			return _stopsPropagation;
 		}
 
 
 		/** @private */
 		internal function get stopsImmediatePropagation():Boolean
 		{
-			return mStopsImmediatePropagation;
+			return _stopsImmediatePropagation;
 		}
 
 
@@ -206,7 +211,7 @@ package tetragon.view.render2d.events
 		/** @private */
 		render2d_internal static function fromPool(type:String, bubbles:Boolean = false, data:Object = null):Event2D
 		{
-			if (sEventPool.length) return (sEventPool.pop() as Event2D).reset(type, bubbles, data);
+			if (_eventPool.length) return (_eventPool.pop() as Event2D).reset(type, bubbles, data);
 			else return new Event2D(type, bubbles, data);
 		}
 
@@ -214,19 +219,19 @@ package tetragon.view.render2d.events
 		/** @private */
 		render2d_internal static function toPool(event:Event2D):void
 		{
-			event.mData = event.mTarget = event.mCurrentTarget = null;
-			sEventPool.push(event);
+			event._data = event._target = event._currentTarget = null;
+			_eventPool.push(event);
 		}
 
 
 		/** @private */
 		render2d_internal function reset(type:String, bubbles:Boolean = false, data:Object = null):Event2D
 		{
-			mType = type;
-			mBubbles = bubbles;
-			mData = data;
-			mTarget = mCurrentTarget = null;
-			mStopsPropagation = mStopsImmediatePropagation = false;
+			_type = type;
+			_bubbles = bubbles;
+			_data = data;
+			_target = _currentTarget = null;
+			_stopsPropagation = _stopsImmediatePropagation = false;
 			return this;
 		}
 	}

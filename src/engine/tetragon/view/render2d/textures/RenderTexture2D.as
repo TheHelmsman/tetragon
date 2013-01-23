@@ -40,7 +40,8 @@ package tetragon.view.render2d.textures
 	import flash.display3D.textures.TextureBase;
 	import flash.geom.Matrix;
 	import flash.geom.Rectangle;
-
+	
+	
 	/** A RenderTexture is a dynamic texture onto which you can draw any display object.
 	 * 
 	 *  <p>After creating a render texture, just call the <code>drawObject</code> method to render 
@@ -76,14 +77,16 @@ package tetragon.view.render2d.textures
 	public class RenderTexture2D extends SubTexture2D
 	{
 		private const PMA:Boolean = true;
-		private var mActiveTexture:Texture2D;
-		private var mBufferTexture:Texture2D;
-		private var mHelperImage:Image2D;
-		private var mDrawing:Boolean;
-		private var mBufferReady:Boolean;
-		private var mSupport:RenderSupport2D;
+		
+		private var _activeTexture:Texture2D;
+		private var _bufferTexture:Texture2D;
+		private var _helperImage:Image2D;
+		private var _drawing:Boolean;
+		private var _bufferReady:Boolean;
+		private var _support:RenderSupport2D;
+		
 		/** helper object */
-		private static var sScissorRect:Rectangle = new Rectangle();
+		private static var _scissorRect:Rectangle = new Rectangle();
 
 
 		/** Creates a new RenderTexture with a certain size. If the texture is persistent, the
@@ -97,18 +100,18 @@ package tetragon.view.render2d.textures
 
 			var nativeWidth:int = nextPowerOfTwo(width * scale);
 			var nativeHeight:int = nextPowerOfTwo(height * scale);
-			mActiveTexture = Texture2D.empty(width, height, PMA, true, scale);
+			_activeTexture = Texture2D.empty(width, height, PMA, true, scale);
 
-			super(mActiveTexture, new Rectangle(0, 0, width, height), true);
+			super(_activeTexture, new Rectangle(0, 0, width, height), true);
 
-			mSupport = new RenderSupport2D();
-			mSupport.setOrthographicProjection(0, 0, nativeWidth / scale, nativeHeight / scale);
+			_support = new RenderSupport2D();
+			_support.setOrthographicProjection(0, 0, nativeWidth / scale, nativeHeight / scale);
 
 			if (persistent)
 			{
-				mBufferTexture = Texture2D.empty(width, height, PMA, true, scale);
-				mHelperImage = new Image2D(mBufferTexture);
-				mHelperImage.smoothing = TextureSmoothing2D.NONE;
+				_bufferTexture = Texture2D.empty(width, height, PMA, true, scale);
+				_helperImage = new Image2D(_bufferTexture);
+				_helperImage.smoothing = TextureSmoothing2D.NONE;
 				// solves some antialias-issues
 			}
 		}
@@ -117,12 +120,12 @@ package tetragon.view.render2d.textures
 		/** @inheritDoc */
 		public override function dispose():void
 		{
-			mSupport.dispose();
+			_support.dispose();
 
 			if (isPersistent)
 			{
-				mBufferTexture.dispose();
-				mHelperImage.dispose();
+				_bufferTexture.dispose();
+				_helperImage.dispose();
 			}
 
 			super.dispose();
@@ -143,20 +146,20 @@ package tetragon.view.render2d.textures
 		{
 			if (object == null) return;
 
-			if (mDrawing)
+			if (_drawing)
 				render();
 			else
 				drawBundled(render, antiAliasing);
 
 			function render():void
 			{
-				mSupport.loadIdentity();
-				mSupport.blendMode = object.blendMode;
+				_support.loadIdentity();
+				_support.blendMode = object.blendMode;
 
-				if (matrix) mSupport.prependMatrix(matrix);
-				else mSupport.transformMatrix(object);
+				if (matrix) _support.prependMatrix(matrix);
+				else _support.transformMatrix(object);
 
-				object.render(mSupport, alpha);
+				object.render(_support, alpha);
 			}
 		}
 
@@ -174,28 +177,28 @@ package tetragon.view.render2d.textures
 			// switch buffers
 			if (isPersistent)
 			{
-				var tmpTexture:Texture2D = mActiveTexture;
-				mActiveTexture = mBufferTexture;
-				mBufferTexture = tmpTexture;
-				mHelperImage.texture = mBufferTexture;
+				var tmpTexture:Texture2D = _activeTexture;
+				_activeTexture = _bufferTexture;
+				_bufferTexture = tmpTexture;
+				_helperImage.texture = _bufferTexture;
 			}
 
 			// limit drawing to relevant area
-			sScissorRect.setTo(0, 0, mActiveTexture.nativeWidth, mActiveTexture.nativeHeight);
+			_scissorRect.setTo(0, 0, _activeTexture.nativeWidth, _activeTexture.nativeHeight);
 
-			mSupport.scissorRectangle = sScissorRect;
-			mSupport.renderTarget = mActiveTexture;
-			mSupport.clear();
+			_support.scissorRectangle = _scissorRect;
+			_support.renderTarget = _activeTexture;
+			_support.clear();
 
 			// draw buffer
-			if (isPersistent && mBufferReady)
-				mHelperImage.render(mSupport, 1.0);
+			if (isPersistent && _bufferReady)
+				_helperImage.render(_support, 1.0);
 			else
-				mBufferReady = true;
+				_bufferReady = true;
 
 			try
 			{
-				mDrawing = true;
+				_drawing = true;
 
 				// draw new objects
 				if (drawingBlock != null)
@@ -203,11 +206,11 @@ package tetragon.view.render2d.textures
 			}
 			finally
 			{
-				mDrawing = false;
-				mSupport.finishQuadBatch();
-				mSupport.nextFrame();
-				mSupport.renderTarget = null;
-				mSupport.scissorRectangle = null;
+				_drawing = false;
+				_support.finishQuadBatch();
+				_support.nextFrame();
+				_support.renderTarget = null;
+				_support.scissorRectangle = null;
 			}
 		}
 
@@ -218,30 +221,30 @@ package tetragon.view.render2d.textures
 			var context:Context3D = Render2D.context;
 			if (context == null) throw new MissingContext3DException();
 
-			mSupport.renderTarget = mActiveTexture;
-			mSupport.clear();
-			mSupport.renderTarget = null;
+			_support.renderTarget = _activeTexture;
+			_support.clear();
+			_support.renderTarget = null;
 		}
 
 
 		/** Indicates if the texture is persistent over multiple draw calls. */
 		public function get isPersistent():Boolean
 		{
-			return mBufferTexture != null;
+			return _bufferTexture != null;
 		}
 
 
 		/** @inheritDoc */
 		public override function get base():TextureBase
 		{
-			return mActiveTexture.base;
+			return _activeTexture.base;
 		}
 
 
 		/** @inheritDoc */
 		public override function get root():ConcreteTexture2D
 		{
-			return mActiveTexture.root;
+			return _activeTexture.root;
 		}
 	}
 }
