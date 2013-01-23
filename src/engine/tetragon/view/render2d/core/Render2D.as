@@ -28,6 +28,7 @@
  */
 package tetragon.view.render2d.core
 {
+	import tetragon.Main;
 	import tetragon.debug.Log;
 	import tetragon.view.render2d.animation.Juggler2D;
 	import tetragon.view.render2d.display.DisplayObject2D;
@@ -247,9 +248,9 @@ package tetragon.view.render2d.core
 		/** @private */
 		private static var _current:Render2D;
 		/** @private */
-		private static var _handleLostContext:Boolean;
+		private static var _contextData:Dictionary;
 		/** @private */
-		private static var _contextData:Dictionary = new Dictionary(true);
+		private static var _handleLostContext:Boolean;
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -259,7 +260,6 @@ package tetragon.view.render2d.core
 		/**
 		 * Creates a new Render2D instance.
 		 * 
-		 * @param stage The native Flash stage.
 		 * @param rootClass A subclass of a Render2D display object. It will be created as
 		 *            soon as initialization is finished and will become the first child of
 		 *            the Render2D stage.
@@ -271,18 +271,18 @@ package tetragon.view.render2d.core
 		 * @param renderMode Use this parameter to force "software" rendering.
 		 * @param profile The Context3DProfile that should be requested.
 		 */
-		public function Render2D(stage:Stage, rootClass:Class, viewPort:Rectangle = null,
+		public function Render2D(rootClass:Class, viewPort:Rectangle = null,
 			stage3D:Stage3D = null, renderMode:String = "auto",
 			profile:String = "baselineConstrained")
 		{
-			if (!stage) throw new ArgumentError("Stage must not be null");
 			if (!rootClass) throw new ArgumentError("Root class must not be null");
 			if (!viewPort) viewPort = new Rectangle(0, 0, stage.stageWidth, stage.stageHeight);
 			if (!stage3D) stage3D = stage.stage3Ds[0];
+			if (!_contextData) _contextData = new Dictionary(true);
 			
 			makeCurrent();
 			
-			_stage = stage;
+			_stage = Main.instance.stage;
 			_rootClass = rootClass;
 			_viewPort = viewPort;
 			_stage3D = stage3D;

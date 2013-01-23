@@ -156,22 +156,22 @@ package view.render2d
 		 */
 		override protected function createChildren():void
 		{
-			var render2D1:Render2D = new Render2D(main.stage, Render2DGameView, new Rectangle(0, 0, 512, 320), main.stage.stage3Ds[0]);
+			var render2D1:Render2D = new Render2D(Render2DGameView, new Rectangle(0, 0, 512, 320), main.stage.stage3Ds[0]);
 			render2D1.antiAliasing = 1;
 			render2D1.simulateMultitouch = true;
 			render2D1.start();
 
-			var render2D2:Render2D = new Render2D(main.stage, Render2DGameView, new Rectangle(512, 0, 512, 320), main.stage.stage3Ds[1]);
+			var render2D2:Render2D = new Render2D(Render2DGameView, new Rectangle(512, 0, 512, 320), main.stage.stage3Ds[1]);
 			render2D2.antiAliasing = 1;
 			render2D2.simulateMultitouch = true;
 			render2D2.start();
 			
-			var render2D3:Render2D = new Render2D(main.stage, Render2DGameView, new Rectangle(0, 320, 512, 320), main.stage.stage3Ds[2]);
+			var render2D3:Render2D = new Render2D(Render2DGameView, new Rectangle(0, 320, 512, 320), main.stage.stage3Ds[2]);
 			render2D3.antiAliasing = 1;
 			render2D3.simulateMultitouch = true;
 			render2D3.start();
 			
-			var render2D4:Render2D = new Render2D(main.stage, Render2DGameView, new Rectangle(512, 320, 512, 320), main.stage.stage3Ds[3]);
+			var render2D4:Render2D = new Render2D(Render2DGameView, new Rectangle(512, 320, 512, 320), main.stage.stage3Ds[3]);
 			render2D4.antiAliasing = 1;
 			render2D4.simulateMultitouch = true;
 			render2D4.start();
