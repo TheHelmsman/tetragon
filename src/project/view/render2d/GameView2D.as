@@ -28,8 +28,7 @@
  */
 package view.render2d
 {
-	import tetragon.view.render2d.display.Quad2D;
-	import tetragon.view.render2d.display.Sprite2D;
+	import tetragon.view.render2d.View2D;
 	import tetragon.view.render2d.events.Event2D;
 	import tetragon.view.render2d.text.TextField2D;
 	
@@ -39,14 +38,14 @@ package view.render2d
 	 *
 	 * @author hexagon
 	 */
-	public class Render2DGameView extends Sprite2D
+	public class GameView2D extends View2D
 	{
 		//-----------------------------------------------------------------------------------------
 		// Properties
 		//-----------------------------------------------------------------------------------------
 		
 		private var _id:String;
-		private var _quad:Quad2D;
+		//private var _quad:Quad2D;
 		private var _tf:TextField2D;
 		
 		
@@ -57,10 +56,10 @@ package view.render2d
 		/**
 		 * Creates a new instance of the class.
 		 */
-		public function Render2DGameView(id:String)
+		public function GameView2D(id:String, x:int, y:int, w:int, h:int, backgroundColor:uint)
 		{
 			_id = id;
-			addEventListener(Event2D.ADDED_TO_STAGE, onAddedToStage);
+			super(x, y, w, h, backgroundColor);
 		}
 		
 		
@@ -78,37 +77,31 @@ package view.render2d
 		// Callback Handlers
 		//-----------------------------------------------------------------------------------------
 		
-		private function onAddedToStage(e:Event2D):void
+		override protected function onAddedToStage(e:Event2D):void
 		{
-			removeEventListener(Event2D.ADDED_TO_STAGE, onAddedToStage);
-			
-			x = int(Math.random() * stage.stageWidth);
-			y = int(Math.random() * stage.stageHeight);
-			
-			_quad = new Quad2D(200, 200);
-			_quad.setVertexColor(0, Math.random() * 0xFFFFFF);
-			_quad.setVertexColor(1, Math.random() * 0xFFFFFF);
-			_quad.setVertexColor(2, Math.random() * 0xFFFFFF);
-			_quad.setVertexColor(3, Math.random() * 0xFFFFFF);
-			addChild(_quad);
-			
-			_tf = new TextField2D(200, 200, _id, "Verdana", 28, 0xFFFFFF);
+			super.onAddedToStage(e);
+			_tf = new TextField2D(300, 300, _id, "Verdana", 28, 0xFFFFFF);
 			_tf.border = true;
 			addChild(_tf);
-			
-			addEventListener(Event2D.ENTER_FRAME, onEnterFrame);
+			//addEventListener(Event2D.ENTER_FRAME, onEnterFrame);
 		}
-
-
-		private function onEnterFrame(e:Event2D):void
-		{
-			rotation += 0.01;
-		}
+		
+		//private function onEnterFrame(e:Event2D):void
+		//{
+			//rotation += 0.01;
+		//}
 		
 		
 		//-----------------------------------------------------------------------------------------
 		// Private Methods
 		//-----------------------------------------------------------------------------------------
 		
+		/**
+		 * @private
+		 */
+		override protected function setup():void
+		{
+			super.setup();
+		}
 	}
 }

@@ -28,27 +28,49 @@
  */
 package tetragon.view.render2d
 {
+	import tetragon.view.render2d.events.Event2D;
 	import tetragon.view.IView;
+	import tetragon.view.render2d.display.Quad2D;
+	import tetragon.view.render2d.display.Sprite2D;
 
+	import flash.geom.Rectangle;
+	
+	
 	/**
 	 * View2D class
 	 *
 	 * @author hexagon
 	 */
-	public class View2D implements IView
+	public class View2D extends Sprite2D implements IView
 	{
 		// -----------------------------------------------------------------------------------------
 		// Properties
 		// -----------------------------------------------------------------------------------------
+		
+		protected var _backgroundColor:uint;
+		protected var _background:Quad2D;
+		protected var _viewPort:Rectangle;
+		
+		
 		// -----------------------------------------------------------------------------------------
 		// Constructor
 		// -----------------------------------------------------------------------------------------
+		
 		/**
 		 * Creates a new instance of the class.
 		 */
-		public function View2D()
+		public function View2D(x:int, y:int, w:int, h:int, backgroundColor:uint)
 		{
+			_viewPort = new Rectangle(x, y, w, h);
+			_backgroundColor = backgroundColor;
+			
+			super();
+			setup();
+			
+			addEventListener(Event2D.ADDED_TO_STAGE, onAddedToStage);
 		}
+		
+		
 		// -----------------------------------------------------------------------------------------
 		// Public Methods
 		// -----------------------------------------------------------------------------------------
@@ -58,14 +80,37 @@ package tetragon.view.render2d
 		// Accessors
 		// -----------------------------------------------------------------------------------------
 		
+		public function get viewPort():Rectangle
+		{
+			return _viewPort;
+		}
+		
 		
 		// -----------------------------------------------------------------------------------------
 		// Callback Handlers
 		// -----------------------------------------------------------------------------------------
 		
+		protected function onAddedToStage(e:Event2D):void
+		{
+			removeEventListener(Event2D.ADDED_TO_STAGE, onAddedToStage);
+		}
+		
 		
 		// -----------------------------------------------------------------------------------------
 		// Private Methods
 		// -----------------------------------------------------------------------------------------
+		
+		/**
+		 * @private
+		 */
+		protected function setup():void
+		{
+			x = _viewPort.x;
+			y = _viewPort.y;
+			
+			_background = new Quad2D(_viewPort.width, _viewPort.height);
+			_background.color = _backgroundColor;
+			addChild(_background);
+		}
 	}
 }

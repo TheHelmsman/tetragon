@@ -30,9 +30,9 @@ package tetragon.view.render2d.core
 {
 	import tetragon.Main;
 	import tetragon.debug.Log;
+	import tetragon.view.render2d.View2D;
 	import tetragon.view.render2d.animation.Juggler2D;
 	import tetragon.view.render2d.display.DisplayObject2D;
-	import tetragon.view.render2d.display.Sprite2D;
 	import tetragon.view.render2d.display.Stage2D;
 	import tetragon.view.render2d.events.Event2D;
 	import tetragon.view.render2d.events.EventDispatcher2D;
@@ -40,9 +40,7 @@ package tetragon.view.render2d.core
 	import tetragon.view.render2d.events.ResizeEvent2D;
 	import tetragon.view.render2d.touch.TouchPhase2D;
 	import tetragon.view.render2d.touch.TouchProcessor2D;
-
-	import com.hexagonstar.constants.HAlign;
-	import com.hexagonstar.constants.VAlign;
+	import tetragon.view.stage3d.Stage3DProxy;
 
 	import flash.display.Sprite;
 	import flash.display.Stage;
@@ -209,7 +207,7 @@ package tetragon.view.render2d.core
 		private var _nativeOverlay:Sprite;
 		
 		/** @private */
-		private var _root:Sprite2D;
+		private var _rootView:View2D;
 		
 		/** @private */
 		private var _juggler:Juggler2D;
@@ -271,25 +269,22 @@ package tetragon.view.render2d.core
 		 * @param renderMode Use this parameter to force "software" rendering.
 		 * @param profile The Context3DProfile that should be requested.
 		 */
-		public function Render2D(root:Sprite2D, viewPort:Rectangle = null,
-			stage3D:Stage3D = null, renderMode:String = "auto",
-			profile:String = "baselineConstrained")
+		public function Render2D(rootView:View2D, stage3DProxy:Stage3DProxy,
+			renderMode:String = "auto", profile:String = "baselineConstrained")
 		{
 			_stage = Main.instance.stage;
 			
-			if (!root) root = new Sprite2D();
 			if (!viewPort) viewPort = new Rectangle(0, 0, _stage.stageWidth, _stage.stageHeight);
-			if (!stage3D) stage3D = _stage.stage3Ds[0];
 			if (!_contextData) _contextData = new Dictionary(true);
 			
 			makeCurrent();
 			
-			_root = root;
-			_viewPort = viewPort;
-			_stage3D = stage3D;
+			_rootView = rootView;
+			_viewPort = rootView.viewPort;
+			_stage3D = stage3DProxy.stage3D;
 			
 			_previousViewPort = new Rectangle();
-			_stage2D = new Stage2D(viewPort.width, viewPort.height, _stage.color);
+			_stage2D = new Stage2D(stage3DProxy.viewPort.width, stage3DProxy.viewPort.height, stage3DProxy.color);
 			_touchProcessor = new TouchProcessor2D(_stage2D);
 			_juggler = new Juggler2D();
 			_renderSupport = new RenderSupport2D();
@@ -550,43 +545,43 @@ package tetragon.view.render2d.core
 		 * @param vAlign
 		 * @param scale
 		 */
-		public function showStatsAt(hAlign:String = "left", vAlign:String = "top",
-			scale:Number = 1.0):void
-		{
-			if (!_context)
-			{
-				// Render2D is not yet ready - we postpone this until it's initialized.
-				addEventListener(Event2D.ROOT_CREATED, onRootCreated);
-			}
-			else
-			{
-				if (_statsDisplay == null)
-				{
-					_statsDisplay = new StatsDisplay2D();
-					_statsDisplay.touchable = false;
-					_stage2D.addChild(_statsDisplay);
-				}
-
-				var stageWidth:int = _stage2D.stageWidth;
-				var stageHeight:int = _stage2D.stageHeight;
-
-				_statsDisplay.scaleX = _statsDisplay.scaleY = scale;
-
-				if (hAlign == HAlign.LEFT) _statsDisplay.x = 0;
-				else if (hAlign == HAlign.RIGHT) _statsDisplay.x = stageWidth - _statsDisplay.width;
-				else _statsDisplay.x = int((stageWidth - _statsDisplay.width) / 2);
-
-				if (vAlign == VAlign.TOP) _statsDisplay.y = 0;
-				else if (vAlign == VAlign.BOTTOM) _statsDisplay.y = stageHeight - _statsDisplay.height;
-				else _statsDisplay.y = int((stageHeight - _statsDisplay.height) / 2);
-			}
-
-			function onRootCreated():void
-			{
-				showStatsAt(hAlign, vAlign, scale);
-				removeEventListener(Event2D.ROOT_CREATED, onRootCreated);
-			}
-		}
+		//public function showStatsAt(hAlign:String = "left", vAlign:String = "top",
+		//	scale:Number = 1.0):void
+		//{
+		//	if (!_context)
+		//	{
+		//		// Render2D is not yet ready - we postpone this until it's initialized.
+		//		addEventListener(Event2D.ROOT_CREATED, onRootCreated);
+		//	}
+		//	else
+		//	{
+		//		if (_statsDisplay == null)
+		//		{
+		//			_statsDisplay = new StatsDisplay2D();
+		//			_statsDisplay.touchable = false;
+		//			_stage2D.addChild(_statsDisplay);
+		//		}
+		//
+		//		var stageWidth:int = _stage2D.stageWidth;
+		//		var stageHeight:int = _stage2D.stageHeight;
+		//
+		//		_statsDisplay.scaleX = _statsDisplay.scaleY = scale;
+		//
+		//		if (hAlign == HAlign.LEFT) _statsDisplay.x = 0;
+		//		else if (hAlign == HAlign.RIGHT) _statsDisplay.x = stageWidth - _statsDisplay.width;
+		//		else _statsDisplay.x = int((stageWidth - _statsDisplay.width) / 2);
+		//
+		//		if (vAlign == VAlign.TOP) _statsDisplay.y = 0;
+		//		else if (vAlign == VAlign.BOTTOM) _statsDisplay.y = stageHeight - _statsDisplay.height;
+		//		else _statsDisplay.y = int((stageHeight - _statsDisplay.height) / 2);
+		//	}
+		//
+		//	function onRootCreated():void
+		//	{
+		//		showStatsAt(hAlign, vAlign, scale);
+		//		removeEventListener(Event2D.ROOT_CREATED, onRootCreated);
+		//	}
+		//}
 		
 		
 		/**
@@ -742,20 +737,20 @@ package tetragon.view.render2d.core
 		 * Indicates if a small statistics box (with FPS, memory usage and draw count)
 		 * is displayed.
 		 */
-		public function get showStats():Boolean
-		{
-			return _statsDisplay && _statsDisplay.parent;
-		}
-		public function set showStats(v:Boolean):void
-		{
-			if (v == showStats) return;
-			if (v)
-			{
-				if (_statsDisplay) _stage2D.addChild(_statsDisplay);
-				else showStatsAt();
-			}
-			else _statsDisplay.removeFromParent();
-		}
+		//public function get showStats():Boolean
+		//{
+		//	return _statsDisplay && _statsDisplay.parent;
+		//}
+		//public function set showStats(v:Boolean):void
+		//{
+		//	if (v == showStats) return;
+		//	if (v)
+		//	{
+		//		if (_statsDisplay) _stage2D.addChild(_statsDisplay);
+		//		else showStatsAt();
+		//	}
+		//	else _statsDisplay.removeFromParent();
+		//}
 		
 		
 		/**
@@ -792,7 +787,7 @@ package tetragon.view.render2d.core
 		 */
 		public function get root():DisplayObject2D
 		{
-			return _root;
+			return _rootView;
 		}
 		
 		
@@ -1129,8 +1124,8 @@ package tetragon.view.render2d.core
 		 */
 		private function initializeRoot():void
 		{
-			_stage2D.addChildAt(_root, 0);
-			dispatchEventWith(Event2D.ROOT_CREATED, false, _root);
+			_stage2D.addChildAt(_rootView, 0);
+			dispatchEventWith(Event2D.ROOT_CREATED, false, _rootView);
 		}
 		
 		

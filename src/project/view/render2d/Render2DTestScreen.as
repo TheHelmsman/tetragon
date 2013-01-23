@@ -54,8 +54,15 @@ package view.render2d
 		//private var _stage3DManager:Stage3D;
 		
 		private var _stage3DProxy:Stage3DProxy;
-		private var _render2Ds:Vector.<Render2D>;
-
+		
+		private var _gameView1:GameView2D;
+		private var _gameView2:GameView2D;
+		private var _gameView3:GameView2D;
+		
+		private var _render2D1:Render2D;
+		private var _render2D2:Render2D;
+		private var _render2D3:Render2D;
+		
 		
 		//-----------------------------------------------------------------------------------------
 		// Signals
@@ -140,27 +147,37 @@ package view.render2d
 		
 		private function onContext3DCreated(e:Stage3DEvent):void
 		{
-			_render2Ds = new Vector.<Render2D>(10, true);
-			for (var i:uint = 0; i < _render2Ds.length; i++)
-			{
-				var render2D:Render2D = new Render2D(new Render2DGameView("" + i), null, _stage3DProxy.stage3D);
-				render2D.enableErrorChecking = true;
-				render2D.simulateMultitouch = true;
-				render2D.antiAliasing = 2;
-				render2D.start();
-				_render2Ds[i] = render2D;
-			}
-				
+			_gameView1 = new GameView2D("1", 0, 0, 200, 200, 0xAA0000);
+			_gameView2 = new GameView2D("2", 210, 0, 200, 200, 0x009955);
+			_gameView3 = new GameView2D("3", 420, 0, 200, 200, 0x005599);
+			
+			_render2D1 = new Render2D(_gameView1, _stage3DProxy);
+			_render2D1.enableErrorChecking = true;
+			_render2D1.simulateMultitouch = true;
+			_render2D1.antiAliasing = 2;
+			_render2D1.start();
+			
+			_render2D2 = new Render2D(_gameView2, _stage3DProxy);
+			_render2D2.enableErrorChecking = true;
+			_render2D2.simulateMultitouch = true;
+			_render2D2.antiAliasing = 2;
+			_render2D2.start();
+			
+			_render2D3 = new Render2D(_gameView3, _stage3DProxy);
+			_render2D3.enableErrorChecking = true;
+			_render2D3.simulateMultitouch = true;
+			_render2D3.antiAliasing = 2;
+			_render2D3.start();
+			
 			_stage3DProxy.addEventListener(Event.ENTER_FRAME, onEnterFrame);
 		}
-
-
+		
+		
 		private function onEnterFrame(event:Event):void
 		{
-			for (var i:uint = 0; i < _render2Ds.length; i++)
-			{
-				_render2Ds[i].nextFrame();
-			}
+			_render2D1.nextFrame();
+			_render2D2.nextFrame();
+			_render2D3.nextFrame();
 		}		
 		
 		
@@ -191,8 +208,8 @@ package view.render2d
 		override protected function createChildren():void
 		{
 			_stage3DProxy = main.stage3DManager.getFreeStage3DProxy();
-			_stage3DProxy.antiAlias = 8;
-			_stage3DProxy.color = 0x003355;
+			_stage3DProxy.antiAlias = 2;
+			_stage3DProxy.color = 0x000000;
 			_stage3DProxy.addEventListener(Stage3DEvent.CONTEXT3D_CREATED, onContext3DCreated);
 			_stage3DProxy.requestContext3D();
 		}
