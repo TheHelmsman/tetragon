@@ -90,18 +90,6 @@ package tetragon.view.stage3d
 		
 		
 		/**
-		 * Removes a Stage3DProxy from the manager.
-		 * 
-		 * @param stage3DProxy
-		 */
-		public function removeStage3DProxy(stage3DProxy:Stage3DProxy):void
-		{
-			_numStageProxies--;
-			_stageProxies[stage3DProxy.stage3DIndex] = null;
-		}
-		
-		
-		/**
 		 * Get the next available stage3DProxy. An error is thrown if there are no
 		 * Stage3DProxies available
 		 * 
@@ -168,6 +156,22 @@ package tetragon.view.stage3d
 		public function get numProxySlotsTotal():uint
 		{
 			return _stageProxies.length;
+		}
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Internal
+		//-----------------------------------------------------------------------------------------
+		
+		/**
+		 * Removes a Stage3DProxy from the manager.
+		 * 
+		 * @param stage3DProxy
+		 */
+		internal function removeStage3DProxy(stage3DProxy:Stage3DProxy):void
+		{
+			_numStageProxies--;
+			_stageProxies[stage3DProxy.stage3DIndex] = null;
 		}
 	}
 }

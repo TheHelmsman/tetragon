@@ -178,24 +178,17 @@ package view.render2d
 				_render2D4.antiAliasing = 2;
 				_render2D4.start();
 				
-				addEventListener(Event.ENTER_FRAME, onEnterFrame);
+				_stage3DProxy.addEventListener(Event.ENTER_FRAME, onEnterFrame);
 			}
 		}
 
 
 		private function onEnterFrame(event:Event):void
 		{
-			// The back buffer needs to be cleared once per frame
-			_stage3DProxy.context3D.clear();
-
-			// Advance both Starling instances
 			_render2D1.nextFrame();
 			_render2D2.nextFrame();
 			_render2D3.nextFrame();
 			_render2D4.nextFrame();
-
-			// This moves the active back buffer into the foreground.
-			_stage3DProxy.context3D.present();
 		}		
 		
 		
