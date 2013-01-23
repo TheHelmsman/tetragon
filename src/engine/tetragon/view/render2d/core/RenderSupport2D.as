@@ -48,409 +48,549 @@ package tetragon.view.render2d.core
 	import flash.geom.Rectangle;
 	
 	
-	/** A class that contains helper methods simplifying Stage3D rendering.
-	 *
-	 *  A RenderSupport instance is passed to any "render" method of display objects. 
-	 *  It allows manipulation of the current transformation matrix (similar to the matrix 
-	 *  manipulation methods of OpenGL 1.x) and other helper methods.
+	/**
+	 * A class that contains helper methods simplifying Stage3D rendering. A RenderSupport
+	 * instance is passed to any "render" method of display objects. It allows
+	 * manipulation of the current transformation matrix (similar to the matrix
+	 * manipulation methods of OpenGL 1.x) and other helper methods.
 	 */
 	public class RenderSupport2D
 	{
-		// members
-		private var mProjectionMatrix:Matrix;
-		private var mModelViewMatrix:Matrix;
-		private var mMvpMatrix:Matrix;
-		private var mMvpMatrix3D:Matrix3D;
-		private var mMatrixStack:Vector.<Matrix>;
-		private var mMatrixStackSize:int;
-		private var mDrawCount:int;
-		private var mBlendMode:String;
-		private var mRenderTarget:Texture2D;
-		private var mBackBufferWidth:int;
-		private var mBackBufferHeight:int;
-		private var mScissorRectangle:Rectangle;
-		private var mQuadBatches:Vector.<QuadBatch2D>;
-		private var mCurrentQuadBatchID:int;
-		/** helper objects */
-		private static var sPoint:Point = new Point();
-		private static var sRectangle:Rectangle = new Rectangle();
-		private static var sAssembler:AGALMiniAssembler = new AGALMiniAssembler();
-
-
-		// construction
-		/** Creates a new RenderSupport object with an empty matrix stack. */
+		//-----------------------------------------------------------------------------------------
+		// Properties
+		//-----------------------------------------------------------------------------------------
+		
+		/** @private */
+		private var _projectionMatrix:Matrix;
+		/** @private */
+		private var _modelViewMatrix:Matrix;
+		/** @private */
+		private var _mvpMatrix:Matrix;
+		/** @private */
+		private var _mvpMatrix3D:Matrix3D;
+		/** @private */
+		private var _matrixStack:Vector.<Matrix>;
+		/** @private */
+		private var _renderTarget:Texture2D;
+		/** @private */
+		private var _scissorRectangle:Rectangle;
+		/** @private */
+		private var _quadBatches:Vector.<QuadBatch2D>;
+		
+		/** @private */
+		private var _matrixStackSize:int;
+		/** @private */
+		private var _drawCount:int;
+		/** @private */
+		private var _backBufferWidth:int;
+		/** @private */
+		private var _backBufferHeight:int;
+		/** @private */
+		private var _currentQuadBatchID:int;
+		/** @private */
+		private var _blendMode:String;
+		
+		/** @private */
+		private static var _point:Point;
+		/** @private */
+		private static var _rectangle:Rectangle;
+		/** @private */
+		private static var _agal:AGALMiniAssembler;
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Constructor
+		//-----------------------------------------------------------------------------------------
+		
+		/**
+		 * Creates a new RenderSupport object with an empty matrix stack.
+		 */
 		public function RenderSupport2D()
 		{
-			mProjectionMatrix = new Matrix();
-			mModelViewMatrix = new Matrix();
-			mMvpMatrix = new Matrix();
-			mMvpMatrix3D = new Matrix3D();
-			mMatrixStack = new <Matrix>[];
-			mMatrixStackSize = 0;
-			mDrawCount = 0;
-			mRenderTarget = null;
-			mBlendMode = BlendMode2D.NORMAL;
-			mScissorRectangle = new Rectangle();
-
-			mCurrentQuadBatchID = 0;
-			mQuadBatches = new <QuadBatch2D>[new QuadBatch2D()];
-
+			if (!_point) _point = new Point();
+			if (!_rectangle) _rectangle = new Rectangle();
+			if (!_agal) _agal = new AGALMiniAssembler();
+			
+			_projectionMatrix = new Matrix();
+			_modelViewMatrix = new Matrix();
+			_mvpMatrix = new Matrix();
+			_mvpMatrix3D = new Matrix3D();
+			_matrixStack = new <Matrix>[];
+			
+			_matrixStackSize = 0;
+			_drawCount = 0;
+			_currentQuadBatchID = 0;
+			_renderTarget = null;
+			
+			_blendMode = BlendMode2D.NORMAL;
+			_scissorRectangle = new Rectangle();
+			_quadBatches = new <QuadBatch2D>[new QuadBatch2D()];
+			
 			loadIdentity();
 			setOrthographicProjection(0, 0, 400, 300);
 		}
-
-
-		/** Disposes all quad batches. */
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Public Methods
+		//-----------------------------------------------------------------------------------------
+		
+		/**
+		 * Disposes all quad batches.
+		 */
 		public function dispose():void
 		{
-			for each (var quadBatch:QuadBatch2D in mQuadBatches)
+			for each (var quadBatch:QuadBatch2D in _quadBatches)
+			{
 				quadBatch.dispose();
+			}
 		}
-
-
-		// matrix manipulation
-		/** Sets up the projection matrix for ortographic 2D rendering. */
-		public function setOrthographicProjection(x:Number, y:Number, width:Number, height:Number):void
-		{
-			mProjectionMatrix.setTo(2.0 / width, 0, 0, -2.0 / height, -(2 * x + width) / width, (2 * y + height) / height);
-		}
-
-
-		/** Changes the modelview matrix to the identity matrix. */
+		
+		
+		/**
+		 * Changes the modelview matrix to the identity matrix.
+		 */
 		public function loadIdentity():void
 		{
-			mModelViewMatrix.identity();
+			_modelViewMatrix.identity();
+		}
+		
+		
+		/**
+		 * Sets up the projection matrix for ortographic 2D rendering.
+		 * 
+		 * @param x
+		 * @param y
+		 * @param w
+		 * @param h
+		 */
+		public function setOrthographicProjection(x:Number, y:Number, w:Number, h:Number):void
+		{
+			_projectionMatrix.setTo(2.0 / w, 0, 0, -2.0 / h, -(2 * x + w) / w, (2 * y + h) / h);
 		}
 
 
-		/** Prepends a translation to the modelview matrix. */
+		/**
+		 * Prepends a translation to the modelview matrix.
+		 * 
+		 * @param dx
+		 * @param dy
+		 */
 		public function translateMatrix(dx:Number, dy:Number):void
 		{
-			MatrixUtil.prependTranslation(mModelViewMatrix, dx, dy);
+			MatrixUtil.prependTranslation(_modelViewMatrix, dx, dy);
 		}
-
-
-		/** Prepends a rotation (angle in radians) to the modelview matrix. */
+		
+		
+		/**
+		 * Prepends a rotation (angle in radians) to the modelview matrix.
+		 * 
+		 * @param angle
+		 */
 		public function rotateMatrix(angle:Number):void
 		{
-			MatrixUtil.prependRotation(mModelViewMatrix, angle);
+			MatrixUtil.prependRotation(_modelViewMatrix, angle);
 		}
-
-
-		/** Prepends an incremental scale change to the modelview matrix. */
+		
+		
+		/**
+		 * Prepends an incremental scale change to the modelview matrix.
+		 * 
+		 * @param sx
+		 * @param sy
+		 */
 		public function scaleMatrix(sx:Number, sy:Number):void
 		{
-			MatrixUtil.prependScale(mModelViewMatrix, sx, sy);
+			MatrixUtil.prependScale(_modelViewMatrix, sx, sy);
 		}
-
-
-		/** Prepends a matrix to the modelview matrix by multiplying it another matrix. */
+		
+		
+		/**
+		 * Prepends a matrix to the modelview matrix by multiplying it another matrix.
+		 * 
+		 * @param matrix
+		 */
 		public function prependMatrix(matrix:Matrix):void
 		{
-			MatrixUtil.prependMatrix(mModelViewMatrix, matrix);
+			MatrixUtil.prependMatrix(_modelViewMatrix, matrix);
 		}
-
-
-		/** Prepends translation, scale and rotation of an object to the modelview matrix. */
+		
+		
+		/**
+		 * Prepends translation, scale and rotation of an object to the modelview matrix.
+		 * 
+		 * @param object
+		 */
 		public function transformMatrix(object:DisplayObject2D):void
 		{
-			MatrixUtil.prependMatrix(mModelViewMatrix, object.transformationMatrix);
+			MatrixUtil.prependMatrix(_modelViewMatrix, object.transformationMatrix);
 		}
-
-
-		/** Pushes the current modelview matrix to a stack from which it can be restored later. */
+		
+		
+		/**
+		 * Pushes the current modelview matrix to a stack from which it can be restored
+		 * later.
+		 */
 		public function pushMatrix():void
 		{
-			if (mMatrixStack.length < mMatrixStackSize + 1)
-				mMatrixStack.push(new Matrix());
-
-			mMatrixStack[int(mMatrixStackSize++)].copyFrom(mModelViewMatrix);
+			if (_matrixStack.length < _matrixStackSize + 1)
+			{
+				_matrixStack.push(new Matrix());
+			}
+			_matrixStack[int(_matrixStackSize++)].copyFrom(_modelViewMatrix);
 		}
-
-
-		/** Restores the modelview matrix that was last pushed to the stack. */
+		
+		
+		/**
+		 * Restores the modelview matrix that was last pushed to the stack.
+		 */
 		public function popMatrix():void
 		{
-			mModelViewMatrix.copyFrom(mMatrixStack[int(--mMatrixStackSize)]);
+			_modelViewMatrix.copyFrom(_matrixStack[int(--_matrixStackSize)]);
 		}
-
-
-		/** Empties the matrix stack, resets the modelview matrix to the identity matrix. */
+		
+		
+		/**
+		 * Empties the matrix stack, resets the modelview matrix to the identity matrix.
+		 */
 		public function resetMatrix():void
 		{
-			mMatrixStackSize = 0;
+			_matrixStackSize = 0;
 			loadIdentity();
 		}
-
-
-		/** Prepends translation, scale and rotation of an object to a custom matrix. */
-		public static function transformMatrixForObject(matrix:Matrix, object:DisplayObject2D):void
-		{
-			MatrixUtil.prependMatrix(matrix, object.transformationMatrix);
-		}
-
-
-		/** Calculates the product of modelview and projection matrix. 
-		 *  CAUTION: Don't save a reference to this object! Each call returns the same instance. */
-		public function get mvpMatrix():Matrix
-		{
-			mMvpMatrix.copyFrom(mModelViewMatrix);
-			mMvpMatrix.concat(mProjectionMatrix);
-			return mMvpMatrix;
-		}
-
-
-		/** Calculates the product of modelview and projection matrix and saves it in a 3D matrix. 
-		 *  CAUTION: Don't save a reference to this object! Each call returns the same instance. */
-		public function get mvpMatrix3D():Matrix3D
-		{
-			return MatrixUtil.convertTo3D(mvpMatrix, mMvpMatrix3D);
-		}
-
-
-		/** Returns the current modelview matrix. CAUTION: not a copy -- use with care! */
-		public function get modelViewMatrix():Matrix
-		{
-			return mModelViewMatrix;
-		}
-
-
-		/** Returns the current projection matrix. CAUTION: not a copy -- use with care! */
-		public function get projectionMatrix():Matrix
-		{
-			return mProjectionMatrix;
-		}
-
-
-		// blending
-		/** Activates the current blend mode on the active rendering context. */
+		
+		
+		/**
+		 * Activates the current blend mode on the active rendering context.
+		 * 
+		 * @param premultipliedAlpha
+		 */
 		public function applyBlendMode(premultipliedAlpha:Boolean):void
 		{
-			setBlendFactors(premultipliedAlpha, mBlendMode);
+			setBlendFactors(premultipliedAlpha, _blendMode);
 		}
-
-
-		/** The blend mode to be used on rendering. To apply the factor, you have to manually call
-		 *  'applyBlendMode' (because the actual blend factors depend on the PMA mode). */
-		public function get blendMode():String
-		{
-			return mBlendMode;
-		}
-
-
-		public function set blendMode(value:String):void
-		{
-			if (value != BlendMode2D.AUTO) mBlendMode = value;
-		}
-
-
-		// render targets
-		/** The texture that is currently being rendered into, or 'null' to render into the 
-		 *  back buffer. If you set a new target, it is immediately activated. */
-		public function get renderTarget():Texture2D
-		{
-			return mRenderTarget;
-		}
-
-
-		public function set renderTarget(target:Texture2D):void
-		{
-			mRenderTarget = target;
-
-			if (target) Render2D.context.setRenderToTexture(target.base);
-			else Render2D.context.setRenderToBackBuffer();
-		}
-
-
-		/** Configures the back buffer on the current context3D. By using this method, Render2D
-		 *  can store the size of the back buffer and utilize this information in other methods
-		 *  (e.g. the scissor rectangle property). Back buffer width and height can later be
-		 *  accessed using the properties with the same name. */
-		public function configureBackBuffer(width:int, height:int, antiAlias:int, enableDepthAndStencil:Boolean):void
-		{
-			mBackBufferWidth = width;
-			mBackBufferHeight = height;
-			Render2D.context.configureBackBuffer(width, height, antiAlias, enableDepthAndStencil);
-		}
-
-
-		/** The width of the back buffer, as it was configured in the last call to 
-		 *  'RenderSupport.configureBackBuffer()'. Beware: changing this value does not actually
-		 *  resize the back buffer; the setter should only be used to inform Render2D about the
-		 *  size of a back buffer it can't control (shared context situations).
+		
+		
+		/**
+		 * Configures the back buffer on the current context3D. By using this method, Render2D
+		 * can store the size of the back buffer and utilize this information in other methods
+		 * (e.g. the scissor rectangle property). Back buffer width and height can later be
+		 * accessed using the properties with the same name.
+		 * 
+		 * @param w
+		 * @param h
+		 * @param antiAlias
+		 * @param enableDepthAndStencil
 		 */
-		public function get backBufferWidth():int
+		public function configureBackBuffer(w:int, h:int, antiAlias:int,
+			enableDepthAndStencil:Boolean):void
 		{
-			return mBackBufferWidth;
+			_backBufferWidth = w;
+			_backBufferHeight = h;
+			Render2D.context.configureBackBuffer(w, h, antiAlias, enableDepthAndStencil);
 		}
-
-
-		public function set backBufferWidth(value:int):void
-		{
-			mBackBufferWidth = value;
-		}
-
-
-		/** The height of the back buffer, as it was configured in the last call to 
-		 *  'RenderSupport.configureBackBuffer()'. Beware: changing this value does not actually
-		 *  resize the back buffer; the setter should only be used to inform Render2D about the
-		 *  size of a back buffer it can't control (shared context situations).
+		
+		
+		/**
+		 * Adds a quad to the current batch of unrendered quads. If there is a state
+		 * change, all previous quads are rendered at once, and the batch is reset.
+		 * 
+		 * @param quad
+		 * @param parentAlpha
+		 * @param texture
+		 * @param smoothing
 		 */
-		public function get backBufferHeight():int
+		public function batchQuad(quad:Quad2D, parentAlpha:Number, texture:Texture2D = null,
+			smoothing:String = null):void
 		{
-			return mBackBufferHeight;
-		}
-
-
-		public function set backBufferHeight(value:int):void
-		{
-			mBackBufferHeight = value;
-		}
-
-
-		// scissor rect
-		/** The scissor rectangle can be used to limit rendering in the current render target to
-		 *  a certain area. This method expects the rectangle in stage coordinates
-		 *  (different to the context3D method with the same name, which expects pixels).
-		 *  Pass <code>null</code> to turn off scissoring.
-		 *  CAUTION: not a copy -- use with care! */
-		public function get scissorRectangle():Rectangle
-		{
-			return mScissorRectangle.isEmpty() ? null : mScissorRectangle;
-		}
-
-
-		public function set scissorRectangle(value:Rectangle):void
-		{
-			if (value)
-			{
-				mScissorRectangle.setTo(value.x, value.y, value.width, value.height);
-
-				var width:int = mRenderTarget ? mRenderTarget.root.nativeWidth : mBackBufferWidth;
-				var height:int = mRenderTarget ? mRenderTarget.root.nativeHeight : mBackBufferHeight;
-
-				MatrixUtil.transformCoords(mProjectionMatrix, value.x, value.y, sPoint);
-				sRectangle.x = Math.max(0, ( sPoint.x + 1) / 2) * width;
-				sRectangle.y = Math.max(0, (-sPoint.y + 1) / 2) * height;
-
-				MatrixUtil.transformCoords(mProjectionMatrix, value.right, value.bottom, sPoint);
-				sRectangle.right = Math.min(1, ( sPoint.x + 1) / 2) * width;
-				sRectangle.bottom = Math.min(1, (-sPoint.y + 1) / 2) * height;
-
-				Render2D.context.setScissorRectangle(sRectangle);
-			}
-			else
-			{
-				mScissorRectangle.setEmpty();
-				Render2D.context.setScissorRectangle(null);
-			}
-		}
-
-
-		// optimized quad rendering
-		/** Adds a quad to the current batch of unrendered quads. If there is a state change,
-		 *  all previous quads are rendered at once, and the batch is reset. */
-		public function batchQuad(quad:Quad2D, parentAlpha:Number, texture:Texture2D = null, smoothing:String = null):void
-		{
-			if (mQuadBatches[mCurrentQuadBatchID].isStateChange(quad.tinted, parentAlpha, texture, smoothing, mBlendMode))
+			if (_quadBatches[_currentQuadBatchID].isStateChange(quad.tinted, parentAlpha,
+				texture, smoothing, _blendMode))
 			{
 				finishQuadBatch();
 			}
-
-			mQuadBatches[mCurrentQuadBatchID].addQuad(quad, parentAlpha, texture, smoothing, mModelViewMatrix, mBlendMode);
+			_quadBatches[_currentQuadBatchID].addQuad(quad, parentAlpha, texture, smoothing,
+				_modelViewMatrix, _blendMode);
 		}
-
-
-		/** Renders the current quad batch and resets it. */
+		
+		
+		/**
+		 * Renders the current quad batch and resets it.
+		 */
 		public function finishQuadBatch():void
 		{
-			var currentBatch:QuadBatch2D = mQuadBatches[mCurrentQuadBatchID];
-
+			var currentBatch:QuadBatch2D = _quadBatches[_currentQuadBatchID];
 			if (currentBatch.numQuads != 0)
 			{
-				currentBatch.renderCustom(mProjectionMatrix);
+				currentBatch.renderCustom(_projectionMatrix);
 				currentBatch.reset();
-
-				++mCurrentQuadBatchID;
-				++mDrawCount;
-
-				if (mQuadBatches.length <= mCurrentQuadBatchID)
-					mQuadBatches.push(new QuadBatch2D());
+				++_currentQuadBatchID;
+				++_drawCount;
+				if (_quadBatches.length <= _currentQuadBatchID)
+				{
+					_quadBatches.push(new QuadBatch2D());
+				}
 			}
 		}
-
-
-		/** Resets matrix stack, blend mode, quad batch index, and draw count. */
+		
+		
+		/**
+		 * Resets matrix stack, blend mode, quad batch index, and draw count.
+		 */
 		public function nextFrame():void
 		{
 			resetMatrix();
-			mBlendMode = BlendMode2D.NORMAL;
-			mCurrentQuadBatchID = 0;
-			mDrawCount = 0;
+			_blendMode = BlendMode2D.NORMAL;
+			_currentQuadBatchID = 0;
+			_drawCount = 0;
 		}
-
-
-		// other helper methods
-		/** Deprecated. Call 'setBlendFactors' instead. */
-		public static function setDefaultBlendFactors(premultipliedAlpha:Boolean):void
-		{
-			setBlendFactors(premultipliedAlpha);
-		}
-
-
-		/** Sets up the blending factors that correspond with a certain blend mode. */
-		public static function setBlendFactors(premultipliedAlpha:Boolean, blendMode:String = "normal"):void
-		{
-			var blendFactors:Array = BlendMode2D.getBlendFactors(blendMode, premultipliedAlpha);
-			Render2D.context.setBlendFactors(blendFactors[0], blendFactors[1]);
-		}
-
-
-		/** Clears the render context with a certain color and alpha value. */
-		public static function clear(rgb:uint = 0, alpha:Number = 0.0):void
-		{
-			Render2D.context.clear(ColorUtil.getRed(rgb) / 255.0, ColorUtil.getGreen(rgb) / 255.0, ColorUtil.getBlue(rgb) / 255.0, alpha);
-		}
-
-
-		/** Clears the render context with a certain color and alpha value. */
+		
+		
+		/**
+		 * Clears the render context with a certain color and alpha value.
+		 * 
+		 * @param rgb
+		 * @param alpha
+		 */
 		public function clear(rgb:uint = 0, alpha:Number = 0.0):void
 		{
 			RenderSupport2D.clear(rgb, alpha);
 		}
-
-
-		/** Assembles fragment- and vertex-shaders, passed as Strings, to a Program3D. If you
-		 *  pass a 'resultProgram', it will be uploaded to that program; otherwise, a new program
-		 *  will be created on the current Stage3D context. */
-		public static function assembleAgal(vertexShader:String, fragmentShader:String, resultProgram:Program3D = null):Program3D
-		{
-			if (resultProgram == null)
-			{
-				var context:Context3D = Render2D.context;
-				if (context == null) throw new MissingContext3DException();
-				resultProgram = context.createProgram();
-			}
-
-			resultProgram.upload(sAssembler.assemble(Context3DProgramType.VERTEX, vertexShader), sAssembler.assemble(Context3DProgramType.FRAGMENT, fragmentShader));
-
-			return resultProgram;
-		}
-
-
-		// statistics
-		/** Raises the draw count by a specific value. Call this method in custom render methods
-		 *  to keep the statistics display in sync. */
+		
+		
+		/**
+		 * Raises the draw count by a specific value. Call this method in custom render
+		 * methods to keep the statistics display in sync.
+		 */
 		public function raiseDrawCount(value:uint = 1):void
 		{
-			mDrawCount += value;
+			_drawCount += value;
+		}
+		
+		
+		/**
+		 * Prepends translation, scale and rotation of an object to a custom matrix.
+		 * 
+		 * @param matrix
+		 * @param object
+		 */
+		public static function transformMatrixForObject(matrix:Matrix, object:DisplayObject2D):void
+		{
+			MatrixUtil.prependMatrix(matrix, object.transformationMatrix);
+		}
+		
+		
+		/**
+		 * Assembles fragment- and vertex-shaders, passed as Strings, to a Program3D. If
+		 * you pass a 'resultProgram', it will be uploaded to that program; otherwise, a
+		 * new program will be created on the current Stage3D context.
+		 * 
+		 * @param vertexShader
+		 * @param fragmentShader
+		 * @param resultProgram
+		 */
+		public static function assembleAgal(vertexShader:String, fragmentShader:String,
+			resultProgram:Program3D = null):Program3D
+		{
+			if (!resultProgram)
+			{
+				var context:Context3D = Render2D.context;
+				if (!context) throw new MissingContext3DException();
+				resultProgram = context.createProgram();
+			}
+			
+			resultProgram.upload(_agal.assemble(Context3DProgramType.VERTEX, vertexShader),
+				_agal.assemble(Context3DProgramType.FRAGMENT, fragmentShader));
+			return resultProgram;
+		}
+		
+		
+		/**
+		 * Deprecated. Call 'setBlendFactors' instead.
+		 */
+		public static function setDefaultBlendFactors(premultipliedAlpha:Boolean):void
+		{
+			setBlendFactors(premultipliedAlpha);
+		}
+		
+		
+		/**
+		 * Sets up the blending factors that correspond with a certain blend mode.
+		 * 
+		 * @param premultipliedAlpha
+		 * @param blendMode
+		 */
+		public static function setBlendFactors(premultipliedAlpha:Boolean,
+			blendMode:String = "normal"):void
+		{
+			var blendFactors:Array = BlendMode2D.getBlendFactors(blendMode, premultipliedAlpha);
+			Render2D.context.setBlendFactors(blendFactors[0], blendFactors[1]);
+		}
+		
+		
+		/**
+		 * Clears the render context with a certain color and alpha value.
+		 * 
+		 * @param rgb
+		 * @param alpha
+		 */
+		public static function clear(rgb:uint = 0, alpha:Number = 0.0):void
+		{
+			Render2D.context.clear(ColorUtil.getRed(rgb) / 255.0,
+				ColorUtil.getGreen(rgb) / 255.0,
+				ColorUtil.getBlue(rgb) / 255.0, alpha);
+		}
+		
+		
+		//-----------------------------------------------------------------------------------------
+		// Accessors
+		//-----------------------------------------------------------------------------------------
+		
+		/**
+		 * Calculates the product of modelview and projection matrix. CAUTION: Don't save
+		 * a reference to this object! Each call returns the same instance.
+		 */
+		public function get mvpMatrix():Matrix
+		{
+			_mvpMatrix.copyFrom(_modelViewMatrix);
+			_mvpMatrix.concat(_projectionMatrix);
+			return _mvpMatrix;
+		}
+		
+		
+		/**
+		 * Calculates the product of modelview and projection matrix and saves it in a 3D
+		 * matrix. CAUTION: Don't save a reference to this object! Each call returns the
+		 * same instance.
+		 */
+		public function get mvpMatrix3D():Matrix3D
+		{
+			return MatrixUtil.convertTo3D(mvpMatrix, _mvpMatrix3D);
+		}
+		
+		
+		/**
+		 * Returns the current modelview matrix. CAUTION: not a copy -- use with care!
+		 */
+		public function get modelViewMatrix():Matrix
+		{
+			return _modelViewMatrix;
+		}
+		
+		
+		/**
+		 * Returns the current projection matrix. CAUTION: not a copy -- use with care!
+		 */
+		public function get projectionMatrix():Matrix
+		{
+			return _projectionMatrix;
+		}
+		
+		
+		/**
+		 * The blend mode to be used on rendering. To apply the factor, you have to
+		 * manually call 'applyBlendMode' (because the actual blend factors depend on the
+		 * PMA mode).
+		 */
+		public function get blendMode():String
+		{
+			return _blendMode;
+		}
+		public function set blendMode(v:String):void
+		{
+			if (v != BlendMode2D.AUTO) _blendMode = v;
+		}
+		
+		
+		/**
+		 * The texture that is currently being rendered into, or 'null' to render into the
+		 * back buffer. If you set a new target, it is immediately activated.
+		 */
+		public function get renderTarget():Texture2D
+		{
+			return _renderTarget;
+		}
+		public function set renderTarget(v:Texture2D):void
+		{
+			_renderTarget = v;
+			if (v) Render2D.context.setRenderToTexture(v.base);
+			else Render2D.context.setRenderToBackBuffer();
+		}
+		
+		
+		/**
+		 * The width of the back buffer, as it was configured in the last call to
+		 * 'RenderSupport2D.configureBackBuffer()'. Beware: changing this value does not
+		 * actually resize the back buffer; the setter should only be used to inform
+		 * Render2D about the size of a back buffer it can't control (shared context
+		 * situations).
+		 */
+		public function get backBufferWidth():int
+		{
+			return _backBufferWidth;
+		}
+		public function set backBufferWidth(v:int):void
+		{
+			_backBufferWidth = v;
+		}
+		
+		
+		/**
+		 * The height of the back buffer, as it was configured in the last call to
+		 * 'RenderSupport2D.configureBackBuffer()'. Beware: changing this value does not
+		 * actually resize the back buffer; the setter should only be used to inform
+		 * Render2D about the size of a back buffer it can't control (shared context
+		 * situations).
+		 */
+		public function get backBufferHeight():int
+		{
+			return _backBufferHeight;
+		}
+		public function set backBufferHeight(v:int):void
+		{
+			_backBufferHeight = v;
 		}
 
 
-		/** Indicates the number of stage3D draw calls. */
+		/**
+		 * The scissor rectangle can be used to limit rendering in the current render
+		 * target to a certain area. This method expects the rectangle in stage
+		 * coordinates (different to the context3D method with the same name, which
+		 * expects pixels). Pass <code>null</code> to turn off scissoring. CAUTION: not a
+		 * copy -- use with care!
+		 */
+		public function get scissorRectangle():Rectangle
+		{
+			return _scissorRectangle.isEmpty() ? null : _scissorRectangle;
+		}
+		public function set scissorRectangle(v:Rectangle):void
+		{
+			if (v)
+			{
+				_scissorRectangle.setTo(v.x, v.y, v.width, v.height);
+				var w:int = _renderTarget ? _renderTarget.root.nativeWidth : _backBufferWidth;
+				var h:int = _renderTarget ? _renderTarget.root.nativeHeight : _backBufferHeight;
+				MatrixUtil.transformCoords(_projectionMatrix, v.x, v.y, _point);
+				_rectangle.x = Math.max(0, ( _point.x + 1) / 2) * w;
+				_rectangle.y = Math.max(0, (-_point.y + 1) / 2) * h;
+				MatrixUtil.transformCoords(_projectionMatrix, v.right, v.bottom, _point);
+				_rectangle.right = Math.min(1, ( _point.x + 1) / 2) * w;
+				_rectangle.bottom = Math.min(1, (-_point.y + 1) / 2) * h;
+				Render2D.context.setScissorRectangle(_rectangle);
+			}
+			else
+			{
+				_scissorRectangle.setEmpty();
+				Render2D.context.setScissorRectangle(null);
+			}
+		}
+		
+		
+		/**
+		 * Indicates the number of stage3D draw calls made by the Render2D system.
+		 */
 		public function get drawCount():int
 		{
-			return mDrawCount;
+			return _drawCount;
 		}
 	}
 }
