@@ -165,6 +165,7 @@ package tetragon.view.stage3d
 		
 		/**
 		 * Removes a Stage3DProxy from the manager.
+		 * @private
 		 * 
 		 * @param stage3DProxy
 		 */

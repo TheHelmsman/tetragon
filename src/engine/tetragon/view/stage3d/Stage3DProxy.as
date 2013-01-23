@@ -81,6 +81,7 @@ package tetragon.view.stage3d
 		private var _enterFrame:Event;
 		private var _exitFrame:Event;
 		
+		private var _forceSoftware:Boolean;
 		private var _usesSoftwareRendering:Boolean;
 		private var _enableDepthAndStencil:Boolean;
 		private var _contextRequested:Boolean;
@@ -109,6 +110,7 @@ package tetragon.view.stage3d
 			_stage3DIndex = stage3DIndex;
 			_stage3D = stage3D;
 			_stage3DManager = stage3DManager;
+			_forceSoftware = forceSoftware;
 			
 			_stage3D.x = 0;
 			_stage3D.y = 0;
@@ -121,16 +123,36 @@ package tetragon.view.stage3d
 			
 			_enterFrame = new Event(Event.ENTER_FRAME);
 			_exitFrame = new Event(Event.EXIT_FRAME);
-			
-			/* Whatever happens, be sure this has highest priority. */
-			_stage3D.addEventListener(Event.CONTEXT3D_CREATE, onContext3DUpdate, false, 1000);
-			requestContext(forceSoftware);
 		}
 		
 		
 		//-----------------------------------------------------------------------------------------
 		// Public Methods
 		//-----------------------------------------------------------------------------------------
+		
+		/**
+		 * Requests a Context3D object to attach to the managed Stage3D.
+		 */
+		public function requestContext3D():void
+		{
+			if (_contextRequested) return;
+			
+			/* Whatever happens, be sure this has highest priority. */
+			_stage3D.addEventListener(Event.CONTEXT3D_CREATE, onContext3DUpdate, false, 1000);
+			
+			// If forcing software, we can be certain that the
+			// returned Context3D will be running software mode.
+			// If not, we can't be sure and should stick to the
+			// old value (will likely be same if re-requesting.)
+			_usesSoftwareRendering ||= _forceSoftware;
+			
+			_stage3D.requestContext3D(_forceSoftware
+				? Context3DRenderMode.SOFTWARE
+				: Context3DRenderMode.AUTO);
+			
+			_contextRequested = true;
+		}
+		
 		
 		/**
 		 * Assign the vertex buffer in the Context3D ready for use in the shader.
@@ -659,26 +681,7 @@ package tetragon.view.stage3d
 			_context3D.dispose();
 			dispatchEvent(new Stage3DEvent(Stage3DEvent.CONTEXT3D_DISPOSED));
 			_context3D = null;
-		}
-		
-		
-		/**
-		 * Requests a Context3D object to attach to the managed Stage3D.
-		 * @private
-		 */
-		private function requestContext(forceSoftware:Boolean = false):void
-		{
-			// If forcing software, we can be certain that the
-			// returned Context3D will be running software mode.
-			// If not, we can't be sure and should stick to the
-			// old value (will likely be same if re-requesting.)
-			_usesSoftwareRendering ||= forceSoftware;
-			
-			_stage3D.requestContext3D(forceSoftware
-				? Context3DRenderMode.SOFTWARE
-				: Context3DRenderMode.AUTO);
-			
-			_contextRequested = true;
+			_contextRequested = false;
 		}
 	}
 }
