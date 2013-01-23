@@ -47,7 +47,7 @@ package tetragon.view.stage3d
 	/**
 	 * Stage3DProxy provides a proxy class to manage a single Stage3D instance as well as
 	 * handling the creation and attachment of the Context3D (and in turn the back buffer)
-	 * is uses. Stage3DProxy should never be created directly, but requested through
+	 * it uses. Stage3DProxy should never be created directly, but requested through
 	 * Stage3DManager.
 	 */
 	public class Stage3DProxy extends EventDispatcher
