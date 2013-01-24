@@ -29,17 +29,12 @@
 package tetragon.view.render2d.display
 {
 	import tetragon.Main;
-	import tetragon.debug.Log;
 	import tetragon.view.IView;
-	import tetragon.view.render2d.core.Render2D;
 	import tetragon.view.render2d.core.RenderSupport2D;
-	import tetragon.view.render2d.events.EnterFrameEvent2D;
 	import tetragon.view.render2d.events.Event2D;
-	import tetragon.view.render2d.textures.Texture2D;
 
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
-	import flash.system.System;
 	
 	
 	/**
@@ -53,21 +48,14 @@ package tetragon.view.render2d.display
 		// Properties
 		// -----------------------------------------------------------------------------------------
 		
-		private var _clipRect:Rectangle;
-		private var _clipped:Boolean;
-		
-		protected var _viewWidth:int;
-		protected var _viewHeight:int;
-		protected var _backgroundColor:uint;
+		protected var _main:Main;
+		protected var _clipRect:Rectangle;
 		protected var _background:Quad2D;
 		
-		protected var _container:Sprite2D;
+		protected var _clipped:Boolean = true;
 		
-		private var _texture:Texture2D;
-        private var mFrameCount:int;
-        private var mElapsed:Number;
-        private var mFailCount:int;
-        private var mWaitFrames:int;
+		protected var _frameWidth:int;
+		protected var _frameHeight:int;
 		
 		
 		// -----------------------------------------------------------------------------------------
@@ -77,15 +65,18 @@ package tetragon.view.render2d.display
 		/**
 		 * Creates a new instance of the class.
 		 */
-		public function View2D(width:int, height:int, backgroundColor:uint, clipped:Boolean = true)
+		public function View2D()
 		{
-			_viewWidth = width;
-			_viewHeight = height;
-			_backgroundColor = backgroundColor;
-			_clipped = clipped;
+			_main = Main.instance;
+			_frameWidth = _main.stage.stageWidth;
+			_frameHeight = _main.stage.stageHeight;
 			
 			super();
+			
 			setup();
+			updateFrame();
+			
+			addEventListener(Event2D.ADDED_TO_STAGE, onAddedToStage);
 		}
 		
 		
@@ -98,6 +89,15 @@ package tetragon.view.render2d.display
 		 */
 		public override function render(support:RenderSupport2D, alpha:Number):void
 		{
+			/* Render background, which is not in the child collection. */
+			if (_background)
+			{
+				support.pushMatrix();
+				support.transformMatrix(_background);
+				_background.render(support, alpha);
+				support.popMatrix();
+			}
+			
 			if (!_clipped)
 			{
 				super.render(support, alpha);
@@ -120,11 +120,16 @@ package tetragon.view.render2d.display
 		 */
 		public override function hitTest(localPoint:Point, forTouch:Boolean = false):DisplayObject2D
 		{
-			// without a clip rect, the sprite should behave just like before
-			if (!_clipped) return super.hitTest(localPoint, forTouch);
+			if (!_clipped)
+			{
+				return super.hitTest(localPoint, forTouch);
+			}
 			
 			// on a touch test, invisible or untouchable objects cause the test to fail
-			if (forTouch && (!visible || !touchable)) return null;
+			if (forTouch && (!visible || !touchable))
+			{
+				return null;
+			}
 			
 			if (_clipRect.containsPoint(localToGlobal(localPoint)))
 			{
@@ -143,33 +148,65 @@ package tetragon.view.render2d.display
 		
 		override public function set x(v:Number):void
 		{
+			if (v == super.x) return;
 			super.x = v;
-			if (_clipRect) _clipRect.x = v;
+			updateFrame();
 		}
 		
 		
 		override public function set y(v:Number):void
 		{
+			if (v == super.y) return;
 			super.y = v;
-			if (_clipRect) _clipRect.y = v;
+			updateFrame();
 		}
 		
 		
-		public function get clipRect():Rectangle
+		public function get frameWidth():int
 		{
-			return _clipRect;
+			return _frameWidth;
 		}
-		public function set clipRect(v:Rectangle):void
+		public function set frameWidth(v:int):void
 		{
-			if (v)
-			{
-				if (!_clipRect) _clipRect = v.clone();
-				else _clipRect.setTo(v.x, v.y, v.width, v.height);
-			}
-			else
-			{
-				_clipRect = null;
-			}
+			if (v == _frameWidth) return;
+			_frameWidth = v;
+			updateFrame();
+		}
+		
+		
+		public function get frameHeight():int
+		{
+			return _frameHeight;
+		}
+		public function set frameHeight(v:int):void
+		{
+			if (v == _frameHeight) return;
+			_frameHeight = v;
+			updateFrame();
+		}
+		
+		
+		public function get clipped():Boolean
+		{
+			return _clipped;
+		}
+		public function set clipped(v:Boolean):void
+		{
+			if (v == _clipped) return;
+			_clipped = v;
+			updateFrame();
+		}
+		
+		
+		public function get background():Quad2D
+		{
+			return _background;
+		}
+		public function set background(v:Quad2D):void
+		{
+			if (v == _background) return;
+			_background = v;
+			updateFrame();
 		}
 		
 		
@@ -177,59 +214,12 @@ package tetragon.view.render2d.display
 		// Callback Handlers
 		// -----------------------------------------------------------------------------------------
 		
+		/**
+		 * @private
+		 */
 		protected function onAddedToStage(e:Event2D):void
 		{
 			removeEventListener(Event2D.ADDED_TO_STAGE, onAddedToStage);
-			
-			_texture = Texture2D.fromBitmapData(Main.instance.resourceManager.resourceIndex.getImage("123"));
-			
-			mFailCount = 0;
-			mWaitFrames = 2;
-			mFrameCount = 0;
-			
-			addEventListener(EnterFrameEvent2D.ENTER_FRAME, onEnterFrame);
-		}
-		
-		
-		private function onEnterFrame(e:EnterFrameEvent2D):void
-		{
-			mElapsed += e.passedTime;
-			mFrameCount++;
-			
-			if (mFrameCount % mWaitFrames == 0)
-			{
-				var fps:Number = mWaitFrames / mElapsed;
-				var targetFps:int = Render2D.current.stage.frameRate;
-				
-				if (Math.ceil(fps) >= targetFps)
-				{
-					mFailCount = 0;
-					addTestObjects();
-				}
-				else
-				{
-					mFailCount++;
-
-					if (mFailCount > 20)
-						mWaitFrames = 5;
-					// slow down creation process to be more exact
-					if (mFailCount > 30)
-						mWaitFrames = 10;
-					if (mFailCount == 40)
-						benchmarkComplete();
-					// target fps not reached for a while
-				}
-
-				mElapsed = mFrameCount = 0;
-			}
-
-			var numObjects:int = _container.numChildren;
-			var passedTime:Number = e.passedTime;
-
-			for (var i:int = 0; i < numObjects; ++i)
-			{
-				_container.getChildAt(i).rotation += Math.PI / 2 * passedTime;
-			}
 		}
 		
 		
@@ -242,49 +232,29 @@ package tetragon.view.render2d.display
 		 */
 		protected function setup():void
 		{
+		}
+		
+		
+		/**
+		 * @private
+		 */
+		protected function updateFrame():void
+		{
 			if (_clipped)
 			{
-				_clipRect = new Rectangle(0, 0, _viewWidth, _viewHeight);
+				if (_clipRect) _clipRect.setTo(x, y, _frameWidth, _frameHeight);
+				else _clipRect = new Rectangle(x, y, _frameWidth, _frameHeight);
 			}
-			
-			_background = new Quad2D(_viewWidth, _viewHeight);
-			_background.color = _backgroundColor;
-			addChild(_background);
-			
-			_container = new Sprite2D();
-			addChild(_container);
-			
-			addEventListener(Event2D.ADDED_TO_STAGE, onAddedToStage);
-		}
-		
-		
-		private function addTestObjects():void
-		{
-			var padding:int = 15;
-			var numObjects:int = mFailCount > 20 ? 2 : 10;
-			
-			for (var i:int = 0; i < numObjects; ++i)
+			else
 			{
-				var img:Image2D = new Image2D(_texture);
-				//var q:Quad2D = new Quad2D(40, 40, Math.random() * 0xFFFFFF);
-				img.x = padding + Math.random() * (_viewWidth - 2 * padding);
-				img.y = padding + Math.random() * (_viewHeight - 2 * padding);
-				_container.addChild(img);
+				_clipRect = null;
 			}
-		}
-
-
-		private function benchmarkComplete():void
-		{
-			removeEventListener(EnterFrameEvent2D.ENTER_FRAME, onEnterFrame);
 			
-			var fps:int = Render2D.current.stage.frameRate;
-
-			Log.trace("Benchmark complete!");
-			Log.trace("FPS: " + fps);
-			Log.trace("Number of objects: " + _container.numChildren);
-			
-			System.pauseForGCIfCollectionImminent();
+			if (_background)
+			{
+				_background.width = _frameWidth;
+				_background.height = _frameHeight;
+			}
 		}
 	}
 }

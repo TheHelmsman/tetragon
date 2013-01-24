@@ -28,6 +28,7 @@
  */
 package view.render2d
 {
+	import tetragon.view.render2d.display.Quad2D;
 	import flash.events.Event;
 	import tetragon.view.obsolete.Screen;
 	import tetragon.view.render2d.core.Render2D;
@@ -144,9 +145,12 @@ package view.render2d
 		
 		private function onContext3DCreated(e:Stage3DEvent):void
 		{
-			var rootView:View2D = new View2D(320, 200, 0xFF00FF);
-			rootView.x = 60;
-			rootView.y = 60;
+			var rootView:View2D = new BenchmarkView();
+			rootView.x = 200;
+			rootView.y = 200;
+			rootView.frameWidth = 320;
+			rootView.frameHeight = 200;
+			rootView.background = new Quad2D(10, 10, 0x0000FF);
 			rootView.touchable = false;
 			
 			_render2D1 = new Render2D(rootView, _stage3DProxy);
