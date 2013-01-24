@@ -28,10 +28,10 @@
  */
 package tetragon.view.render2d
 {
-	import tetragon.view.render2d.events.Event2D;
 	import tetragon.view.IView;
+	import tetragon.view.render2d.display.ClippedSprite2D;
 	import tetragon.view.render2d.display.Quad2D;
-	import tetragon.view.render2d.display.Sprite2D;
+	import tetragon.view.render2d.events.Event2D;
 
 	import flash.geom.Rectangle;
 	
@@ -41,7 +41,7 @@ package tetragon.view.render2d
 	 *
 	 * @author hexagon
 	 */
-	public class View2D extends Sprite2D implements IView
+	public class View2D extends ClippedSprite2D implements IView
 	{
 		// -----------------------------------------------------------------------------------------
 		// Properties
