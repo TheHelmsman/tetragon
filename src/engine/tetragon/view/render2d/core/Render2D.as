@@ -213,7 +213,7 @@ package tetragon.view.render2d.core
 		/** @private */
 		private var _touchProcessor:TouchProcessor2D;
 		/** @private */
-		private var _statsDisplay:StatsDisplay2D;
+		//private var _statsDisplay:StatsDisplay2D;
 		
 		/** @private */
 		private var _viewPort:Rectangle;
@@ -434,7 +434,7 @@ package tetragon.view.render2d.core
 			_stage2D.render(_renderSupport, 1.0);
 			_renderSupport.finishQuadBatch();
 			
-			if (_statsDisplay) _statsDisplay.drawCount = _renderSupport.drawCount;
+			//if (_statsDisplay) _statsDisplay.drawCount = _renderSupport.drawCount;
 			if (!_shareContext) _context.present();
 		}
 		
