@@ -28,7 +28,7 @@
  */
 package view.render2d
 {
-	import tetragon.view.render2d.View2D;
+	import tetragon.view.render2d.display.View2D;
 	import tetragon.view.render2d.events.Event2D;
 	import tetragon.view.render2d.text.TextField2D;
 	
@@ -59,7 +59,6 @@ package view.render2d
 		public function GameView2D(id:String, x:int, y:int, w:int, h:int, backgroundColor:uint)
 		{
 			_id = id;
-			super(x, y, w, h, backgroundColor);
 		}
 		
 		

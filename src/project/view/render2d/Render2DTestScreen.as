@@ -28,13 +28,13 @@
  */
 package view.render2d
 {
+	import flash.events.Event;
 	import tetragon.view.obsolete.Screen;
-	import tetragon.view.render2d.View2D;
 	import tetragon.view.render2d.core.Render2D;
+	import tetragon.view.render2d.display.View2D;
 	import tetragon.view.stage3d.Stage3DEvent;
 	import tetragon.view.stage3d.Stage3DProxy;
 
-	import flash.events.Event;
 	
 	/**
 	 * @author hexagon
@@ -144,11 +144,14 @@ package view.render2d
 		
 		private function onContext3DCreated(e:Stage3DEvent):void
 		{
-			var rootView:View2D = new View2D(20, 20, 320, 200, 0xFF00FF);
+			var rootView:View2D = new View2D(320, 200, 0xFF00FF);
+			rootView.x = 60;
+			rootView.y = 60;
+			rootView.touchable = false;
 			
 			_render2D1 = new Render2D(rootView, _stage3DProxy);
 			_render2D1.enableErrorChecking = true;
-			_render2D1.simulateMultitouch = true;
+			//_render2D1.simulateMultitouch = true;
 			_render2D1.antiAliasing = 2;
 			_render2D1.start();
 			

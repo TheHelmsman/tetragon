@@ -28,20 +28,6 @@
  */
 package tetragon.view.render2d.core
 {
-	import tetragon.Main;
-	import tetragon.debug.Log;
-	import tetragon.view.render2d.View2D;
-	import tetragon.view.render2d.animation.Juggler2D;
-	import tetragon.view.render2d.display.DisplayObject2D;
-	import tetragon.view.render2d.display.Stage2D;
-	import tetragon.view.render2d.events.Event2D;
-	import tetragon.view.render2d.events.EventDispatcher2D;
-	import tetragon.view.render2d.events.KeyboardEvent2D;
-	import tetragon.view.render2d.events.ResizeEvent2D;
-	import tetragon.view.render2d.touch.TouchPhase2D;
-	import tetragon.view.render2d.touch.TouchProcessor2D;
-	import tetragon.view.stage3d.Stage3DProxy;
-
 	import flash.display.Stage;
 	import flash.display.Stage3D;
 	import flash.display3D.Context3D;
@@ -66,6 +52,20 @@ package tetragon.view.render2d.core
 	import flash.utils.Dictionary;
 	import flash.utils.getTimer;
 	import flash.utils.setTimeout;
+	import tetragon.Main;
+	import tetragon.debug.Log;
+	import tetragon.view.render2d.animation.Juggler2D;
+	import tetragon.view.render2d.display.DisplayObject2D;
+	import tetragon.view.render2d.display.Stage2D;
+	import tetragon.view.render2d.display.View2D;
+	import tetragon.view.render2d.events.Event2D;
+	import tetragon.view.render2d.events.EventDispatcher2D;
+	import tetragon.view.render2d.events.KeyboardEvent2D;
+	import tetragon.view.render2d.events.ResizeEvent2D;
+	import tetragon.view.render2d.touch.TouchPhase2D;
+	import tetragon.view.render2d.touch.TouchProcessor2D;
+	import tetragon.view.stage3d.Stage3DProxy;
+
 	
 	
 	/** Dispatched when a new render context is created. */
@@ -270,17 +270,16 @@ package tetragon.view.render2d.core
 			renderMode:String = "auto", profile:String = "baselineConstrained")
 		{
 			_stage = Main.instance.stage;
-			
-			if (!viewPort) viewPort = new Rectangle(0, 0, _stage.stageWidth, _stage.stageHeight);
 			if (!_contextData) _contextData = new Dictionary(true);
 			
 			makeCurrent();
 			
 			_rootView = rootView;
-			_viewPort = rootView.viewPort;
 			_stage3D = stage3DProxy.stage3D;
 			
+			_viewPort = new Rectangle(0, 0, stage3DProxy.width, stage3DProxy.height);
 			_previousViewPort = new Rectangle();
+			
 			_stage2D = new Stage2D(stage3DProxy.width, stage3DProxy.height, stage3DProxy.color);
 			_touchProcessor = new TouchProcessor2D(_stage2D);
 			_juggler = new Juggler2D();
