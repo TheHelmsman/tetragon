@@ -50,7 +50,7 @@ package tetragon.view.render2d.display
 	 * This class represents the Render2D version of the stage. Don't confuse it with its
 	 * Flash equivalent: while the latter contains objects of the type
 	 * <code>flash.display.DisplayObject</code>, the Render2D stage contains only objects
-	 * of the type <code>Render2D.display.DisplayObject</code>. Those classes are not
+	 * of the type <code>Render2D.display.DisplayObject2D</code>. Those classes are not
 	 * compatible, and you cannot exchange one type with the other.
 	 * </p>
 	 * <p>
@@ -69,8 +69,8 @@ package tetragon.view.render2d.display
 	 * player.
 	 * </p>
 	 * 
-	 * @see Render2D.events.KeyboardEvent
-	 * @see Render2D.events.ResizeEvent
+	 * @see Render2D.events.KeyboardEvent2D
+	 * @see Render2D.events.ResizeEvent2D
 	 */
 	public class Stage2D extends DisplayObjectContainer2D
 	{
@@ -81,7 +81,7 @@ package tetragon.view.render2d.display
 		private var _width:int;
 		private var _height:int;
 		private var _color:uint;
-		private var _enterFrameEvent:EnterFrameEvent2D = new EnterFrameEvent2D(Event2D.ENTER_FRAME, 0.0);
+		private var _enterFrameEvent:EnterFrameEvent2D;
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -98,6 +98,7 @@ package tetragon.view.render2d.display
 			_width = width;
 			_height = height;
 			_color = color;
+			_enterFrameEvent = new EnterFrameEvent2D(Event2D.ENTER_FRAME, 0.0);
 		}
 		
 		

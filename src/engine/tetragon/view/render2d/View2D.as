@@ -93,6 +93,15 @@ package tetragon.view.render2d
 		protected function onAddedToStage(e:Event2D):void
 		{
 			removeEventListener(Event2D.ADDED_TO_STAGE, onAddedToStage);
+			
+			/* Test Code */
+			for (var i:uint = 0; i < 100; i++)
+			{
+				var q:Quad2D = new Quad2D(40, 40, Math.random() * 0xFFFFFF);
+				q.x = Math.random() * _viewPort.width;
+				q.y = Math.random() * _viewPort.height;
+				addChild(q);
+			}
 		}
 		
 		

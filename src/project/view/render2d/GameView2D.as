@@ -80,9 +80,9 @@ package view.render2d
 		override protected function onAddedToStage(e:Event2D):void
 		{
 			super.onAddedToStage(e);
-			_tf = new TextField2D(300, 300, _id, "Verdana", 28, 0xFFFFFF);
-			_tf.border = true;
-			addChild(_tf);
+			//_tf = new TextField2D(300, 300, _id, "Verdana", 28, 0xFFFFFF);
+			//_tf.border = true;
+			//addChild(_tf);
 			//addEventListener(Event2D.ENTER_FRAME, onEnterFrame);
 		}
 		

@@ -42,7 +42,6 @@ package tetragon.view.render2d.core
 	import tetragon.view.render2d.touch.TouchProcessor2D;
 	import tetragon.view.stage3d.Stage3DProxy;
 
-	import flash.display.Sprite;
 	import flash.display.Stage;
 	import flash.display.Stage3D;
 	import flash.display3D.Context3D;
@@ -203,8 +202,6 @@ package tetragon.view.render2d.core
 		
 		/** @private */
 		private var _stage:Stage;
-		/** @private */
-		private var _nativeOverlay:Sprite;
 		
 		/** @private */
 		private var _rootView:View2D;
@@ -284,13 +281,10 @@ package tetragon.view.render2d.core
 			_stage3D = stage3DProxy.stage3D;
 			
 			_previousViewPort = new Rectangle();
-			_stage2D = new Stage2D(stage3DProxy.viewPort.width, stage3DProxy.viewPort.height, stage3DProxy.color);
+			_stage2D = new Stage2D(stage3DProxy.width, stage3DProxy.height, stage3DProxy.color);
 			_touchProcessor = new TouchProcessor2D(_stage2D);
 			_juggler = new Juggler2D();
 			_renderSupport = new RenderSupport2D();
-			
-			_nativeOverlay = new Sprite();
-			_stage.addChild(_nativeOverlay);
 			
 			_antiAliasing = 0;
 			_simulateMultitouch = false;
@@ -364,7 +358,6 @@ package tetragon.view.render2d.core
 			_stage.removeEventListener(KeyboardEvent.KEY_UP, onKey);
 			_stage.removeEventListener(Event.RESIZE, onResize);
 			_stage.removeEventListener(Event.MOUSE_LEAVE, onMouseLeave);
-			_stage.removeChild(_nativeOverlay);
 			
 			_stage3D.removeEventListener(Event.CONTEXT3D_CREATE, onContextCreated);
 			_stage3D.removeEventListener(ErrorEvent.ERROR, onStage3DError);
@@ -421,7 +414,6 @@ package tetragon.view.render2d.core
 			
 			makeCurrent();
 			updateViewPort();
-			updateNativeOverlay();
 			_renderSupport.nextFrame();
 			
 			if (!_shareContext) RenderSupport2D.clear(_stage2D.color, 1.0);
@@ -720,16 +712,6 @@ package tetragon.view.render2d.core
 		public function get contentScaleFactor():Number
 		{
 			return _viewPort.width / _stage2D.stageWidth;
-		}
-		
-		
-		/**
-		 * A Flash Sprite placed directly on top of the Render2D content. Use it to display
-		 * native Flash components.
-		 */
-		public function get nativeOverlay():Sprite
-		{
-			return _nativeOverlay;
 		}
 		
 		
@@ -1176,18 +1158,7 @@ package tetragon.view.render2d.core
 		
 		
 		/**
-		 * @private
-		 */
-		private function updateNativeOverlay():void
-		{
-			_nativeOverlay.x = _viewPort.x;
-			_nativeOverlay.y = _viewPort.y;
-			_nativeOverlay.scaleX = _viewPort.width / _stage2D.stageWidth;
-			_nativeOverlay.scaleY = _viewPort.height / _stage2D.stageHeight;
-		}
-		
-		
-		/**
+		 * TODO To be moved out of Render2D and into a more common display space!
 		 * @private
 		 */
 		private function showOnScreenError(message:String):void
@@ -1204,7 +1175,7 @@ package tetragon.view.render2d.core
 			tf.y = (_stage2D.stageHeight - tf.height) / 2;
 			tf.background = true;
 			tf.backgroundColor = 0x440000;
-			nativeOverlay.addChild(tf);
+			_stage.addChild(tf);
 		}
 	}
 }

@@ -29,6 +29,7 @@
 package view.render2d
 {
 	import tetragon.view.obsolete.Screen;
+	import tetragon.view.render2d.View2D;
 	import tetragon.view.render2d.core.Render2D;
 	import tetragon.view.stage3d.Stage3DEvent;
 	import tetragon.view.stage3d.Stage3DProxy;
@@ -54,10 +55,6 @@ package view.render2d
 		//private var _stage3DManager:Stage3D;
 		
 		private var _stage3DProxy:Stage3DProxy;
-		
-		private var _gameView1:GameView2D;
-		private var _gameView2:GameView2D;
-		private var _gameView3:GameView2D;
 		
 		private var _render2D1:Render2D;
 		private var _render2D2:Render2D;
@@ -147,27 +144,25 @@ package view.render2d
 		
 		private function onContext3DCreated(e:Stage3DEvent):void
 		{
-			_gameView1 = new GameView2D("1", 0, 0, 200, 200, 0xAA0000);
-			_gameView2 = new GameView2D("2", 210, 0, 200, 200, 0x009955);
-			_gameView3 = new GameView2D("3", 420, 0, 200, 200, 0x005599);
+			var rootView:View2D = new View2D(20, 20, 320, 200, 0xFF00FF);
 			
-			_render2D1 = new Render2D(_gameView1, _stage3DProxy);
+			_render2D1 = new Render2D(rootView, _stage3DProxy);
 			_render2D1.enableErrorChecking = true;
 			_render2D1.simulateMultitouch = true;
 			_render2D1.antiAliasing = 2;
 			_render2D1.start();
 			
-			_render2D2 = new Render2D(_gameView2, _stage3DProxy);
-			_render2D2.enableErrorChecking = true;
-			_render2D2.simulateMultitouch = true;
-			_render2D2.antiAliasing = 2;
-			_render2D2.start();
-			
-			_render2D3 = new Render2D(_gameView3, _stage3DProxy);
-			_render2D3.enableErrorChecking = true;
-			_render2D3.simulateMultitouch = true;
-			_render2D3.antiAliasing = 2;
-			_render2D3.start();
+//			_render2D2 = new Render2D(_gameView2, _stage3DProxy);
+//			_render2D2.enableErrorChecking = true;
+//			_render2D2.simulateMultitouch = true;
+//			_render2D2.antiAliasing = 2;
+//			_render2D2.start();
+//			
+//			_render2D3 = new Render2D(_gameView3, _stage3DProxy);
+//			_render2D3.enableErrorChecking = true;
+//			_render2D3.simulateMultitouch = true;
+//			_render2D3.antiAliasing = 2;
+//			_render2D3.start();
 			
 			_stage3DProxy.addEventListener(Event.ENTER_FRAME, onEnterFrame);
 		}
@@ -176,8 +171,8 @@ package view.render2d
 		private function onEnterFrame(event:Event):void
 		{
 			_render2D1.nextFrame();
-			_render2D2.nextFrame();
-			_render2D3.nextFrame();
+			//_render2D2.nextFrame();
+			//_render2D3.nextFrame();
 		}		
 		
 		
