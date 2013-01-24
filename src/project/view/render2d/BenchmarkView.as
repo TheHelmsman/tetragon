@@ -52,10 +52,10 @@ package view.render2d
 		//-----------------------------------------------------------------------------------------
 		
 		private var _texture:Texture2D;
-        private var mFrameCount:int;
-        private var mElapsed:Number;
-        private var mFailCount:int;
-        private var mWaitFrames:int;
+        private var _frameCount:int;
+        private var _elapsed:Number;
+        private var _failCount:int;
+        private var _waitFrames:int;
 		
 		
 		//-----------------------------------------------------------------------------------------
@@ -90,9 +90,9 @@ package view.render2d
 			
 			_texture = Texture2D.fromBitmapData(Main.instance.resourceManager.resourceIndex.getImage("123"));
 			
-			mFailCount = 0;
-			mWaitFrames = 2;
-			mFrameCount = 0;
+			_failCount = 0;
+			_waitFrames = 2;
+			_frameCount = 0;
 			
 			addEventListener(EnterFrameEvent2D.ENTER_FRAME, onEnterFrame);
 		}
@@ -100,34 +100,31 @@ package view.render2d
 		
 		private function onEnterFrame(e:EnterFrameEvent2D):void
 		{
-			mElapsed += e.passedTime;
-			mFrameCount++;
+			_elapsed += e.passedTime;
+			_frameCount++;
 			
-			if (mFrameCount % mWaitFrames == 0)
+			if (_frameCount % _waitFrames == 0)
 			{
-				var fps:Number = mWaitFrames / mElapsed;
+				var fps:Number = _waitFrames / _elapsed;
 				var targetFps:int = Render2D.current.stage.frameRate;
 				
 				if (Math.ceil(fps) >= targetFps)
 				{
-					mFailCount = 0;
+					_failCount = 0;
 					addTestObjects();
 				}
 				else
 				{
-					mFailCount++;
+					_failCount++;
 
-					if (mFailCount > 20)
-						mWaitFrames = 5;
 					// slow down creation process to be more exact
-					if (mFailCount > 30)
-						mWaitFrames = 10;
-					if (mFailCount == 40)
-						benchmarkComplete();
+					if (_failCount > 20) _waitFrames = 5;
+					if (_failCount > 30) _waitFrames = 10;
 					// target fps not reached for a while
+					if (_failCount == 40) benchmarkComplete();
 				}
 
-				mElapsed = mFrameCount = 0;
+				_elapsed = _frameCount = 0;
 			}
 
 			var numObjects:int = numChildren;
@@ -147,7 +144,7 @@ package view.render2d
 		private function addTestObjects():void
 		{
 			var padding:int = 15;
-			var numObjects:int = mFailCount > 20 ? 2 : 10;
+			var numObjects:int = _failCount > 20 ? 2 : 10;
 			
 			for (var i:int = 0; i < numObjects; ++i)
 			{

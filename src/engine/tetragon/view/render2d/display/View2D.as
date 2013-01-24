@@ -101,17 +101,14 @@ package tetragon.view.render2d.display
 			if (!_clipped)
 			{
 				super.render(support, alpha);
+				return;
 			}
-			else
-			{
-				support.finishQuadBatch();
-				support.scissorRectangle = _clipRect;
-				
-				super.render(support, alpha);
-				
-				support.finishQuadBatch();
-				support.scissorRectangle = null;
-			}
+			
+			support.finishQuadBatch();
+			support.scissorRectangle = _clipRect;
+			super.render(support, alpha);
+			support.finishQuadBatch();
+			support.scissorRectangle = null;
 		}
 		
 		
