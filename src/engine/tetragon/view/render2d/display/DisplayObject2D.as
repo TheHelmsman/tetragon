@@ -225,75 +225,70 @@ package tetragon.view.render2d.display
 		{
 			var commonParent:DisplayObject2D;
 			var currentObject:DisplayObject2D;
-
+			
 			if (resultMatrix) resultMatrix.identity();
 			else resultMatrix = new Matrix();
-
+			
 			if (targetSpace == this)
 			{
 				return resultMatrix;
 			}
-			else if (targetSpace == _parent || (targetSpace == null && _parent == null))
+			else if (targetSpace == _parent || (!targetSpace && !_parent))
 			{
 				resultMatrix.copyFrom(transformationMatrix);
 				return resultMatrix;
 			}
-			else if (targetSpace == null || targetSpace == base)
+			else if (!targetSpace || targetSpace == base)
 			{
 				// targetCoordinateSpace 'null' represents the target space of the base object.
-				// -> move up from this to base
-
+				// -> move up from this to base.
 				currentObject = this;
 				while (currentObject != targetSpace)
 				{
 					resultMatrix.concat(currentObject.transformationMatrix);
 					currentObject = currentObject._parent;
 				}
-
 				return resultMatrix;
 			}
 			else if (targetSpace._parent == this) // optimization
 			{
 				targetSpace.getTransformationMatrix(this, resultMatrix);
 				resultMatrix.invert();
-
 				return resultMatrix;
 			}
 
-			// 1. find a common parent of this and the target space
-
+			// 1. find a common parent of this and the target space.
 			commonParent = null;
 			currentObject = this;
-
+			
 			while (currentObject)
 			{
 				_ancestors.push(currentObject);
 				currentObject = currentObject._parent;
 			}
-
+			
 			currentObject = targetSpace;
 			while (currentObject && _ancestors.indexOf(currentObject) == -1)
+			{
 				currentObject = currentObject._parent;
-
+			}
+			
 			_ancestors.length = 0;
-
+			
 			if (currentObject) commonParent = currentObject;
-			else throw new ArgumentError("Object not connected to target");
-
+			else throw new ArgumentError("Object not connected to target.");
+			
 			// 2. move up from this to common parent
-
 			currentObject = this;
 			while (currentObject != commonParent)
 			{
 				resultMatrix.concat(currentObject.transformationMatrix);
 				currentObject = currentObject._parent;
 			}
-
-			if (commonParent == targetSpace)
-				return resultMatrix;
-
-			// 3. now move up from target until we reach the common parent
-
+			
+			if (commonParent == targetSpace) return resultMatrix;
+			
+			// 3. now move up from target until we reach the common parent.
 			_helperMatrix.identity();
 			currentObject = targetSpace;
 			while (currentObject != commonParent)
@@ -301,16 +296,15 @@ package tetragon.view.render2d.display
 				_helperMatrix.concat(currentObject.transformationMatrix);
 				currentObject = currentObject._parent;
 			}
-
-			// 4. now combine the two matrices
-
+			
+			// 4. now combine the two matrices.
 			_helperMatrix.invert();
 			resultMatrix.concat(_helperMatrix);
-
+			
 			return resultMatrix;
 		}
-
-
+		
+		
 		/**
 		 * Returns a rectangle that completely encloses the object as it appears in
 		 * another coordinate system. If you pass a 'resultRectangle', the result will be
@@ -321,7 +315,7 @@ package tetragon.view.render2d.display
 		 */
 		public function getBounds(targetSpace:DisplayObject2D, resultRect:Rectangle = null):Rectangle
 		{
-			throw new AbstractMethodException("Method needs to be implemented in subclass.");
+			throw new AbstractMethodException();
 			return null;
 		}
 
@@ -355,10 +349,11 @@ package tetragon.view.render2d.display
 		public function localToGlobal(localPoint:Point, resultPoint:Point = null):Point
 		{
 			getTransformationMatrix(base, _helperMatrix);
-			return MatrixUtil.transformCoords(_helperMatrix, localPoint.x, localPoint.y, resultPoint);
+			return MatrixUtil.transformCoords(_helperMatrix, localPoint.x, localPoint.y,
+				resultPoint);
 		}
-
-
+		
+		
 		/**
 		 * Transforms a point from global (stage) coordinates to the local coordinate
 		 * system. If you pass a 'resultPoint', the result will be stored in this point
@@ -371,10 +366,11 @@ package tetragon.view.render2d.display
 		{
 			getTransformationMatrix(base, _helperMatrix);
 			_helperMatrix.invert();
-			return MatrixUtil.transformCoords(_helperMatrix, globalPoint.x, globalPoint.y, resultPoint);
+			return MatrixUtil.transformCoords(_helperMatrix, globalPoint.x, globalPoint.y,
+				resultPoint);
 		}
-
-
+		
+		
 		/**
 		 * Renders the display object with the help of a support object. Never call this
 		 * method directly, except from within another render method.
@@ -385,7 +381,7 @@ package tetragon.view.render2d.display
 		 */
 		public function render(support:RenderSupport2D, parentAlpha:Number):void
 		{
-			throw new AbstractMethodException("Method needs to be implemented in subclass.");
+			throw new AbstractMethodException();
 		}
 		
 		
@@ -435,7 +431,6 @@ package tetragon.view.render2d.display
 					_transMatrix.ty = _y - _transMatrix.b * _pivotX - _transMatrix.d * _pivotY;
 				}
 			}
-
 			return _transMatrix;
 		}
 		public function set transformationMatrix(v:Matrix):void
@@ -779,7 +774,10 @@ package tetragon.view.render2d.display
 		public function get base():DisplayObject2D
 		{
 			var currentObject:DisplayObject2D = this;
-			while (currentObject._parent) currentObject = currentObject._parent;
+			while (currentObject._parent)
+			{
+				currentObject = currentObject._parent;
+			}
 			return currentObject;
 		}
 
@@ -808,7 +806,7 @@ package tetragon.view.render2d.display
 		 */
 		public function get stage():Stage2D
 		{
-			return this.base as Stage2D;
+			return base as Stage2D;
 		}
 		
 		
